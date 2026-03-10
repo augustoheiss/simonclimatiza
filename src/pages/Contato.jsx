@@ -82,16 +82,16 @@ Aguardo o retorno. Obrigado!`;
 
   // ─── Classes compartilhadas ──────────────────────────────────────────────────
   const inputBase =
-    'w-full bg-slate-950 border border-slate-700/60 rounded-lg px-4 py-3 text-slate-100 placeholder-slate-500 text-sm transition-all duration-200 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/40';
+    'w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 placeholder-slate-400 text-sm transition-all duration-200 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400/30';
 
   return (
-    <div className="w-full bg-slate-950 text-slate-50">
+    <div className="w-full bg-white text-slate-900">
 
       {/* ── Background decorativo ── */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_80%_60%_at_50%_0%,#000_50%,transparent_100%)] opacity-20" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-cyan-500/8 rounded-full blur-[160px]" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-blue-600/5 rounded-full blur-[120px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e0f2fe_1px,transparent_1px),linear-gradient(to_bottom,#e0f2fe_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_80%_60%_at_50%_0%,#000_50%,transparent_100%)] opacity-40" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-sky-300/15 rounded-full blur-[160px]" />
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-blue-200/20 rounded-full blur-[120px]" />
       </div>
 
       {/* ── Hero badge + título ── */}
@@ -102,19 +102,19 @@ Aguardo o retorno. Obrigado!`;
           animate="visible"
           custom={0}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/60 border border-cyan-700/40 text-cyan-400 text-xs font-bold tracking-widest uppercase mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-50 border border-sky-200 text-sky-600 text-xs font-bold tracking-widest uppercase mb-6">
             <MessageCircle className="w-3.5 h-3.5" />
             Fale com um Especialista
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight mb-4">
+          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight mb-4 text-slate-900">
             Entre em{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-blue-600">
               Contato
             </span>
           </h1>
 
-          <p className="text-slate-400 text-lg max-w-xl mx-auto">
+          <p className="text-slate-600 text-lg max-w-xl mx-auto">
             Resposta ágil garantida. Nossa equipe técnica está pronta para
             atender sua demanda.
           </p>
@@ -136,16 +136,16 @@ Aguardo o retorno. Obrigado!`;
         >
           {/* Chamada principal */}
           <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold leading-snug mb-4 tracking-tight">
+            <h2 className="text-2xl md:text-3xl font-extrabold leading-snug mb-4 tracking-tight text-slate-900">
               Pronto para otimizar sua{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-blue-600">
                 infraestrutura climática?
               </span>
             </h2>
-            <p className="text-slate-400 leading-relaxed">
+            <p className="text-slate-600 leading-relaxed">
               Seja um sistema novo, manutenção preventiva ou uma emergência crítica,
               nossa equipe de engenharia responde com{' '}
-              <span className="text-cyan-400 font-semibold">agilidade e precisão técnica</span>.
+              <span className="text-sky-500 font-semibold">agilidade e precisão técnica</span>.
               Preencha o formulário ou acesse nossos canais diretos.
             </p>
           </div>
@@ -157,9 +157,9 @@ Aguardo o retorno. Obrigado!`;
               { icon: ShieldCheck, label: 'Diagnóstico técnico sem custo inicial' },
               { icon: CheckCircle2, label: 'Orçamento detalhado e transparente' },
             ].map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-3 text-sm text-slate-300">
-                <div className="w-8 h-8 rounded-lg bg-cyan-950/60 border border-cyan-800/40 flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-4 h-4 text-cyan-400" />
+              <div key={label} className="flex items-center gap-3 text-sm text-slate-700">
+                <div className="w-8 h-8 rounded-lg bg-sky-50 border border-sky-200 flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-4 h-4 text-sky-500" />
                 </div>
                 {label}
               </div>
@@ -167,7 +167,7 @@ Aguardo o retorno. Obrigado!`;
           </div>
 
           {/* Divisor */}
-          <div className="border-t border-slate-800" />
+          <div className="border-t border-sky-100" />
 
           {/* Cards de contato direto */}
           <div className="flex flex-col gap-4">
@@ -177,57 +177,57 @@ Aguardo o retorno. Obrigado!`;
               href={`https://wa.me/${WHATSAPP_NUMBER}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center gap-4 p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-cyan-700/50 hover:bg-slate-900/80 transition-all duration-300"
+              className="group flex items-center gap-4 p-4 rounded-xl bg-white border border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 transition-all duration-300 shadow-sm"
             >
-              <div className="w-11 h-11 rounded-xl bg-green-950/60 border border-green-800/40 flex items-center justify-center flex-shrink-0 group-hover:border-green-600/60 transition-colors">
-                <MessageCircle className="w-5 h-5 text-green-400" />
+              <div className="w-11 h-11 rounded-xl bg-green-50 border border-green-200 flex items-center justify-center flex-shrink-0 group-hover:border-green-400 transition-colors">
+                <MessageCircle className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-0.5">
+                <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-0.5">
                   WhatsApp / Telefone
                 </p>
-                <p className="text-slate-100 font-semibold group-hover:text-cyan-300 transition-colors">
+                <p className="text-slate-900 font-semibold group-hover:text-sky-600 transition-colors">
                   +55 11 94216-3150
                 </p>
               </div>
-              <Phone className="w-4 h-4 text-slate-600 ml-auto group-hover:text-cyan-500 transition-colors" />
+              <Phone className="w-4 h-4 text-slate-300 ml-auto group-hover:text-sky-500 transition-colors" />
             </a>
 
             {/* E-mail */}
             <a
               href="mailto:simonclimatiza@gmail.com"
-              className="group flex items-center gap-4 p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-cyan-700/50 hover:bg-slate-900/80 transition-all duration-300"
-            > 
-              <div className="w-11 h-11 rounded-xl bg-cyan-950/60 border border-cyan-800/40 flex items-center justify-center flex-shrink-0 group-hover:border-cyan-600/60 transition-colors">
-                <Mail className="w-5 h-5 text-cyan-400" />
+              className="group flex items-center gap-4 p-4 rounded-xl bg-white border border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 transition-all duration-300 shadow-sm"
+            >
+              <div className="w-11 h-11 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center flex-shrink-0 group-hover:border-sky-400 transition-colors">
+                <Mail className="w-5 h-5 text-sky-500" />
               </div>
               <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-0.5">
+                <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-0.5">
                   E-mail Profissional
                 </p>
-                <p className="text-slate-100 font-semibold group-hover:text-cyan-300 transition-colors">
+                <p className="text-slate-900 font-semibold group-hover:text-sky-600 transition-colors">
                   simonclimatiza@gmail.com
                 </p>
               </div>
-              <Mail className="w-4 h-4 text-slate-600 ml-auto group-hover:text-cyan-500 transition-colors" />
+              <Mail className="w-4 h-4 text-slate-300 ml-auto group-hover:text-sky-500 transition-colors" />
             </a>
 
             {/* Horários */}
-            <div className="flex items-start gap-4 p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="w-11 h-11 rounded-xl bg-blue-950/60 border border-blue-800/40 flex items-center justify-center flex-shrink-0">
-                <Clock className="w-5 h-5 text-blue-400" />
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
+              <div className="w-11 h-11 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center flex-shrink-0">
+                <Clock className="w-5 h-5 text-blue-500" />
               </div>
               <div className="flex flex-col gap-1">
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">
+                <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">
                   Horários de Atendimento
                 </p>
-                <div className="text-sm text-slate-300 space-y-0.5">
+                <div className="text-sm text-slate-700 space-y-0.5">
                   <p>
-                    <span className="text-slate-100 font-semibold">Corporativo:</span>{' '}
+                    <span className="text-slate-900 font-semibold">Corporativo:</span>{' '}
                     Seg–Sex, 08h às 18h
                   </p>
                   <p>
-                    <span className="text-orange-400 font-semibold">Emergência 24h:</span>{' '}
+                    <span className="text-orange-500 font-semibold">Emergência 24h:</span>{' '}
                     Sáb, Dom e Feriados
                   </p>
                 </div>
@@ -235,15 +235,15 @@ Aguardo o retorno. Obrigado!`;
             </div>
 
             {/* Área de atuação */}
-            <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="w-11 h-11 rounded-xl bg-slate-800 border border-slate-700/40 flex items-center justify-center flex-shrink-0">
-                <MapPin className="w-5 h-5 text-slate-400" />
+            <div className="flex items-center gap-4 p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
+              <div className="w-11 h-11 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center flex-shrink-0">
+                <MapPin className="w-5 h-5 text-slate-500" />
               </div>
               <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-0.5">
+                <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-0.5">
                   Área de Atuação
                 </p>
-                <p className="text-sm text-slate-300">
+                <p className="text-sm text-slate-700">
                   Grande São Paulo e interior do estado
                 </p>
               </div>
@@ -260,17 +260,17 @@ Aguardo o retorno. Obrigado!`;
           animate="visible"
           custom={0.3}
         >
-          <div className="relative rounded-2xl bg-slate-900/60 border border-slate-800 p-8 backdrop-blur-sm overflow-hidden">
+          <div className="relative rounded-2xl bg-white border border-sky-100 p-8 shadow-xl shadow-sky-900/8 overflow-hidden">
 
             {/* Brilho interno sutil */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-cyan-500/5 rounded-full blur-[60px] pointer-events-none" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-sky-200/20 rounded-full blur-[60px] pointer-events-none" />
 
             {/* Header do card */}
             <div className="relative mb-8">
-              <h3 className="text-xl font-bold text-slate-100 mb-1">
+              <h3 className="text-xl font-bold text-slate-900 mb-1">
                 Envie sua solicitação
               </h3>
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-slate-500">
                 Todos os campos ajudam a agilizar o atendimento.
               </p>
             </div>
@@ -279,7 +279,7 @@ Aguardo o retorno. Obrigado!`;
 
               {/* Nome Completo */}
               <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                   Nome Completo
                 </label>
                 <input
@@ -295,7 +295,7 @@ Aguardo o retorno. Obrigado!`;
               {/* E-mail + Telefone lado a lado */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                     E-mail Profissional
                   </label>
                   <input
@@ -308,7 +308,7 @@ Aguardo o retorno. Obrigado!`;
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                     Telefone / WhatsApp
                   </label>
                   <input
@@ -324,7 +324,7 @@ Aguardo o retorno. Obrigado!`;
 
               {/* Serviço de Interesse */}
               <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                   Serviço de Interesse
                 </label>
                 <select
@@ -335,7 +335,7 @@ Aguardo o retorno. Obrigado!`;
                   style={{ backgroundImage: 'none' }}
                 >
                   {SERVICOS_OPCOES.map(({ value, label }) => (
-                    <option key={value} value={value} className="bg-slate-900 text-slate-100">
+                    <option key={value} value={value} className="bg-white text-slate-900">
                       {label}
                     </option>
                   ))}
@@ -344,7 +344,7 @@ Aguardo o retorno. Obrigado!`;
 
               {/* Mensagem */}
               <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                   Detalhes do Projeto / Mensagem
                 </label>
                 <textarea
@@ -360,7 +360,7 @@ Aguardo o retorno. Obrigado!`;
               {/* Botão de submit */}
               <button
                 type="submit"
-                className="group w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm tracking-wide uppercase transition-all duration-300 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-400/30 hover:scale-[1.02] active:scale-[0.98]"
+                className="group w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm tracking-wide uppercase transition-all duration-300 shadow-lg shadow-sky-500/25 hover:shadow-sky-600/30 hover:scale-[1.02] active:scale-[0.98]"
               >
                 <MessageCircle className="w-5 h-5 transition-transform group-hover:rotate-6" />
                 Enviar e Falar no WhatsApp
@@ -368,7 +368,7 @@ Aguardo o retorno. Obrigado!`;
               </button>
 
               {/* Disclaimer */}
-              <p className="text-xs text-slate-600 text-center leading-relaxed">
+              <p className="text-xs text-slate-400 text-center leading-relaxed">
                 Ao enviar, você será redirecionado ao WhatsApp com os dados
                 preenchidos. Nenhum dado é armazenado.
               </p>

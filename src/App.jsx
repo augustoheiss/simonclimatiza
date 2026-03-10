@@ -7,21 +7,46 @@ import Contato from './pages/Contato';
 export default function App() {
   return (
     <HashRouter>
-      <div className="min-h-screen bg-slate-950 flex flex-col font-sans">
-        
+      <div className="min-h-screen bg-white flex flex-col font-sans">
+
         {/* Menu de Navegação Global */}
-        <nav className="bg-slate-950/80 backdrop-blur-md p-6 sticky top-0 z-50 border-b border-slate-800">
-          <div className="max-w-6xl mx-auto flex justify-between items-center">
-            <div className="text-cyan-500 font-bold text-xl tracking-tighter">SIMON<span className="text-slate-100 font-light">CLIMATIZA</span></div>
+        <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-sky-100 shadow-sm shadow-sky-900/5">
+          <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
+
+            {/* Logo */}
+            <Link to="/" className="flex items-center">
+              <img
+                src="/images/logo-simon.jpg"
+                alt="Logo Simon Climatização"
+                className="h-14 w-auto mix-blend-multiply"
+              />
+            </Link>
+
+            {/* Links de navegação */}
             <div className="flex gap-8">
-              <Link to="/" className="text-slate-300 hover:text-cyan-400 font-medium transition-colors uppercase tracking-wider text-sm">Início</Link>
-              <Link to="/servicos" className="text-slate-300 hover:text-cyan-400 font-medium transition-colors uppercase tracking-wider text-sm">Serviços</Link>
-              <Link to="/contato" className="text-slate-300 hover:text-cyan-400 font-medium transition-colors uppercase tracking-wider text-sm">Contato</Link>
+              <Link
+                to="/"
+                className="text-slate-600 hover:text-sky-500 font-medium transition-colors uppercase tracking-wider text-sm"
+              >
+                Início
+              </Link>
+              <Link
+                to="/servicos"
+                className="text-slate-600 hover:text-sky-500 font-medium transition-colors uppercase tracking-wider text-sm"
+              >
+                Serviços
+              </Link>
+              <Link
+                to="/contato"
+                className="inline-flex items-center gap-1.5 bg-sky-500 hover:bg-sky-600 text-white font-semibold px-5 py-2 rounded-lg transition-all duration-200 text-sm shadow-md shadow-sky-500/20"
+              >
+                Contato
+              </Link>
             </div>
           </div>
         </nav>
 
-        {/* O palco onde o React troca as telas */}
+        {/* Páginas */}
         <main className="flex-grow flex flex-col">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -31,10 +56,10 @@ export default function App() {
         </main>
 
         {/* Rodapé Global */}
-        <footer className="bg-slate-950 p-6 text-center text-slate-500 text-sm border-t border-slate-900">
+        <footer className="bg-sky-50 border-t border-sky-100 p-6 text-center text-slate-400 text-sm">
           &copy; {new Date().getFullYear()} Simon Climatiza. Engenharia Térmica de Alta Performance.
         </footer>
-        
+
       </div>
     </HashRouter>
   );

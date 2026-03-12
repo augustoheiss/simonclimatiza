@@ -122,18 +122,28 @@ Aguardo o retorno. Obrigado!`;
       </section>
 
       {/* ── Conteúdo em duas colunas ── */}
-      <section className="relative max-w-6xl mx-auto px-6 md:px-12 pb-28 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+      <section className="relative max-w-6xl mx-auto px-6 md:px-12 pb-28 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-stretch">
 
         {/* ════════════════════════════════════════
-            COLUNA ESQUERDA — Informações de contato
+            COLUNA ESQUERDA — Câmara Fria / Confiança e Garantia
         ════════════════════════════════════════ */}
         <motion.div
           variants={fadeUp}
           initial="hidden"
           animate="visible"
           custom={0.15}
-          className="flex flex-col gap-8"
+          className="relative rounded-2xl overflow-hidden"
         >
+          {/* Background: câmara fria — transmite rigidez e segurança */}
+          <div
+            className="absolute inset-0"
+            style={{ backgroundImage: 'url(/images/camerafria-contatos.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+          />
+          {/* Overlay translúcido gelado — deixa a imagem sangrar elegantemente */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/88 via-sky-50/82 to-slate-100/88 backdrop-blur-[1px]" />
+
+          <div className="relative z-10 flex flex-col gap-8 p-8 md:p-10 h-full">
+
           {/* Chamada principal */}
           <div>
             <h2 className="text-2xl md:text-3xl font-extrabold leading-snug mb-4 tracking-tight text-slate-900">
@@ -177,7 +187,7 @@ Aguardo o retorno. Obrigado!`;
               href={`https://wa.me/${WHATSAPP_NUMBER}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center gap-4 p-4 rounded-xl bg-white border border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 transition-all duration-300 shadow-sm"
+              className="group flex items-center gap-4 p-4 rounded-xl bg-white/90 border border-slate-200 hover:border-sky-300 hover:bg-sky-50/80 transition-all duration-300 shadow-sm"
             >
               <div className="w-11 h-11 rounded-xl bg-green-50 border border-green-200 flex items-center justify-center flex-shrink-0 group-hover:border-green-400 transition-colors">
                 <MessageCircle className="w-5 h-5 text-green-600" />
@@ -196,7 +206,7 @@ Aguardo o retorno. Obrigado!`;
             {/* E-mail */}
             <a
               href="mailto:simonclimatiza@gmail.com"
-              className="group flex items-center gap-4 p-4 rounded-xl bg-white border border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 transition-all duration-300 shadow-sm"
+              className="group flex items-center gap-4 p-4 rounded-xl bg-white/90 border border-slate-200 hover:border-sky-300 hover:bg-sky-50/80 transition-all duration-300 shadow-sm"
             >
               <div className="w-11 h-11 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center flex-shrink-0 group-hover:border-sky-400 transition-colors">
                 <Mail className="w-5 h-5 text-sky-500" />
@@ -213,7 +223,7 @@ Aguardo o retorno. Obrigado!`;
             </a>
 
             {/* Horários */}
-            <div className="flex items-start gap-4 p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/90 border border-slate-200 shadow-sm">
               <div className="w-11 h-11 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center flex-shrink-0">
                 <Clock className="w-5 h-5 text-blue-500" />
               </div>
@@ -235,7 +245,7 @@ Aguardo o retorno. Obrigado!`;
             </div>
 
             {/* Área de atuação */}
-            <div className="flex items-center gap-4 p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
+            <div className="flex items-center gap-4 p-4 rounded-xl bg-white/90 border border-slate-200 shadow-sm">
               <div className="w-11 h-11 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center flex-shrink-0">
                 <MapPin className="w-5 h-5 text-slate-500" />
               </div>
@@ -249,6 +259,27 @@ Aguardo o retorno. Obrigado!`;
               </div>
             </div>
           </div>
+
+          {/* Selo de Garantia — ancora a confiança */}
+          <div className="mt-auto pt-6 border-t border-sky-200/60">
+            <div className="flex items-start gap-4 p-5 rounded-xl bg-white/80 border border-sky-200 shadow-sm">
+              <div className="w-12 h-12 rounded-xl bg-sky-50 border border-sky-300 flex items-center justify-center flex-shrink-0">
+                <ShieldCheck className="w-6 h-6 text-sky-500" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-slate-900 mb-1">
+                  Zero Quebras. Zero Perda de Estoque.
+                </p>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Nossos sistemas de refrigeração industrial operam com protocolos
+                  de redundância e manutenção preditiva que eliminam falhas
+                  catastróficas. Seu inventário está protegido — garantido.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          </div>
         </motion.div>
 
         {/* ════════════════════════════════════════
@@ -259,8 +290,17 @@ Aguardo o retorno. Obrigado!`;
           initial="hidden"
           animate="visible"
           custom={0.3}
+          className="relative rounded-2xl overflow-hidden"
         >
-          <div className="relative rounded-2xl bg-white border border-sky-100 p-8 shadow-xl shadow-sky-900/8 overflow-hidden">
+          {/* Background: ambiente industrial de alta produtividade */}
+          <div
+            className="absolute inset-0"
+            style={{ backgroundImage: 'url(/images/industria-contatos-02.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+          />
+          {/* Overlay branco forte — formulário super legível */}
+          <div className="absolute inset-0 bg-white/92 backdrop-blur-sm" />
+
+          <div className="relative z-10 rounded-2xl border border-sky-100 p-8 shadow-xl shadow-sky-900/8 overflow-hidden h-full">
 
             {/* Brilho interno sutil */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-sky-200/20 rounded-full blur-[60px] pointer-events-none" />
@@ -377,6 +417,7 @@ Aguardo o retorno. Obrigado!`;
         </motion.div>
 
       </section>
+
     </div>
   );
 }

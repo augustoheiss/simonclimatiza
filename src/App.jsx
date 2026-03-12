@@ -1,12 +1,12 @@
 import React from 'react';
-import { HashRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import Servicos from './pages/Servicos';
 import Contato from './pages/Contato';
 
 export default function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <div className="min-h-screen bg-white flex flex-col font-sans">
 
         {/* Menu de Navegação Global */}
@@ -61,6 +61,6 @@ export default function App() {
         </footer>
 
       </div>
-    </HashRouter>
+    </BrowserRouter>
   );
 }

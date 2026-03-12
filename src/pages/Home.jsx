@@ -42,13 +42,19 @@ export default function Home() {
       {/* ──────────────────────────────────────────────────
           1. HERO SECTION — O Choque de Realidade
       ────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center py-32 px-6 md:px-12 overflow-hidden">
+      <section
+        className="relative min-h-screen flex items-center py-32 px-6 md:px-12 overflow-hidden"
+        style={{ backgroundImage: 'url(/images/arpuro-home.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'local' }}
+      >
+
+        {/* Overlay claro e elegante — preserva o Light Theme */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/92 via-sky-50/80 to-white/72 pointer-events-none" />
 
         {/* Grade decorativa de fundo */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e0f2fe_1px,transparent_1px),linear-gradient(to_bottom,#e0f2fe_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_10%,#000_60%,transparent_100%)] opacity-60 pointer-events-none" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e0f2fe_1px,transparent_1px),linear-gradient(to_bottom,#e0f2fe_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_10%,#000_60%,transparent_100%)] opacity-40 pointer-events-none" />
 
         {/* Brilho suave de céu azul ao fundo */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-sky-300/20 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-sky-300/15 rounded-full blur-[140px] pointer-events-none" />
 
         <div className="max-w-6xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center w-full">
 
@@ -146,8 +152,14 @@ export default function Home() {
       {/* ──────────────────────────────────────────────────
           2. SEÇÃO DO ANTAGONISTA — A Dor e o Medo
       ────────────────────────────────────────────────── */}
-      <section className="py-28 px-6 md:px-12 bg-sky-50/50 border-t border-sky-100">
-        <div className="max-w-6xl mx-auto">
+      <section
+        className="py-28 px-6 md:px-12 border-t border-sky-100 relative overflow-hidden"
+        style={{ backgroundImage: 'url(/images/arisolado-home-02.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+      >
+        {/* Overlay frio e denso — transmite sensação de ar abafado */}
+        <div className="absolute inset-0 bg-blue-50/90 pointer-events-none" />
+
+        <div className="max-w-6xl mx-auto relative z-10">
 
           <motion.div
             variants={fadeUp}
@@ -378,6 +390,48 @@ export default function Home() {
               rigorosos. O resultado é visível na conta de luz, na qualidade do
               ar e na durabilidade dos seus ativos.
             </p>
+          </motion.div>
+
+          {/* Manifesto — Biomimética e Engenharia de Precisão */}
+          <motion.div
+            variants={fadeIn}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={0.1}
+            className="mb-16 max-w-4xl mx-auto"
+          >
+            <blockquote className="border-l-4 border-sky-500 pl-6 md:pl-8 py-2 relative">
+              <div className="absolute -left-px top-0 bottom-0 w-0.5 bg-gradient-to-b from-sky-400 via-sky-500 to-blue-600 rounded-full" />
+              <p className="text-slate-700 text-lg md:text-xl leading-relaxed font-light italic">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-blue-700 font-semibold not-italic">
+                  Decodificamos a pureza da natureza
+                </span>{' '}
+                para elevar o padrão do seu ambiente corporativo. Onde a força
+                da máquina encontra a sabedoria da natureza. Analisamos
+                ecossistemas perfeitos para calibrar nossos sistemas,
+                transformando infraestruturas brutas em{' '}
+                <span className="text-slate-900 font-semibold not-italic">
+                  pulmões artificiais
+                </span>{' '}
+                que garantem ar puro, segurança biológica e foco total para a
+                sua equipe.
+              </p>
+              <p className="text-slate-600 text-base md:text-lg leading-relaxed font-light italic mt-4">
+                Unimos a vitalidade do ar livre à nossa engenharia de precisão,
+                fazendo com que a máquina trabalhe{' '}
+                <span className="text-slate-900 font-semibold not-italic">
+                  silenciosamente a favor da saúde, do conforto e da máxima
+                  produtividade humana.
+                </span>
+              </p>
+              <footer className="mt-5 flex items-center gap-3">
+                <div className="w-8 h-px bg-sky-400" />
+                <cite className="text-sky-600 text-xs font-bold uppercase tracking-widest not-italic">
+                  Filosofia Simon Climatização
+                </cite>
+              </footer>
+            </blockquote>
           </motion.div>
 
           {/* Métricas de destaque */}

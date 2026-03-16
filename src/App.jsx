@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import Servicos from './pages/Servicos';
 import Contato from './pages/Contato';
+import AcademiaCatalogo from './pages/AcademiaCatalogo';
+import AcademiaPlayer from './pages/AcademiaPlayer';
 
 export default function App() {
   return (
@@ -37,6 +39,12 @@ export default function App() {
                 Serviços
               </Link>
               <Link
+                to="/academia"
+                className="text-slate-600 hover:text-sky-500 font-medium transition-colors uppercase tracking-wider text-sm"
+              >
+                Academia
+              </Link>
+              <Link
                 to="/contato"
                 className="inline-flex items-center gap-1.5 bg-sky-500 hover:bg-sky-600 text-white font-semibold px-5 py-2 rounded-lg transition-all duration-200 text-sm shadow-md shadow-sky-500/20"
               >
@@ -52,6 +60,8 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/servicos" element={<Servicos />} />
             <Route path="/contato" element={<Contato />} />
+            <Route path="/academia" element={<AcademiaCatalogo />} />
+            <Route path="/academia/:id" element={<AcademiaPlayer />} />
           </Routes>
         </main>
 

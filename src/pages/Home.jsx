@@ -506,7 +506,7 @@ export default function Home() {
               Pronto para transformar o ambiente do seu edifício?
             </h3>
             <p className="text-slate-600 mb-8 max-w-xl mx-auto">
-              Solicite um diagnóstico técnico gratuito. Nossa equipe identifica
+              Solicite um diagnóstico técnico. Nossa equipe identifica
               as oportunidades de melhoria do seu sistema e entrega um plano de
               ação objetivo — com resultados mensuráveis.
             </p>
@@ -514,7 +514,7 @@ export default function Home() {
               to="/contato"
               className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white font-bold px-10 py-5 rounded-xl transition-all duration-200 text-lg shadow-xl shadow-sky-500/25 hover:shadow-sky-600/30"
             >
-              Agendar Diagnóstico Técnico Gratuito <ArrowRight className="w-5 h-5" aria-hidden="true" />
+              Agendar Diagnóstico Técnico <ArrowRight className="w-5 h-5" aria-hidden="true" />
             </Link>
           </motion.div>
 

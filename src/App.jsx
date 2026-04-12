@@ -5,6 +5,7 @@ import Servicos from './pages/Servicos';
 import Contato from './pages/Contato';
 import AcademiaCatalogo from './pages/AcademiaCatalogo';
 import AcademiaPlayer from './pages/AcademiaPlayer';
+import Termos from './pages/Termos';
 
 export default function App() {
   return (
@@ -62,12 +63,19 @@ export default function App() {
             <Route path="/contato" element={<Contato />} />
             <Route path="/academia" element={<AcademiaCatalogo />} />
             <Route path="/academia/:id" element={<AcademiaPlayer />} />
+            <Route path="/termos" element={<Termos />} />
           </Routes>
         </main>
 
         {/* Rodapé Global */}
         <footer className="bg-sky-50 border-t border-sky-100 p-6 text-center text-slate-400 text-sm">
-          &copy; {new Date().getFullYear()} Simon Climatiza. Engenharia Térmica de Alta Performance.
+          <p>&copy; {new Date().getFullYear()} Simon Climatiza. Engenharia Térmica de Alta Performance.</p>
+          <Link
+            to="/termos"
+            className="inline-block mt-2 text-xs text-slate-400 hover:text-sky-500 transition-colors duration-200 underline underline-offset-2 decoration-slate-300 hover:decoration-sky-400"
+          >
+            Termos de Uso e Privacidade
+          </Link>
         </footer>
 
       </div>

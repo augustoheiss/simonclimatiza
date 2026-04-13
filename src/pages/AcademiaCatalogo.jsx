@@ -1,8 +1,15 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { cursoVRF } from '../data/treinamentos';
-import { PlayCircle, BookOpen, GraduationCap } from 'lucide-react';
+import { PlayCircle, BookOpen, GraduationCap, LogOut } from 'lucide-react';
 
 export default function AcademiaCatalogo() {
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    localStorage.removeItem('simon_academia_auth');
+    navigate('/');
+  }
+
   return (
     <div className="bg-slate-50 min-h-screen py-24 px-6">
 
@@ -18,6 +25,16 @@ export default function AcademiaCatalogo() {
         <p className="mt-4 text-lg text-slate-500 max-w-xl mx-auto leading-relaxed">
           Capacitação de Elite para profissionais de climatização. Domine os sistemas VRF do zero ao diagnóstico avançado.
         </p>
+
+        {/* Logout button */}
+        <button
+          onClick={handleLogout}
+          className="mt-6 inline-flex items-center gap-2 text-xs text-slate-400 hover:text-red-400 font-medium uppercase tracking-wider transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-400/50 rounded-lg px-3 py-1.5"
+          aria-label="Sair da área VIP da Academia"
+        >
+          <LogOut size={14} />
+          Sair da Área VIP
+        </button>
       </header>
 
       {/* Course card */}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   PlayCircle,
@@ -9,6 +9,7 @@ import {
   Menu,
   X,
   BookOpen,
+  LogOut,
 } from 'lucide-react';
 import { cursoVRF } from '../data/treinamentos';
 
@@ -21,6 +22,12 @@ export default function AcademiaPlayer() {
   const [activeAula, setActiveAula] = useState(cursoVRF.aulas[0]);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    localStorage.removeItem('simon_academia_auth');
+    navigate('/');
+  }
 
   const slides = activeAula.slides ?? [];
   const totalSlides = slides.length;
@@ -84,6 +91,14 @@ export default function AcademiaPlayer() {
             <BookOpen size={11} />
             {cursoVRF.aulas.length} aulas
           </p>
+          <button
+            onClick={handleLogout}
+            className="mt-3 inline-flex items-center gap-1.5 text-[10px] text-slate-400 hover:text-red-400 font-semibold uppercase tracking-widest transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-400/50 rounded px-2 py-1"
+            aria-label="Sair da área VIP da Academia"
+          >
+            <LogOut size={12} />
+            Sair
+          </button>
         </div>
 
         {/* Lesson list */}

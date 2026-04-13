@@ -6,6 +6,7 @@ import Contato from './pages/Contato';
 import AcademiaCatalogo from './pages/AcademiaCatalogo';
 import AcademiaPlayer from './pages/AcademiaPlayer';
 import Termos from './pages/Termos';
+import ProtecaoAcademia from './components/ProtecaoAcademia';
 
 export default function App() {
   return (
@@ -61,8 +62,8 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/servicos" element={<Servicos />} />
             <Route path="/contato" element={<Contato />} />
-            <Route path="/academia" element={<AcademiaCatalogo />} />
-            <Route path="/academia/:id" element={<AcademiaPlayer />} />
+            <Route path="/academia" element={<ProtecaoAcademia><AcademiaCatalogo /></ProtecaoAcademia>} />
+            <Route path="/academia/:id" element={<ProtecaoAcademia><AcademiaPlayer /></ProtecaoAcademia>} />
             <Route path="/termos" element={<Termos />} />
           </Routes>
         </main>

@@ -244,7 +244,7 @@ export const cursoTVRPro = {
   id: "tvrpro",
   titulo: "Instalação e Comissionamento TVR Pro DC Inverter",
   descricao: "Treinamento técnico detalhado sobre recebimento, instalação mecânica, tubulação, elétrica e comissionamento do sistema Trane TVR Pro DC Inverter.",
-  imagemDestaque: "/images/home-servicos-04.jpg", // Adicione uma imagem bonita para a capa desse curso depois
+  imagemDestaque: "/images/home-servicos.jpg", // Adicione uma imagem bonita para a capa desse curso depois
   aulas: [
     {
       id: 1,

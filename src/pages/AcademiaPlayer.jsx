@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   PlayCircle,
@@ -10,8 +10,9 @@ import {
   X,
   BookOpen,
   LogOut,
+  AlertTriangle,
 } from 'lucide-react';
-import { cursoVRF } from '../data/treinamentos';
+import { todosCursos } from '../data/treinamentos';
 
 // Strips the "Aula XX - " / "Aula XX: " prefix from lesson titles
 function stripAulaPrefix(titulo) {
@@ -19,17 +20,47 @@ function stripAulaPrefix(titulo) {
 }
 
 export default function AcademiaPlayer() {
-  const [activeAula, setActiveAula] = useState(cursoVRF.aulas[0]);
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const cursoAtual = todosCursos.find((c) => c.id === id);
+
+  const [activeAula, setActiveAula] = useState(cursoAtual?.aulas[0] ?? null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const navigate = useNavigate();
 
   function handleLogout() {
     localStorage.removeItem('simon_academia_auth');
     navigate('/');
   }
 
-  const slides = activeAula.slides ?? [];
+  // ── Course not found fallback ──
+  if (!cursoAtual) {
+    return (
+      <div className="flex-grow flex items-center justify-center bg-slate-50 px-6 py-20">
+        <div className="text-center max-w-md">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 mb-6">
+            <AlertTriangle size={28} className="text-amber-500" />
+          </div>
+          <h1 className="text-2xl font-extrabold text-slate-900 mb-3">
+            Curso não encontrado
+          </h1>
+          <p className="text-slate-500 text-sm leading-relaxed mb-8">
+            O treinamento que você procura não existe ou foi removido. Verifique o endereço ou retorne ao catálogo para explorar os cursos disponíveis.
+          </p>
+          <Link
+            to="/academia"
+            className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-3 rounded-xl transition-all duration-200 shadow-lg shadow-sky-500/25 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2"
+          >
+            <ChevronLeft size={18} />
+            Voltar ao Catálogo
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const slides = activeAula?.slides ?? [];
   const totalSlides = slides.length;
 
   function handleAulaChange(aula) {
@@ -52,7 +83,7 @@ export default function AcademiaPlayer() {
       {/* ── Mobile top bar ── */}
       <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-30">
         <span className="font-bold text-slate-800 text-sm truncate mr-4 max-w-[220px]">
-          {cursoVRF.titulo}
+          {cursoAtual.titulo}
         </span>
         <button
           onClick={() => setSidebarOpen((v) => !v)}
@@ -85,11 +116,11 @@ export default function AcademiaPlayer() {
             Voltar ao Catálogo
           </Link>
           <h2 className="font-extrabold text-slate-900 text-sm leading-snug">
-            {cursoVRF.titulo}
+            {cursoAtual.titulo}
           </h2>
           <p className="text-xs text-slate-400 mt-1.5 flex items-center gap-1">
             <BookOpen size={11} />
-            {cursoVRF.aulas.length} aulas
+            {cursoAtual.aulas.length} aulas
           </p>
           <button
             onClick={handleLogout}
@@ -103,8 +134,8 @@ export default function AcademiaPlayer() {
 
         {/* Lesson list */}
         <nav aria-label="Lista de aulas do curso">
-          {cursoVRF.aulas.map((aula) => {
-            const isActive = aula.id === activeAula.id;
+          {cursoAtual.aulas.map((aula) => {
+            const isActive = aula.id === activeAula?.id;
             return (
               <button
                 key={aula.id}
@@ -135,7 +166,7 @@ export default function AcademiaPlayer() {
       <main className="flex-grow min-w-0" aria-live="polite" aria-atomic="false">
         <AnimatePresence mode="wait">
           <motion.article
-            key={activeAula.id}
+            key={activeAula?.id}
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -146,25 +177,25 @@ export default function AcademiaPlayer() {
             {/* ── Lesson header ── */}
             <header className="mb-10">
               <span className="inline-block text-[11px] font-extrabold text-sky-500 uppercase tracking-widest mb-3">
-                Aula {String(activeAula.id).padStart(2, '0')} de {cursoVRF.aulas.length}
+                Aula {String(activeAula?.id).padStart(2, '0')} de {cursoAtual.aulas.length}
               </span>
               <h1 className="text-3xl font-bold text-slate-900 leading-tight">
-                {activeAula.titulo}
+                {activeAula?.titulo}
               </h1>
               <div className="mt-5 text-slate-600 leading-relaxed whitespace-pre-line text-[15px]">
-                {activeAula.descricao}
+                {activeAula?.descricao}
               </div>
             </header>
 
             {/* ── Slide carousel ── */}
             {slides.length > 0 && (
-              <section aria-label={`Slides da aula ${activeAula.id}`} className="mb-2">
+              <section aria-label={`Slides da aula ${activeAula?.id}`} className="mb-2">
 
                 {/* Slide viewer */}
                 <div className="relative bg-slate-100 rounded-xl overflow-hidden shadow-md select-none">
                   <img
                     src={slides[currentSlideIndex]}
-                    alt={`Slide ${currentSlideIndex + 1} de ${totalSlides} — ${activeAula.titulo}`}
+                    alt={`Slide ${currentSlideIndex + 1} de ${totalSlides} — ${activeAula?.titulo}`}
                     className="w-full object-contain max-h-[600px] mx-auto block"
                     draggable="false"
                   />
@@ -226,10 +257,10 @@ export default function AcademiaPlayer() {
             )}
 
             {/* ── Infographic ── */}
-            {activeAula.infografico && (
+            {activeAula?.infografico && (
               <section
                 className="mt-12"
-                aria-label={`Infográfico da aula ${activeAula.id}`}
+                aria-label={`Infográfico da aula ${activeAula?.id}`}
               >
                 <div className="flex items-center gap-2 mb-5">
                   <span className="w-1 h-5 bg-sky-500 rounded-full flex-shrink-0" aria-hidden="true" />
@@ -239,7 +270,7 @@ export default function AcademiaPlayer() {
                 </div>
                 <img
                   src={activeAula.infografico}
-                  alt={`Infográfico de referência da aula ${activeAula.id}: ${stripAulaPrefix(activeAula.titulo)}`}
+                  alt={`Infográfico de referência da aula ${activeAula?.id}: ${stripAulaPrefix(activeAula?.titulo)}`}
                   className="shadow-lg rounded-xl max-w-3xl mx-auto w-full"
                 />
               </section>
@@ -255,10 +286,10 @@ export default function AcademiaPlayer() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <a
-                  href={activeAula.linkVideo}
+                  href={activeAula?.linkVideo}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`Assistir a aula ${activeAula.id} completa no YouTube`}
+                  aria-label={`Assistir a aula ${activeAula?.id} completa no YouTube`}
                   className="inline-flex items-center gap-3 bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-4 rounded-xl transition-all duration-200 shadow-md shadow-red-600/20 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
                 >
                   <PlayCircle size={22} aria-hidden="true" />
@@ -266,10 +297,10 @@ export default function AcademiaPlayer() {
                 </a>
 
                 <a
-                  href={activeAula.linkPodcast}
+                  href={activeAula?.linkPodcast}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`Ouvir a aula ${activeAula.id} em formato podcast`}
+                  aria-label={`Ouvir a aula ${activeAula?.id} em formato podcast`}
                   className="inline-flex items-center gap-3 bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-4 rounded-xl transition-all duration-200 shadow-md shadow-slate-900/20 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
                 >
                   <Headphones size={22} aria-hidden="true" />

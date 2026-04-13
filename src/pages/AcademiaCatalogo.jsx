@@ -42,20 +42,20 @@ export default function AcademiaCatalogo() {
         {todosCursos.map((curso) => (
           <article
             key={curso.id}
-            className="flex flex-col md:flex-row bg-white shadow-xl rounded-2xl overflow-hidden max-w-5xl mx-auto w-full mb-12 hover:shadow-2xl transition-shadow duration-300"
+            className="grid grid-cols-1 md:grid-cols-12 bg-white shadow-xl rounded-2xl overflow-hidden max-w-5xl mx-auto w-full mb-12 hover:shadow-2xl transition-shadow duration-300"
             aria-label={`Curso: ${curso.titulo}`}
           >
             {/* Image */}
-            <div className="md:w-5/12 shrink-0">
+            <div className="md:col-span-5 h-64 md:h-full">
               <img
                 src={curso.imagemDestaque}
                 alt={`Imagem de destaque do curso ${curso.titulo}`}
-                className="w-full h-64 md:h-full object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
 
             {/* Content */}
-            <div className="p-8 md:w-7/12 flex flex-col justify-center">
+            <div className="md:col-span-7 p-8 md:p-10 flex flex-col justify-center">
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">

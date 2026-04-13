@@ -275,13 +275,13 @@ Para que nosso trabalho seja impecável, nossa aula está estruturada em três p
         "/images/academia/tvrpro/aula01/slide06.jpg",
         "/images/academia/tvrpro/aula01/slide07.jpg",
         "/images/academia/tvrpro/aula01/slide08.jpg",
-        "/images/academia/tvrpro/aula02/slide09.jpg",
-        "/images/academia/tvrpro/aula02/slide10.jpg",
-        "/images/academia/tvrpro/aula02/slide11.jpg",
-        "/images/academia/tvrpro/aula02/slide12.jpg",
-        "/images/academia/tvrpro/aula02/slide13.jpg",
-        "/images/academia/tvrpro/aula02/slide14.jpg",
-        "/images/academia/tvrpro/aula02/slide15.jpg"
+        "/images/academia/tvrpro/aula01/slide09.jpg",
+        "/images/academia/tvrpro/aula01/slide10.jpg",
+        "/images/academia/tvrpro/aula01/slide11.jpg",
+        "/images/academia/tvrpro/aula01/slide12.jpg",
+        "/images/academia/tvrpro/aula01/slide13.jpg",
+        "/images/academia/tvrpro/aula01/slide14.jpg",
+        "/images/academia/tvrpro/aula01/slide15.jpg"
 
       ],
       infografico: "/images/academia/tvrpro/aula01/infografico.jpg",
@@ -357,8 +357,8 @@ Nesta aula, abordaremos os três eixos fundamentais da rede de tubulação:
         "/images/academia/tvrpro/aula03/slide06.jpg",
         "/images/academia/tvrpro/aula03/slide07.jpg",
         "/images/academia/tvrpro/aula03/slide08.jpg",
-        "/images/academia/tvrpro/aula02/slide09.jpg",
-        "/images/academia/tvrpro/aula02/slide10.jpg"
+        "/images/academia/tvrpro/aula03/slide09.jpg",
+        "/images/academia/tvrpro/aula03/slide10.jpg"
       ],
       infografico: "/images/academia/tvrpro/aula03/infografico.jpg",
       linkVideo: "https://youtu.be/NmqlUTvi5WI",

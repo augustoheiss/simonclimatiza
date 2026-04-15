@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { todosCursos } from '../data/treinamentos';
 import CertificateTemplate from '../components/CertificateTemplate';
+import useProgress from '../hooks/useProgress';
 import {
   Award,
   Download,
@@ -13,6 +14,8 @@ import {
   BookOpen,
   Clock,
   Calendar,
+  Lock,
+  CheckCircle2,
 } from 'lucide-react';
 
 /* ── helpers ── */
@@ -58,6 +61,14 @@ export default function Certificados() {
   const numeroCertificado = nomeAluno
     ? gerarNumeroCertificado(nomeAluno, nomeCurso)
     : 'SC-00000';
+
+  // Progress tracking — reactive gate for certificate emission
+  const { getProgressoCurso } = useProgress();
+  const progressoCurso = getProgressoCurso(
+    cursoId,
+    cursoAtual?.aulas.length ?? 0
+  );
+  const cursoCompleto = progressoCurso.completo;
 
   /* ── Lazy-loaded PDF generation (blindado) ── */
   const generatePDF = useCallback(async () => {
@@ -199,6 +210,49 @@ export default function Certificados() {
               </select>
             </div>
 
+            {/* ── Course progress indicator ── */}
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  Progresso do Curso
+                </span>
+                <span
+                  className={`text-xs font-extrabold ${
+                    cursoCompleto ? 'text-emerald-600' : 'text-amber-600'
+                  }`}
+                >
+                  {progressoCurso.percentual}%
+                </span>
+              </div>
+              <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ease-out ${
+                    cursoCompleto
+                      ? 'bg-emerald-500'
+                      : 'bg-amber-400'
+                  }`}
+                  style={{ width: `${progressoCurso.percentual}%` }}
+                />
+              </div>
+              <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
+                {cursoCompleto ? (
+                  <>
+                    <CheckCircle2 size={10} className="text-emerald-500" />
+                    <span className="text-emerald-600 font-semibold">
+                      Todas as {progressoCurso.total} aulas concluídas — certificado liberado!
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Lock size={10} className="text-amber-500" />
+                    <span>
+                      {progressoCurso.count} de {progressoCurso.total} aulas concluídas
+                    </span>
+                  </>
+                )}
+              </p>
+            </div>
+
             {/* Date */}
             <div>
               <label
@@ -244,13 +298,18 @@ export default function Certificados() {
           {/* ── Emit button ── */}
           <button
             onClick={generatePDF}
-            disabled={!nomeAluno.trim() || gerando}
+            disabled={!nomeAluno.trim() || gerando || !cursoCompleto}
             className="mt-8 w-full inline-flex items-center justify-center gap-3 bg-sky-500 hover:bg-sky-600 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold px-6 py-4 rounded-xl transition-all duration-200 shadow-lg shadow-sky-500/25 hover:shadow-sky-600/30 hover:-translate-y-0.5 disabled:shadow-none disabled:translate-y-0 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 text-sm"
           >
             {gerando ? (
               <>
                 <Loader2 size={18} className="animate-spin" />
                 Gerando PDF...
+              </>
+            ) : !cursoCompleto ? (
+              <>
+                <Lock size={18} />
+                Certificado Bloqueado
               </>
             ) : (
               <>
@@ -259,6 +318,13 @@ export default function Certificados() {
               </>
             )}
           </button>
+
+          {/* Lock message */}
+          {!cursoCompleto && (
+            <p className="mt-2 text-[11px] text-amber-600 text-center font-medium leading-relaxed">
+              Complete todas as aulas do curso para liberar a emissão do certificado.
+            </p>
+          )}
 
           {/* Toggle preview */}
           <button

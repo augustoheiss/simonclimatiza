@@ -12,8 +12,11 @@ import {
   LogOut,
   AlertTriangle,
   Images,
+  CheckCircle2,
+  Circle,
 } from 'lucide-react';
 import { todosCursos } from '../data/treinamentos';
+import useProgress from '../hooks/useProgress';
 
 // ── Helpers ──
 
@@ -48,6 +51,12 @@ export default function AcademiaPlayer() {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('slides');
+
+  // Progress tracking
+  const { toggleAula, isAulaConcluida, getProgressoCurso } = useProgress();
+  const progressoAtual = cursoAtual
+    ? getProgressoCurso(cursoAtual.id, cursoAtual.aulas.length)
+    : null;
 
   // Reset tab & slide index when the active lesson changes
   useEffect(() => {
@@ -175,12 +184,22 @@ export default function AcademiaPlayer() {
                   }
                 `}
               >
-                <span className={`block text-[10px] font-extrabold uppercase tracking-widest mb-1 ${isActive ? 'text-sky-400' : 'text-slate-400'}`}>
-                  Aula {String(aula.id).padStart(2, '0')}
-                </span>
-                <span className={`line-clamp-2 leading-snug ${isActive ? 'font-semibold' : ''}`}>
-                  {stripAulaPrefix(aula.titulo)}
-                </span>
+                <div className="flex items-start gap-2">
+                  {/* Completion indicator */}
+                  {isAulaConcluida(cursoAtual.id, aula.id) ? (
+                    <CheckCircle2 size={14} className="text-emerald-500 flex-shrink-0 mt-0.5" />
+                  ) : (
+                    <Circle size={14} className={`flex-shrink-0 mt-0.5 ${isActive ? 'text-sky-300' : 'text-slate-300'}`} />
+                  )}
+                  <div>
+                    <span className={`block text-[10px] font-extrabold uppercase tracking-widest mb-1 ${isActive ? 'text-sky-400' : 'text-slate-400'}`}>
+                      Aula {String(aula.id).padStart(2, '0')}
+                    </span>
+                    <span className={`line-clamp-2 leading-snug ${isActive ? 'font-semibold' : ''}`}>
+                      {stripAulaPrefix(aula.titulo)}
+                    </span>
+                  </div>
+                </div>
               </button>
             );
           })}
@@ -210,6 +229,53 @@ export default function AcademiaPlayer() {
               <div className="mt-5 text-slate-600 leading-relaxed whitespace-pre-line text-[15px]">
                 {activeAula?.descricao}
               </div>
+
+              {/* ── Lesson completion toggle ── */}
+              {activeAula && (
+                <button
+                  onClick={() => toggleAula(cursoAtual.id, activeAula.id)}
+                  className={`
+                    mt-6 inline-flex items-center gap-2.5 px-5 py-3 rounded-xl text-sm font-bold
+                    transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2
+                    ${isAulaConcluida(cursoAtual.id, activeAula.id)
+                      ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/25 focus:ring-emerald-400'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-800 focus:ring-slate-400'
+                    }
+                  `}
+                  aria-label={
+                    isAulaConcluida(cursoAtual.id, activeAula.id)
+                      ? `Desmarcar aula ${activeAula.id} como concluída`
+                      : `Marcar aula ${activeAula.id} como concluída`
+                  }
+                >
+                  {isAulaConcluida(cursoAtual.id, activeAula.id) ? (
+                    <>
+                      <CheckCircle2 size={18} />
+                      Aula Concluída
+                    </>
+                  ) : (
+                    <>
+                      <Circle size={18} />
+                      Marcar como Concluída
+                    </>
+                  )}
+                </button>
+              )}
+
+              {/* ── Course progress bar ── */}
+              {progressoAtual && (
+                <div className="mt-4 flex items-center gap-3">
+                  <div className="flex-grow h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-emerald-500 rounded-full transition-all duration-500 ease-out"
+                      style={{ width: `${progressoAtual.percentual}%` }}
+                    />
+                  </div>
+                  <span className="text-[11px] font-bold text-slate-400 whitespace-nowrap">
+                    {progressoAtual.count}/{progressoAtual.total}
+                  </span>
+                </div>
+              )}
             </header>
 
             {/* ── Tab navigation ── */}

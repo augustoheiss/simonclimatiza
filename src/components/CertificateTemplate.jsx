@@ -2,6 +2,8 @@ import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import fundoCertificado from '../assets/fundo-certificado.png';
 import logoPng from '../assets/logo.png';
+import assinaturaMarcia from '../assets/assinatura-marcia.png';
+import assinaturaSimon from '../assets/assinatura-simon.png';
 
 /**
  * CertificateTemplate — Renders a full A4-landscape certificate.
@@ -246,13 +248,29 @@ const CertificateTemplate = React.forwardRef(function CertificateTemplate(
           width: '80%',
         }}
       >
-        {/* Signature 1 */}
-        <div style={{ textAlign: 'center', flex: '1' }}>
+        {/* Signature 1 — Marcia */}
+        <div style={{ textAlign: 'center', flex: '1', position: 'relative' }}>
+          <img
+            src={assinaturaMarcia}
+            alt="Assinatura Marcia Souza"
+            crossOrigin="anonymous"
+            style={{
+              width: '160px',
+              height: 'auto',
+              objectFit: 'contain',
+              display: 'block',
+              margin: '0 auto -10px auto',
+              position: 'relative',
+              zIndex: 2,
+            }}
+          />
           <div
             style={{
               width: '200px',
               borderBottom: '1.5px solid #94a3b8',
               margin: '0 auto 8px auto',
+              position: 'relative',
+              zIndex: 1,
             }}
           />
           <p
@@ -270,13 +288,29 @@ const CertificateTemplate = React.forwardRef(function CertificateTemplate(
           </p>
         </div>
 
-        {/* Signature 2 */}
-        <div style={{ textAlign: 'center', flex: '1' }}>
+        {/* Signature 2 — Simon */}
+        <div style={{ textAlign: 'center', flex: '1', position: 'relative' }}>
+          <img
+            src={assinaturaSimon}
+            alt="Assinatura Simon Souza"
+            crossOrigin="anonymous"
+            style={{
+              width: '160px',
+              height: 'auto',
+              objectFit: 'contain',
+              display: 'block',
+              margin: '0 auto -10px auto',
+              position: 'relative',
+              zIndex: 2,
+            }}
+          />
           <div
             style={{
               width: '200px',
               borderBottom: '1.5px solid #94a3b8',
               margin: '0 auto 8px auto',
+              position: 'relative',
+              zIndex: 1,
             }}
           />
           <p

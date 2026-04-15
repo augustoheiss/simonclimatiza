@@ -5,6 +5,8 @@ import Servicos from './pages/Servicos';
 import Contato from './pages/Contato';
 import AcademiaCatalogo from './pages/AcademiaCatalogo';
 import AcademiaPlayer from './pages/AcademiaPlayer';
+import Certificados from './pages/Certificados';
+import Validar from './pages/Validar';
 import Termos from './pages/Termos';
 import ProtecaoAcademia from './components/ProtecaoAcademia';
 
@@ -47,6 +49,12 @@ export default function App() {
                 Academia
               </Link>
               <Link
+                to="/certificados"
+                className="text-slate-600 hover:text-sky-500 font-medium transition-colors uppercase tracking-wider text-sm"
+              >
+                Certificados
+              </Link>
+              <Link
                 to="/contato"
                 className="inline-flex items-center gap-1.5 bg-sky-500 hover:bg-sky-600 text-white font-semibold px-5 py-2 rounded-lg transition-all duration-200 text-sm shadow-md shadow-sky-500/20"
               >
@@ -64,6 +72,8 @@ export default function App() {
             <Route path="/contato" element={<Contato />} />
             <Route path="/academia" element={<ProtecaoAcademia><AcademiaCatalogo /></ProtecaoAcademia>} />
             <Route path="/academia/:id" element={<ProtecaoAcademia><AcademiaPlayer /></ProtecaoAcademia>} />
+            <Route path="/certificados" element={<ProtecaoAcademia><Certificados /></ProtecaoAcademia>} />
+            <Route path="/validar" element={<Validar />} />
             <Route path="/termos" element={<Termos />} />
           </Routes>
         </main>

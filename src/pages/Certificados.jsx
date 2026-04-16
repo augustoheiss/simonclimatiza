@@ -53,6 +53,7 @@ export default function Certificados() {
 
   const [nomeAluno, setNomeAluno] = useState('');
   const [cursoId, setCursoId] = useState(todosCursos[0]?.id ?? '');
+  const [nomeCursoPersonalizado, setNomeCursoPersonalizado] = useState('');
   const [dataRealizacao, setDataRealizacao] = useState(hoje());
   const [gerando, setGerando] = useState(false);
   const [previewVisible, setPreviewVisible] = useState(true);
@@ -70,24 +71,32 @@ export default function Certificados() {
   // Editable carga horária — auto-calculated default, user-overridable
   const [cargaHoraria, setCargaHoraria] = useState(CARGA_MAP[todosCursos[0]?.id] ?? '40h');
 
-  const cursoAtual = todosCursos.find((c) => c.id === cursoId);
-  const nomeCurso = cursoAtual?.titulo ?? '';
+  const isCustomCourse = cursoId === 'custom';
+  const cursoAtual = isCustomCourse ? null : todosCursos.find((c) => c.id === cursoId);
+  const nomeCursoFinal = isCustomCourse
+    ? nomeCursoPersonalizado
+    : cursoAtual?.titulo ?? '';
   const numeroCertificado = nomeAluno
-    ? gerarNumeroCertificado(nomeAluno, nomeCurso)
+    ? gerarNumeroCertificado(nomeAluno, nomeCursoFinal)
     : 'SC-00000';
 
   // Update carga horária when course changes (but allow manual override)
   const handleCursoChange = (newCursoId) => {
     setCursoId(newCursoId);
-    setCargaHoraria(CARGA_MAP[newCursoId] ?? '40h');
+    if (newCursoId === 'custom') {
+      setCargaHoraria('');
+      setNomeCursoPersonalizado('');
+    } else {
+      setCargaHoraria(CARGA_MAP[newCursoId] ?? '40h');
+    }
   };
 
   // Progress tracking — reactive gate for certificate emission
+  // Custom courses bypass progress tracking (no EAD lessons)
   const { getProgressoCurso } = useProgress();
-  const progressoCurso = getProgressoCurso(
-    cursoId,
-    cursoAtual?.aulas.length ?? 0
-  );
+  const progressoCurso = isCustomCourse
+    ? { percentual: 100, completo: true, concluidas: 0, total: 0 }
+    : getProgressoCurso(cursoId, cursoAtual?.aulas.length ?? 0);
   const cursoCompleto = progressoCurso.completo;
 
   /* ── Lazy-loaded PDF generation (blindado) ── */
@@ -151,7 +160,7 @@ export default function Certificados() {
     } finally {
       setGerando(false);
     }
-  }, [nomeAluno, nomeCurso]);
+  }, [nomeAluno, nomeCursoFinal]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-sky-50/30 to-slate-50 py-12 px-4 sm:px-6">
@@ -227,10 +236,25 @@ export default function Certificados() {
                     {c.titulo}
                   </option>
                 ))}
+                <option value="custom">➕ Outro (Curso Presencial / Personalizado)</option>
               </select>
+
+              {/* Conditional custom course name input */}
+              {isCustomCourse && (
+                <input
+                  id="cert-curso-custom"
+                  type="text"
+                  value={nomeCursoPersonalizado}
+                  onChange={(e) => setNomeCursoPersonalizado(e.target.value)}
+                  placeholder="Digite o nome do curso ou workshop..."
+                  className="w-full mt-2 px-4 py-3 rounded-xl border border-sky-200 bg-sky-50/50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400/50 focus:border-sky-300 transition-all text-sm"
+                  autoFocus
+                />
+              )}
             </div>
 
-            {/* ── Course progress indicator ── */}
+            {/* ── Course progress indicator (only for EAD courses) ── */}
+            {!isCustomCourse && (
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -272,6 +296,7 @@ export default function Certificados() {
                 )}
               </p>
             </div>
+            )}
 
             {/* Date */}
             <div>
@@ -310,8 +335,10 @@ export default function Certificados() {
                 className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400/50 focus:border-sky-300 transition-all text-sm"
               />
               <p className="text-[10px] text-slate-400 mt-1.5">
-                Valor padrão: {cursoAtual?.aulas.length ?? 0} aulas × 5h.
-                Edite livremente.
+                {isCustomCourse
+                  ? 'Curso personalizado — preencha a carga horária.'
+                  : `Valor padrão: ${cursoAtual?.aulas.length ?? 0} aulas × 5h. Edite livremente.`
+                }
               </p>
             </div>
           </div>
@@ -424,7 +451,7 @@ export default function Certificados() {
           {/* ── Emit button ── */}
           <button
             onClick={generatePDF}
-            disabled={!nomeAluno.trim() || gerando || !cursoCompleto}
+            disabled={!nomeAluno.trim() || gerando || !cursoCompleto || (isCustomCourse && !nomeCursoPersonalizado.trim())}
             className="mt-8 w-full inline-flex items-center justify-center gap-3 bg-sky-500 hover:bg-sky-600 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold px-6 py-4 rounded-xl transition-all duration-200 shadow-lg shadow-sky-500/25 hover:shadow-sky-600/30 hover:-translate-y-0.5 disabled:shadow-none disabled:translate-y-0 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 text-sm"
           >
             {gerando ? (
@@ -500,7 +527,7 @@ export default function Certificados() {
                 >
                   <CertificateTemplate
                     nomeAluno={nomeAluno}
-                    nomeCurso={nomeCurso}
+                    nomeCurso={nomeCursoFinal}
                     cargaHoraria={cargaHoraria}
                     dataRealizacao={dataRealizacao}
                     numeroCertificado={numeroCertificado}
@@ -538,7 +565,7 @@ export default function Certificados() {
             <CertificateTemplate
               ref={certRef}
               nomeAluno={nomeAluno}
-              nomeCurso={nomeCurso}
+              nomeCurso={nomeCursoFinal}
               cargaHoraria={cargaHoraria}
               dataRealizacao={dataRealizacao}
               numeroCertificado={numeroCertificado}

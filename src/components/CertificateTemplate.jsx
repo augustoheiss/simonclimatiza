@@ -20,7 +20,19 @@ import assinaturaSimon from '../assets/assinatura-simon.png';
  * @param {string}  numeroCertificado  - e.g. "SC-01234"
  */
 const CertificateTemplate = React.forwardRef(function CertificateTemplate(
-  { nomeAluno, nomeCurso, cargaHoraria, dataRealizacao, numeroCertificado },
+  {
+    nomeAluno,
+    nomeCurso,
+    cargaHoraria,
+    dataRealizacao,
+    numeroCertificado,
+    // Editable advanced fields with production defaults
+    textoConclusao = 'Demonstrando conhecimento teórico e prático em climatização e refrigeração, atendendo aos padrões técnicos exigidos pela Simon Climatização e Refrigeração.',
+    nomeDiretora = 'Marcia Souza',
+    cargoDiretora = 'Diretora',
+    nomeInstrutor = 'Simon Souza',
+    cargoInstrutor = 'Instrutor Técnico',
+  },
   ref
 ) {
   // Build the stateless validation URL
@@ -202,9 +214,7 @@ const CertificateTemplate = React.forwardRef(function CertificateTemplate(
             lineHeight: 1.6,
           }}
         >
-          Demonstrando conhecimento teórico e prático em climatização e
-          refrigeração, atendendo aos padrões técnicos exigidos pela Simon
-          Climatização e Refrigeração.
+          {textoConclusao}
         </p>
       </div>
 
@@ -281,10 +291,10 @@ const CertificateTemplate = React.forwardRef(function CertificateTemplate(
               margin: '0 0 2px 0',
             }}
           >
-            Marcia Souza
+            {nomeDiretora}
           </p>
           <p style={{ fontSize: '11px', color: '#64748b', margin: 0 }}>
-            Diretora
+            {cargoDiretora}
           </p>
         </div>
 
@@ -321,10 +331,10 @@ const CertificateTemplate = React.forwardRef(function CertificateTemplate(
               margin: '0 0 2px 0',
             }}
           >
-            Simon Souza
+            {nomeInstrutor}
           </p>
           <p style={{ fontSize: '11px', color: '#64748b', margin: 0 }}>
-            Instrutor Técnico
+            {cargoInstrutor}
           </p>
         </div>
       </div>

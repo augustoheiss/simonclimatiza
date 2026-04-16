@@ -8,6 +8,7 @@ import {
   Download,
   Eye,
   ChevronLeft,
+  ChevronDown,
   Loader2,
   Sparkles,
   User,
@@ -16,6 +17,7 @@ import {
   Calendar,
   Lock,
   CheckCircle2,
+  Settings,
 } from 'lucide-react';
 
 /* ── helpers ── */
@@ -54,13 +56,31 @@ export default function Certificados() {
   const [dataRealizacao, setDataRealizacao] = useState(hoje());
   const [gerando, setGerando] = useState(false);
   const [previewVisible, setPreviewVisible] = useState(true);
+  const [opcoesAbertas, setOpcoesAbertas] = useState(false);
+
+  // Advanced editable fields with production defaults
+  const [textoConclusao, setTextoConclusao] = useState(
+    'Demonstrando conhecimento teórico e prático em climatização e refrigeração, atendendo aos padrões técnicos exigidos pela Simon Climatização e Refrigeração.'
+  );
+  const [nomeDiretora, setNomeDiretora] = useState('Marcia Souza');
+  const [cargoDiretora, setCargoDiretora] = useState('Diretora');
+  const [nomeInstrutor, setNomeInstrutor] = useState('Simon Souza');
+  const [cargoInstrutor, setCargoInstrutor] = useState('Instrutor Técnico');
+
+  // Editable carga horária — auto-calculated default, user-overridable
+  const [cargaHoraria, setCargaHoraria] = useState(CARGA_MAP[todosCursos[0]?.id] ?? '40h');
 
   const cursoAtual = todosCursos.find((c) => c.id === cursoId);
   const nomeCurso = cursoAtual?.titulo ?? '';
-  const cargaHoraria = CARGA_MAP[cursoId] ?? '40h';
   const numeroCertificado = nomeAluno
     ? gerarNumeroCertificado(nomeAluno, nomeCurso)
     : 'SC-00000';
+
+  // Update carga horária when course changes (but allow manual override)
+  const handleCursoChange = (newCursoId) => {
+    setCursoId(newCursoId);
+    setCargaHoraria(CARGA_MAP[newCursoId] ?? '40h');
+  };
 
   // Progress tracking — reactive gate for certificate emission
   const { getProgressoCurso } = useProgress();
@@ -199,7 +219,7 @@ export default function Certificados() {
               <select
                 id="cert-curso"
                 value={cursoId}
-                onChange={(e) => setCursoId(e.target.value)}
+                onChange={(e) => handleCursoChange(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-400/50 focus:border-sky-300 transition-all text-sm appearance-none cursor-pointer"
               >
                 {todosCursos.map((c) => (
@@ -272,7 +292,7 @@ export default function Certificados() {
               />
             </div>
 
-            {/* Hours (read-only) */}
+            {/* Hours (editable) */}
             <div>
               <label
                 htmlFor="cert-horas"
@@ -285,14 +305,120 @@ export default function Certificados() {
                 id="cert-horas"
                 type="text"
                 value={cargaHoraria}
-                readOnly
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-100 text-slate-600 text-sm cursor-not-allowed"
+                onChange={(e) => setCargaHoraria(e.target.value)}
+                placeholder="ex.: 40h"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400/50 focus:border-sky-300 transition-all text-sm"
               />
               <p className="text-[10px] text-slate-400 mt-1.5">
-                Calculado automaticamente: {cursoAtual?.aulas.length ?? 0} aulas
-                × 5h
+                Valor padrão: {cursoAtual?.aulas.length ?? 0} aulas × 5h.
+                Edite livremente.
               </p>
             </div>
+          </div>
+
+          {/* ── Opções Avançadas (Accordion) ── */}
+          <div className="mt-6 border border-slate-200 rounded-xl overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setOpcoesAbertas((v) => !v)}
+              className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 transition-colors text-left"
+            >
+              <span className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                <Settings size={12} />
+                Opções Avançadas (Editar Textos Padrão)
+              </span>
+              <ChevronDown
+                size={14}
+                className={`text-slate-400 transition-transform duration-200 ${
+                  opcoesAbertas ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+
+            {opcoesAbertas && (
+              <div className="p-4 space-y-4 bg-slate-50/50 border-t border-slate-200">
+                {/* Texto de conclusão */}
+                <div>
+                  <label
+                    htmlFor="cert-conclusao"
+                    className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5"
+                  >
+                    Texto de Conclusão
+                  </label>
+                  <textarea
+                    id="cert-conclusao"
+                    value={textoConclusao}
+                    onChange={(e) => setTextoConclusao(e.target.value)}
+                    rows={3}
+                    className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-white text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400/50 focus:border-sky-300 transition-all text-xs leading-relaxed resize-none"
+                  />
+                </div>
+
+                {/* Assinantes — Grid 2 colunas */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label
+                      htmlFor="cert-diretora"
+                      className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5"
+                    >
+                      Nome — Assinatura 1
+                    </label>
+                    <input
+                      id="cert-diretora"
+                      type="text"
+                      value={nomeDiretora}
+                      onChange={(e) => setNomeDiretora(e.target.value)}
+                      className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400/50 focus:border-sky-300 transition-all text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="cert-cargo-diretora"
+                      className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5"
+                    >
+                      Cargo — Assinatura 1
+                    </label>
+                    <input
+                      id="cert-cargo-diretora"
+                      type="text"
+                      value={cargoDiretora}
+                      onChange={(e) => setCargoDiretora(e.target.value)}
+                      className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400/50 focus:border-sky-300 transition-all text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="cert-instrutor"
+                      className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5"
+                    >
+                      Nome — Assinatura 2
+                    </label>
+                    <input
+                      id="cert-instrutor"
+                      type="text"
+                      value={nomeInstrutor}
+                      onChange={(e) => setNomeInstrutor(e.target.value)}
+                      className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400/50 focus:border-sky-300 transition-all text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="cert-cargo-instrutor"
+                      className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5"
+                    >
+                      Cargo — Assinatura 2
+                    </label>
+                    <input
+                      id="cert-cargo-instrutor"
+                      type="text"
+                      value={cargoInstrutor}
+                      onChange={(e) => setCargoInstrutor(e.target.value)}
+                      className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400/50 focus:border-sky-300 transition-all text-xs"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ── Emit button ── */}
@@ -378,6 +504,11 @@ export default function Certificados() {
                     cargaHoraria={cargaHoraria}
                     dataRealizacao={dataRealizacao}
                     numeroCertificado={numeroCertificado}
+                    textoConclusao={textoConclusao}
+                    nomeDiretora={nomeDiretora}
+                    cargoDiretora={cargoDiretora}
+                    nomeInstrutor={nomeInstrutor}
+                    cargoInstrutor={cargoInstrutor}
                   />
                 </div>
               </div>
@@ -411,6 +542,11 @@ export default function Certificados() {
               cargaHoraria={cargaHoraria}
               dataRealizacao={dataRealizacao}
               numeroCertificado={numeroCertificado}
+              textoConclusao={textoConclusao}
+              nomeDiretora={nomeDiretora}
+              cargoDiretora={cargoDiretora}
+              nomeInstrutor={nomeInstrutor}
+              cargoInstrutor={cargoInstrutor}
             />
           </div>
         </div>

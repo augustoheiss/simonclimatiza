@@ -946,16 +946,32 @@ export default function TreinamentoHVAC() {
                                 </button>
                               )}
                               {aula.apresentacao && (
-                                <a
-                                  href={aula.apresentacao}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg border transition-all duration-200"
-                                  style={{ borderColor: 'rgba(51,65,85,0.5)', color: '#94a3b8' }}
-                                >
-                                  <FileText className="w-3.5 h-3.5" aria-hidden="true" />
-                                  Fontes de Pesquisa
-                                </a>
+                                Array.isArray(aula.apresentacao) ? (
+                                  aula.apresentacao.map((pdfUrl, pdfIdx) => (
+                                    <a
+                                      key={pdfIdx}
+                                      href={pdfUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg border transition-all duration-200"
+                                      style={{ borderColor: 'rgba(51,65,85,0.5)', color: '#94a3b8' }}
+                                    >
+                                      <FileText className="w-3.5 h-3.5" aria-hidden="true" />
+                                      Fonte de Pesquisa {pdfIdx + 1}
+                                    </a>
+                                  ))
+                                ) : (
+                                  <a
+                                    href={aula.apresentacao}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg border transition-all duration-200"
+                                    style={{ borderColor: 'rgba(51,65,85,0.5)', color: '#94a3b8' }}
+                                  >
+                                    <FileText className="w-3.5 h-3.5" aria-hidden="true" />
+                                    Fontes de Pesquisa
+                                  </a>
+                                )
                               )}
                             </div>
 

@@ -471,8 +471,10 @@ export const cursoInstalacaoHVAC = {
               tipo: "podcast",
             },
           ],
-          apresentacao:
+          apresentacao: [
+            "/base_conhecimento_treinamento/landing_page/Modulo-06/Modulo-06-01-Nitrogen Leak Testing_ Zero-Leak Standard.pdf",
             "/base_conhecimento_treinamento/landing_page/Modulo-06/Modulo-06-02-Elite HVAC Vacuum Mastery Masterclass.pdf",
+          ],
         },
       ],
     },

@@ -565,5 +565,15 @@ Seu trabalho é o que conecta o projeto ao funcionamento do sistema. Uma instala
   ]
 };
 
+export const cursoInstalacaoCompleto = {
+  id: "instalacao-hvac-completo",
+  titulo: "Treinamento Completo de Instalação HVAC",
+  descricao: "Metodologia de elite Simon Climatização. Aprenda ciclo de refrigeração profissional, vácuo profundo, brasagem com N2 e comissionamento sem achismos.",
+  imagemDestaque: "/images/industria-contatos-02.jpg",
+  isNovo: true,
+  rotaCustomizada: "/academia/treinamento-hvac",
+  aulas: []
+};
+
 // EXPORTANDO A LISTA DE CURSOS
-export const todosCursos = [cursoVRF, cursoTVRPro];
+export const todosCursos = [cursoVRF, cursoTVRPro, cursoInstalacaoCompleto];

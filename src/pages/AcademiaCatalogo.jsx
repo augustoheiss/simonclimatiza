@@ -42,9 +42,18 @@ export default function AcademiaCatalogo() {
         {todosCursos.map((curso) => (
           <article
             key={curso.id}
-            className="grid grid-cols-1 md:grid-cols-12 bg-white shadow-xl rounded-2xl overflow-hidden max-w-5xl mx-auto w-full mb-12 hover:shadow-2xl transition-shadow duration-300"
+            className="relative grid grid-cols-1 md:grid-cols-12 bg-white shadow-xl rounded-2xl overflow-hidden max-w-5xl mx-auto w-full mb-12 hover:shadow-2xl transition-shadow duration-300"
             aria-label={`Curso: ${curso.titulo}`}
           >
+            {/* NOVO Badge */}
+            {curso.isNovo && (
+              <div className="absolute top-4 left-4 z-10">
+                <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-extrabold uppercase tracking-widest px-3.5 py-1.5 rounded-full shadow-lg shadow-orange-400/30 animate-pulse">
+                  ✨ Novo
+                </span>
+              </div>
+            )}
+
             {/* Image */}
             <div className="md:col-span-5 h-64 md:h-full">
               <img
@@ -62,10 +71,17 @@ export default function AcademiaCatalogo() {
                     <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
                     Disponível agora
                   </span>
-                  <span className="text-xs text-slate-400 font-medium">
-                    <BookOpen size={12} className="inline mr-1" />
-                    {curso.aulas.length} aulas
-                  </span>
+                  {curso.aulas.length > 0 && (
+                    <span className="text-xs text-slate-400 font-medium">
+                      <BookOpen size={12} className="inline mr-1" />
+                      {curso.aulas.length} aulas
+                    </span>
+                  )}
+                  {curso.rotaCustomizada && (
+                    <span className="inline-flex items-center gap-1 bg-sky-50 text-sky-600 text-xs font-bold px-2.5 py-1 rounded-full border border-sky-200">
+                      Landing Page
+                    </span>
+                  )}
                 </div>
 
                 <h2 className="text-2xl font-extrabold text-slate-900 leading-snug mb-4">
@@ -76,38 +92,58 @@ export default function AcademiaCatalogo() {
                   {curso.descricao}
                 </p>
 
-                {/* Lesson list preview */}
-                <ul className="mt-6 space-y-1.5" aria-label={`Aulas do curso ${curso.titulo}`}>
-                  {curso.aulas.slice(0, 4).map((aula) => (
-                    <li
-                      key={aula.id}
-                      className="flex items-start gap-2 text-sm text-slate-600"
-                    >
-                      <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-sky-100 text-sky-600 text-xs font-bold flex items-center justify-center">
-                        {aula.id}
-                      </span>
-                      <span className="line-clamp-1">
-                        {aula.titulo.replace(/^Aula \d+[\s\-:]+/i, '')}
-                      </span>
-                    </li>
-                  ))}
-                  {curso.aulas.length > 4 && (
-                    <li className="text-xs text-slate-400 pl-7">
-                      + {curso.aulas.length - 4} aulas adicionais
-                    </li>
-                  )}
-                </ul>
+                {/* Lesson list preview — only for courses with aulas */}
+                {curso.aulas.length > 0 && (
+                  <ul className="mt-6 space-y-1.5" aria-label={`Aulas do curso ${curso.titulo}`}>
+                    {curso.aulas.slice(0, 4).map((aula) => (
+                      <li
+                        key={aula.id}
+                        className="flex items-start gap-2 text-sm text-slate-600"
+                      >
+                        <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-sky-100 text-sky-600 text-xs font-bold flex items-center justify-center">
+                          {aula.id}
+                        </span>
+                        <span className="line-clamp-1">
+                          {aula.titulo.replace(/^Aula \d+[\s\-:]+/i, '')}
+                        </span>
+                      </li>
+                    ))}
+                    {curso.aulas.length > 4 && (
+                      <li className="text-xs text-slate-400 pl-7">
+                        + {curso.aulas.length - 4} aulas adicionais
+                      </li>
+                    )}
+                  </ul>
+                )}
+
+                {/* CTA for courses with rotaCustomizada (e.g., HVAC landing page) */}
+                {!curso.rotaCustomizada && curso.aulas.length === 0 && (
+                  <p className="mt-6 text-sm text-slate-400 italic">
+                    Conteúdo exclusivo disponível na página do treinamento.
+                  </p>
+                )}
               </div>
 
               <div className="mt-8">
-                <Link
-                  to={`/academia/${curso.id}`}
-                  className="inline-flex items-center gap-3 bg-sky-500 hover:bg-sky-600 text-white font-bold px-7 py-4 rounded-xl transition-all duration-200 shadow-lg shadow-sky-500/25 hover:shadow-sky-600/30 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2"
-                  aria-label={`Acessar o treinamento ${curso.titulo}`}
-                >
-                  <PlayCircle size={20} />
-                  Acessar Treinamento
-                </Link>
+                {curso.rotaCustomizada ? (
+                  <Link
+                    to={curso.rotaCustomizada}
+                    className="inline-flex items-center gap-3 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-bold px-7 py-4 rounded-xl transition-all duration-200 shadow-lg shadow-sky-500/25 hover:shadow-sky-600/30 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2"
+                    aria-label={`Ver página do treinamento ${curso.titulo}`}
+                  >
+                    <PlayCircle size={20} />
+                    Conhecer o Treinamento
+                  </Link>
+                ) : (
+                  <Link
+                    to={`/academia/${curso.id}`}
+                    className="inline-flex items-center gap-3 bg-sky-500 hover:bg-sky-600 text-white font-bold px-7 py-4 rounded-xl transition-all duration-200 shadow-lg shadow-sky-500/25 hover:shadow-sky-600/30 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2"
+                    aria-label={`Acessar o treinamento ${curso.titulo}`}
+                  >
+                    <PlayCircle size={20} />
+                    Acessar Treinamento
+                  </Link>
+                )}
               </div>
             </div>
           </article>

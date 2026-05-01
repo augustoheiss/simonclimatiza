@@ -246,13 +246,15 @@ export default function TreinamentoHVAC() {
                   Ver Grade Completa do Treinamento
                   <ArrowRight className="w-5 h-5" aria-hidden="true" />
                 </button>
-                <Link
-                  to="/contato"
+                <a
+                  href="https://wa.me/5511942163150?text=Olá! Tenho interesse no Treinamento de Instalação HVAC."
+                  target="_blank"
+                  rel="noopener noreferrer"
                   id="hero-cta-contato"
                   className="inline-flex items-center justify-center gap-2 border-2 border-white/40 hover:border-sky-400 text-white hover:text-sky-300 font-semibold px-8 py-4 rounded-xl transition-all duration-200 text-base hover:bg-sky-500/10"
                 >
                   Falar com um Especialista
-                </Link>
+                </a>
               </div>
             </motion.div>
 
@@ -1214,7 +1216,7 @@ export default function TreinamentoHVAC() {
           Ainda tem dúvidas? Fale diretamente com nossa equipe técnica.
         </p>
         <a
-          href="https://wa.me/5511999999999?text=Olá! Tenho interesse no Treinamento de Instalação HVAC."
+          href="https://wa.me/5511942163150?text=Olá! Tenho interesse no Treinamento de Instalação HVAC."
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-lg border transition-all duration-200 hover:bg-emerald-500/10"

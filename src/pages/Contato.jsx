@@ -310,7 +310,7 @@ Aguardo o retorno. Obrigado!`;
                     Área de Atuação
                   </p>
                   <p className="text-sm text-slate-700">
-                    Grande São Paulo e interior do estado
+                    São Paulo, Grande São Paulo e interior do estado
                   </p>
                 </div>
               </div>

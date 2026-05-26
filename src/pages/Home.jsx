@@ -271,7 +271,7 @@ export default function Home() {
                   id="hero-primary-cta"
                   className="inline-flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white font-bold px-8 py-4 rounded-xl transition-all duration-200 text-base shadow-lg shadow-sky-500/30 hover:shadow-xl hover:shadow-sky-600/35 hover:-translate-y-0.5"
                 >
-                  Agendar Diagnóstico Técnico Gratuito
+                  Agendar Diagnóstico Técnico
                   <ArrowRight className="w-5 h-5" aria-hidden="true" />
                 </Link>
                 <button
@@ -308,7 +308,7 @@ export default function Home() {
                 <ul className="space-y-4 mb-8" role="list">
                   {[
                     { icon: <Zap className="w-4 h-4 text-sky-500" aria-hidden="true" />, text: 'Domínio absoluto em sistemas VRF e VRV, Chiller e HVAC, Split e Central' },
-                    { icon: <TrendingDown className="w-4 h-4 text-sky-500" aria-hidden="true" />, text: 'Redução de até 40% na conta de energia elétrica' },
+                    { icon: <TrendingDown className="w-4 h-4 text-sky-500" aria-hidden="true" />, text: 'Manter a boa manutenção, o que pode favorecer em uma economia de energia elétrica de até 40%' },
                     { icon: <Lock className="w-4 h-4 text-sky-500" aria-hidden="true" />, text: 'Adequação jurídica completa — PMOC certificado' },
                     { icon: <Wind className="w-4 h-4 text-sky-500" aria-hidden="true" />, text: 'Pureza laboratorial do ar com biocidas ANVISA' },
                     { icon: <GraduationCap className="w-4 h-4 text-sky-500" aria-hidden="true" />, text: 'Engenheiros que formam a elite técnica do Brasil' },
@@ -610,7 +610,7 @@ export default function Home() {
                 step: '02',
                 icon: <Wrench className="w-6 h-6" aria-hidden="true" />,
                 title: 'Intervenção Cirúrgica',
-                body: 'Retrofit com nivelamento a laser, alto vácuo em mícrons e infraestrutura normatizada (VRF/Chillers). Zero gambiarras, 100% engenharia.',
+                body: 'Alto vácuo em mícrons e infraestrutura normatizada (VRF/Chillers). Zero gambiarras, 100% engenharia.',
                 accent: 'from-blue-500 to-blue-600',
               },
               {

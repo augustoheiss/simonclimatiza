@@ -6,6 +6,7 @@ import Contato from './pages/Contato';
 import AcademiaCatalogo from './pages/AcademiaCatalogo';
 import AcademiaPlayer from './pages/AcademiaPlayer';
 import TreinamentoHVAC from './pages/TreinamentoHVAC';
+import TreinamentoTVRProCO from './pages/TreinamentoTVRProCO';
 import Certificados from './pages/Certificados';
 import Validar from './pages/Validar';
 import Termos from './pages/Termos';
@@ -73,6 +74,7 @@ export default function App() {
             <Route path="/contato" element={<Contato />} />
             <Route path="/academia" element={<ProtecaoAcademia><AcademiaCatalogo /></ProtecaoAcademia>} />
             <Route path="/academia/treinamento-hvac" element={<TreinamentoHVAC />} />
+            <Route path="/academia/treinamento-tvr-pro-co" element={<ProtecaoAcademia><TreinamentoTVRProCO /></ProtecaoAcademia>} />
             <Route path="/academia/:id" element={<ProtecaoAcademia><AcademiaPlayer /></ProtecaoAcademia>} />
             <Route path="/certificados" element={<ProtecaoAcademia><Certificados /></ProtecaoAcademia>} />
             <Route path="/validar" element={<Validar />} />

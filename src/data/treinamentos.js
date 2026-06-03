@@ -570,10 +570,20 @@ export const cursoInstalacaoCompleto = {
   titulo: "Treinamento Completo de Instalação HVAC",
   descricao: "Metodologia de elite Simon Climatização. Aprenda ciclo de refrigeração profissional, vácuo profundo, brasagem com N2 e comissionamento sem achismos.",
   imagemDestaque: "/images/industria-contatos-02.jpg",
-  isNovo: true,
+  isNovo: false,
   rotaCustomizada: "/academia/treinamento-hvac",
   aulas: []
 };
 
+export const cursoTVRProCO380VCatalogo = {
+  id: "tvr-pro-co-380v",
+  titulo: "TVR Pro CO 380V — Diagnóstico e Service Manual Avançado",
+  descricao: "Treinamento técnico avançado TRANE TVR Pro CO 380V. Domine diagnóstico de 75+ códigos de erro, troubleshooting de IPM/retificador, comunicação RS-485, tubulação VRF e contaminação sistêmica. 6 partes, 16 tópicos — do básico ao avançado.",
+  imagemDestaque: "/images/home-servicos.jpg",
+  isNovo: true,
+  rotaCustomizada: "/academia/treinamento-tvr-pro-co",
+  aulas: []
+};
+
 // EXPORTANDO A LISTA DE CURSOS
-export const todosCursos = [cursoVRF, cursoTVRPro, cursoInstalacaoCompleto];
+export const todosCursos = [cursoTVRProCO380VCatalogo, cursoVRF, cursoTVRPro, cursoInstalacaoCompleto];

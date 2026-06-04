@@ -3,7 +3,7 @@ const path = require('path');
 const AdmZip = require('adm-zip');
 
 // Caminho absoluto da sua pasta principal
-const BASE_DIR = 'C:\\Users\\Usuario\\Desktop\\AHeiss_GoogleDrive\\02-Programacao\\projetos-IA\\simonclimatiza\\public\\images\\academia\\hvac-instalacao';
+const BASE_DIR = 'C:\\Users\\Usuario\\Desktop\\AHeiss_GoogleDrive\\02-Programacao\\projetos-IA\\simonclimatiza\\public\\images\\academia\\trane-tvrpro-co';
 
 // Função para varrer pastas e subpastas (Recursão)
 function walkDir(dir, callback) {

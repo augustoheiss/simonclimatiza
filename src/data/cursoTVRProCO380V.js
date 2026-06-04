@@ -34,8 +34,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "45 min",
           nivel: "basico",
           tags: ["capacidades", "combinações", "módulos", "chassi", "TODK"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/O4q78oPw2u8",
+          link_podcast: "https://youtu.be/PAE9Af9sshk",
+          total_slides: 12,
 
           // ─── CONTEÚDO COMPLETO DA AULA ─────────────────────────
           conteudo_html: `
@@ -343,8 +344,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "35 min",
           nivel: "basico",
           tags: ["nomenclatura", "codificação", "identificação", "campo"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/s6jttzsnIbk",
+          link_podcast: "https://youtu.be/PMnDNLcQ7LI",
+          total_slides: 15,
 
           // ─── CONTEÚDO COMPLETO DA AULA 1.2 ─────────────────────────
           conteudo_html: `
@@ -638,8 +640,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "40 min",
           nivel: "intermediario",
           tags: ["layout", "componentes", "chassi", "inspeção"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/p04SOraIrEI",
+          link_podcast: "https://youtu.be/Cvr9uA0Koyg",
+          total_slides: 15,
 
           // ─── CONTEÚDO COMPLETO DA AULA 2.1 ─────────────────────────
           conteudo_html: `
@@ -879,8 +882,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "45 min",
           nivel: "intermediario",
           tags: ["tubulação", "diagramas", "válvulas", "solenoides", "EXV"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/kTOVqphFnbk",
+          link_podcast: "https://youtu.be/9Di9hj5Boqg",
+          total_slides: 13,
 
           // ─── CONTEÚDO COMPLETO DA AULA 2.2 ─────────────────────────
           conteudo_html: `
@@ -1092,8 +1096,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "50 min",
           nivel: "intermediario",
           tags: ["refrigerante", "fluxo", "cooling", "heating", "defrost", "válvula-4-vias"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/AOpAuzBKw4M",
+          link_podcast: "https://youtu.be/d0tBgkY3KK4",
+          total_slides: 15,
 
           // ─── CONTEÚDO COMPLETO DA AULA 2.3 ─────────────────────────
           conteudo_html: `
@@ -1305,8 +1310,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "45 min",
           nivel: "intermediario",
           tags: ["partida", "startup", "inverter", "frequência", "ventilador"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/dD9TvNurd_4",
+          link_podcast: "https://youtu.be/u00ISF128Ao",
+          total_slides: 11,
 
           // ─── CONTEÚDO COMPLETO DA AULA 3.1 ─────────────────────────
           conteudo_html: `
@@ -1482,8 +1488,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "40 min",
           nivel: "intermediario",
           tags: ["operação", "modulação", "EXV", "subcooling", "superheat"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/qpdBBtnlONM",
+          link_podcast: "https://youtu.be/AQUb_mInaoc",
+          total_slides: 11,
 
           // ─── CONTEÚDO COMPLETO DA AULA 3.2 ─────────────────────────
           conteudo_html: `
@@ -1669,8 +1676,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "50 min",
           nivel: "avancado",
           tags: ["proteção", "alarmes", "shutdown", "P1", "P2", "P4", "corrente"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/jLcy-1i4YWE",
+          link_podcast: "https://youtu.be/ld6no3G9NSk",
+          total_slides: 11,
 
           // ─── CONTEÚDO COMPLETO DA AULA 3.3 ─────────────────────────
           conteudo_html: `
@@ -1850,8 +1858,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "45 min",
           nivel: "avancado",
           tags: ["oil-return", "defrost", "emergência", "teste-forçado", "reequilíbrio"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/xEdUEKc-WE8",
+          link_podcast: "https://youtu.be/XIooP-qO6Qo",
+          total_slides: 10,
 
           // ─── CONTEÚDO COMPLETO DA AULA 3.4 ─────────────────────────
           conteudo_html: `
@@ -2039,8 +2048,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "50 min",
           nivel: "avancado",
           tags: ["field-settings", "DIP-switch", "endereçamento", "comissionamento"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/fculc82Yg6Y",
+          link_podcast: "https://youtu.be/V4VSTOlxdLw",
+          total_slides: 11,
 
           // ─── CONTEÚDO COMPLETO DA AULA 4.1 ─────────────────────────
           conteudo_html: `
@@ -2262,8 +2272,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "45 min",
           nivel: "avancado",
           tags: ["main-pcb", "diagnóstico", "display", "monitoramento", "sensores"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/0bro4c-41pE",
+          link_podcast: "https://youtu.be/BMXix2GowqQ",
+          total_slides: 12,
 
           // ─── CONTEÚDO COMPLETO DA AULA 5.1 ─────────────────────────
           conteudo_html: `
@@ -2493,8 +2504,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "50 min",
           nivel: "avancado",
           tags: ["inverter", "IPM", "retificador", "DC-bus", "fan-module", "fiação", "RS-485"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/8SritUhAGCs",
+          link_podcast: "https://youtu.be/vWw8406bXmQ",
+          total_slides: 15,
 
           // ─── CONTEÚDO COMPLETO DA AULA 5.2 ─────────────────────────
           conteudo_html: `
@@ -2689,8 +2701,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "60 min",
           nivel: "avancado",
           tags: ["códigos-de-erro", "troubleshooting", "fluxogramas", "E0", "E2", "P1", "P4"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/pCZ_UHW8s5A",
+          link_podcast: "https://youtu.be/1DkE5fja5WI",
+          total_slides: 15,
 
           // ─── CONTEÚDO COMPLETO DA AULA 6.1 ─────────────────────────
           conteudo_html: `
@@ -2912,8 +2925,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "55 min",
           nivel: "avancado",
           tags: ["sensores", "termistor", "NTC", "transdutor", "inversor", "modo-diodo"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/ithlR2_9cHY",
+          link_podcast: "https://youtu.be/_zjiwNJ4LOw",
+          total_slides: 10,
 
           // ─── CONTEÚDO COMPLETO DA AULA 6.2 ─────────────────────────
           conteudo_html: `
@@ -3126,8 +3140,9 @@ export const cursoTVRProCO380V = {
           tempo_estimado: "65 min",
           nivel: "avancado",
           tags: ["pressão", "temperatura", "fan", "subcódigos", "P1", "P2", "P4", "xH4", "xL"],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/yH5Z2H4xrrk",
+          link_podcast: "https://youtu.be/tUbYfmMgBcI",
+          total_slides: 11,
 
           // ─── CONTEÚDO COMPLETO DA AULA 6.3 ─────────────────────────
           conteudo_html: `
@@ -3430,8 +3445,9 @@ export const cursoTVRProCO380V = {
             "copper-plating",
             "evacuação",
           ],
-          videos: [],
-          slides: [],
+          link_video: "https://youtu.be/wdi9aPW2k1g",
+          link_podcast: "https://youtu.be/_ZhJsKLJc7g",
+          total_slides: 15,
 
           // ─── CONTEÚDO COMPLETO DA AULA 6.4 ─────────────────────────
           conteudo_html: `

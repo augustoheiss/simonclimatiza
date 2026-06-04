@@ -155,8 +155,46 @@ function SafeHTML({ html, className = '' }) {
   );
 }
 
+// ─── YouTube URL → Embed Helper ──────────────────────────────────────────────
+function getYouTubeEmbedUrl(url) {
+  if (!url) return null;
+  let videoId = null;
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname === 'youtu.be') {
+      videoId = parsed.pathname.slice(1);
+    } else if (parsed.hostname.includes('youtube.com')) {
+      videoId = parsed.searchParams.get('v');
+    }
+  } catch {
+    // Try regex fallback for edge-case formats
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=))([a-zA-Z0-9_-]{11})/);
+    if (match) videoId = match[1];
+  }
+  if (!videoId) return null;
+  return `https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&iv_load_policy=3`;
+}
+
+// ─── Slide Path Generator ────────────────────────────────────────────────────
+function generateSlidePaths(topicId, totalSlides) {
+  // Actual filesystem: /images/academia/trane-tvrpro-co/parte-XX/topicoXX-YY/slideNN.png
+  const parteNum = topicId.split('-')[0]; // "01" from "01-02"
+  const basePath = `/images/academia/trane-tvrpro-co/parte-${parteNum}/topico${topicId}`;
+  const slides = [];
+  for (let i = 1; i <= totalSlides; i++) {
+    slides.push(`${basePath}/slide${String(i).padStart(2, '0')}.png`);
+  }
+  return slides;
+}
+
+// ─── Infographic Path Helper ─────────────────────────────────────────────────
+function getInfographicPath(topicId) {
+  const parteNum = topicId.split('-')[0];
+  return `/images/academia/trane-tvrpro-co/parte-${parteNum}/topico${topicId}/infografico.jpg`;
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
-//  LESSON READER VIEW
+//  LESSON READER VIEW (6-TAB MULTIMEDIA WORKSPACE)
 // ═══════════════════════════════════════════════════════════════════════════════
 function LessonReaderView({ topico, onBack }) {
   const partInfo = findPartForTopic(topico.id);
@@ -165,19 +203,37 @@ function LessonReaderView({ topico, onBack }) {
   const hasContent = topico.conteudo_html && topico.conteudo_html.trim() !== '';
   const hasTables = topico.tabelas_html && topico.tabelas_html.trim() !== '';
   const hasInfobox = topico.infobox_campo && topico.infobox_campo.trim() !== '';
+  const hasVideo = !!getYouTubeEmbedUrl(topico.link_video);
+  const hasPodcast = !!getYouTubeEmbedUrl(topico.link_podcast);
+  const hasSlides = topico.total_slides && topico.total_slides > 0;
 
   // Active tab for content sections
   const [activeTab, setActiveTab] = useState('conteudo');
+  // Slide carousel state
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const slidePaths = hasSlides ? generateSlidePaths(topico.id, topico.total_slides) : [];
+  // Append infographic as the last "slide"
+  const infograficoPath = getInfographicPath(topico.id);
+  const allSlideMedia = hasSlides ? [...slidePaths, infograficoPath] : [];
 
   // Scroll to top on mount
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
+  // Reset slide index when switching topics
+  useEffect(() => {
+    setCurrentSlide(0);
+  }, [topico.id]);
+
   const tabs = [
     { id: 'conteudo', label: 'Conteúdo Técnico', icon: <BookOpen className="w-4 h-4" />, show: hasContent },
     { id: 'tabelas', label: 'Tabelas & Parâmetros', icon: <Table2 className="w-4 h-4" />, show: hasTables },
     { id: 'infobox', label: 'Infobox de Campo', icon: <Info className="w-4 h-4" />, show: hasInfobox },
+    { id: 'video', label: 'Vídeo Aula', icon: <Zap className="w-4 h-4" />, show: hasVideo },
+    { id: 'podcast', label: 'Podcast Técnico', icon: <Activity className="w-4 h-4" />, show: hasPodcast },
+    { id: 'slides', label: 'Slides & Infográfico', icon: <Layers className="w-4 h-4" />, show: hasSlides },
   ].filter(t => t.show);
 
   return (
@@ -284,11 +340,11 @@ function LessonReaderView({ topico, onBack }) {
       </section>
 
       {/* ── Content Area ───────────────────────────────────────────────── */}
-      {(hasContent || hasTables || hasInfobox) ? (
+      {(hasContent || hasTables || hasInfobox || hasVideo || hasPodcast || hasSlides) ? (
         <section className="py-12 md:py-16 px-6 md:px-12 bg-white">
           <div className="max-w-4xl mx-auto">
 
-            {/* Tab Switcher */}
+            {/* Tab Switcher — 6 Tabs */}
             {tabs.length > 1 && (
               <div className="flex flex-wrap gap-2 mb-10 pb-4 border-b border-slate-200">
                 {tabs.map((tab) => (
@@ -302,7 +358,7 @@ function LessonReaderView({ topico, onBack }) {
                     }`}
                   >
                     {tab.icon}
-                    {tab.label}
+                    <span className="hidden sm:inline">{tab.label}</span>
                   </button>
                 ))}
               </div>
@@ -350,6 +406,183 @@ function LessonReaderView({ topico, onBack }) {
                   html={topico.infobox_campo}
                   className="lesson-reader-infoboxes"
                 />
+              </motion.div>
+            )}
+
+            {/* TAB: Vídeo Aula — Embedded iframe (NO redirect) */}
+            {activeTab === 'video' && hasVideo && (
+              <motion.div
+                key="tab-video"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="mb-6">
+                  <h3 className="text-lg font-bold text-slate-900 mb-1 flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-red-500" />
+                    Vídeo Aula — Tópico {topico.id}
+                  </h3>
+                  <p className="text-sm text-slate-500">Assista diretamente sem sair da plataforma.</p>
+                </div>
+                <div
+                  className="relative w-full rounded-xl shadow-lg overflow-hidden border border-slate-200"
+                  style={{ aspectRatio: '16/9' }}
+                >
+                  <iframe
+                    src={getYouTubeEmbedUrl(topico.link_video)}
+                    title={`Vídeo Aula — ${topico.titulo}`}
+                    className="absolute inset-0 w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    loading="lazy"
+                  />
+                </div>
+              </motion.div>
+            )}
+
+            {/* TAB: Podcast Técnico — Embedded iframe (audio-optimized) */}
+            {activeTab === 'podcast' && hasPodcast && (
+              <motion.div
+                key="tab-podcast"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="mb-6">
+                  <h3 className="text-lg font-bold text-slate-900 mb-1 flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-red-500" />
+                    Podcast Técnico — Tópico {topico.id}
+                  </h3>
+                  <p className="text-sm text-slate-500">Escute o conteúdo em formato de áudio enquanto trabalha.</p>
+                </div>
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-lg">
+                  <div
+                    className="relative w-full rounded-xl overflow-hidden border border-slate-300"
+                    style={{ aspectRatio: '16/9' }}
+                  >
+                    <iframe
+                      src={getYouTubeEmbedUrl(topico.link_podcast)}
+                      title={`Podcast Técnico — ${topico.titulo}`}
+                      className="absolute inset-0 w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="mt-4 flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      Podcast · Simon Climatização · Tópico {topico.id}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* TAB: Slides & Infográfico — Image Carousel */}
+            {activeTab === 'slides' && hasSlides && (
+              <motion.div
+                key="tab-slides"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="mb-6">
+                  <h3 className="text-lg font-bold text-slate-900 mb-1 flex items-center gap-2">
+                    <Layers className="w-5 h-5 text-red-500" />
+                    Slides & Infográfico — Tópico {topico.id}
+                  </h3>
+                  <p className="text-sm text-slate-500">
+                    {currentSlide < slidePaths.length
+                      ? `Slide ${currentSlide + 1} de ${slidePaths.length}`
+                      : 'Infográfico Completo'}
+                    {' · '}{allSlideMedia.length} imagens no total
+                  </p>
+                </div>
+
+                {/* Image Display */}
+                <div className="relative bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-lg">
+                  <div className="relative w-full" style={{ minHeight: '400px' }}>
+                    <AnimatePresence mode="wait">
+                      <motion.img
+                        key={allSlideMedia[currentSlide]}
+                        src={allSlideMedia[currentSlide]}
+                        alt={
+                          currentSlide < slidePaths.length
+                            ? `Slide ${currentSlide + 1} — Tópico ${topico.id}`
+                            : `Infográfico — Tópico ${topico.id}`
+                        }
+                        className="w-full h-auto object-contain"
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.98 }}
+                        transition={{ duration: 0.25 }}
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Navigation overlay buttons */}
+                  <button
+                    onClick={() => setCurrentSlide((prev) => Math.max(0, prev - 1))}
+                    disabled={currentSlide === 0}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white border border-slate-200 rounded-full flex items-center justify-center shadow-lg disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
+                    aria-label="Slide anterior"
+                  >
+                    <ArrowLeft className="w-5 h-5 text-slate-700" />
+                  </button>
+                  <button
+                    onClick={() => setCurrentSlide((prev) => Math.min(allSlideMedia.length - 1, prev + 1))}
+                    disabled={currentSlide === allSlideMedia.length - 1}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white border border-slate-200 rounded-full flex items-center justify-center shadow-lg disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
+                    aria-label="Próximo slide"
+                  >
+                    <ArrowRight className="w-5 h-5 text-slate-700" />
+                  </button>
+                </div>
+
+                {/* Slide progress bar */}
+                <div className="mt-4 flex items-center gap-2">
+                  <div className="flex-1 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-red-500 rounded-full transition-all duration-300"
+                      style={{ width: `${((currentSlide + 1) / allSlideMedia.length) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-xs font-bold text-slate-500 tabular-nums flex-shrink-0">
+                    {currentSlide + 1} / {allSlideMedia.length}
+                  </span>
+                </div>
+
+                {/* Thumbnail strip */}
+                <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
+                  {allSlideMedia.map((src, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentSlide(idx)}
+                      className={`flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
+                        idx === currentSlide
+                          ? 'border-red-500 shadow-md shadow-red-500/20'
+                          : 'border-slate-200 hover:border-slate-400 opacity-60 hover:opacity-100'
+                      }`}
+                      aria-label={idx < slidePaths.length ? `Slide ${idx + 1}` : 'Infográfico'}
+                    >
+                      <img
+                        src={src}
+                        alt=""
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.target.parentElement.style.display = 'none';
+                        }}
+                      />
+                    </button>
+                  ))}
+                </div>
               </motion.div>
             )}
 

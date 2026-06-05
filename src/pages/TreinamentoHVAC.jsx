@@ -268,11 +268,11 @@ function LessonReaderView({ aula, onBack }) {
         }
         .prose-custom code {
           font-family: monospace;
-          background-color: #f1f5f9;
+          background-color: rgba(220, 38, 38, 0.06);
           padding: 0.2rem 0.4rem;
           border-radius: 0.25rem;
           font-size: 0.875rem;
-          color: #0f172a;
+          color: #991b1b;
         }
         .prose-custom pre {
           background-color: #f8fafc;
@@ -283,12 +283,12 @@ function LessonReaderView({ aula, onBack }) {
           margin-bottom: 1.25rem;
         }
         .prose-custom a {
-          color: #0284c7;
+          color: #dc2626;
           text-decoration: underline;
           font-weight: 500;
         }
         .prose-custom a:hover {
-          color: #0369a1;
+          color: #b91c1c;
         }
         .prose-custom table {
           width: 100%;
@@ -300,11 +300,11 @@ function LessonReaderView({ aula, onBack }) {
           box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
         }
         .prose-custom th {
-          background-color: #f1f5f9;
+          background-color: rgba(220, 38, 38, 0.07);
           font-weight: 700;
           text-align: left;
           padding: 0.75rem 1rem;
-          border-bottom: 2px solid #cbd5e1;
+          border-bottom: 2px solid #fca5a5;
           color: #0f172a;
           font-size: 0.875rem;
         }
@@ -315,7 +315,7 @@ function LessonReaderView({ aula, onBack }) {
           font-size: 0.875rem;
         }
         .prose-custom tr:hover {
-          background-color: #f8fafc;
+          background-color: rgba(220, 38, 38, 0.04);
         }
         .prose-custom .infobox-warning {
           background-color: #fef2f2 !important;
@@ -427,7 +427,7 @@ function LessonReaderView({ aula, onBack }) {
           >
             {/* ─── CONTEÚDO TÉCNICO ─── */}
             {activeTab === 'conteudo' && aula.conteudo_html && (
-              <div className="rounded-2xl border bg-white border-slate-200 p-8 md:p-12 shadow-sm">
+              <div className="rounded-2xl border p-8 md:p-12 shadow-sm" style={{ backgroundColor: '#FFF8F6', borderColor: '#FECACA', boxShadow: '0 1px 3px 0 rgba(220, 38, 38, 0.06), 0 0 0 1px rgba(220, 38, 38, 0.03)' }}>
                 <SafeHTML
                   html={aula.conteudo_html}
                   className="prose-custom max-w-none text-slate-800"
@@ -437,7 +437,7 @@ function LessonReaderView({ aula, onBack }) {
 
             {/* ─── TABELAS & PARÂMETROS ─── */}
             {activeTab === 'tabelas' && aula.tabelas_html && (
-              <div className="rounded-2xl border bg-white border-slate-200 p-8 md:p-12 overflow-x-auto shadow-sm">
+              <div className="rounded-2xl border p-8 md:p-12 overflow-x-auto shadow-sm" style={{ backgroundColor: '#FFF8F6', borderColor: '#FECACA', boxShadow: '0 1px 3px 0 rgba(220, 38, 38, 0.06), 0 0 0 1px rgba(220, 38, 38, 0.03)' }}>
                 <SafeHTML
                   html={aula.tabelas_html}
                   className="prose-custom max-w-none text-slate-800"
@@ -447,7 +447,7 @@ function LessonReaderView({ aula, onBack }) {
 
             {/* ─── INFO DE CAMPO ─── */}
             {activeTab === 'infobox' && aula.infobox_campo && (
-              <div className="rounded-2xl border bg-white border-slate-200 p-8 md:p-12 shadow-sm">
+              <div className="rounded-2xl border p-8 md:p-12 shadow-sm" style={{ backgroundColor: '#FFF8F6', borderColor: '#FECACA', boxShadow: '0 1px 3px 0 rgba(220, 38, 38, 0.06), 0 0 0 1px rgba(220, 38, 38, 0.03)' }}>
                 <SafeHTML
                   html={aula.infobox_campo}
                   className="prose-custom max-w-none text-slate-800"
@@ -606,7 +606,7 @@ function LessonReaderView({ aula, onBack }) {
               (activeTab === 'tabelas' && !aula.tabelas_html) ||
               (activeTab === 'infobox' && !aula.infobox_campo) ||
               (activeTab === 'fontes' && fontes.length === 0)) && (
-              <div className="rounded-2xl border p-12 text-center bg-white border-slate-200 shadow-sm">
+              <div className="rounded-2xl border p-12 text-center shadow-sm" style={{ backgroundColor: '#FFF8F6', borderColor: '#FECACA', boxShadow: '0 1px 3px 0 rgba(220, 38, 38, 0.06), 0 0 0 1px rgba(220, 38, 38, 0.03)' }}>
                 <div className="w-16 h-16 mx-auto mb-4 bg-slate-100 rounded-2xl flex items-center justify-center">
                   <BookOpen className="w-8 h-8 text-slate-400" />
                 </div>

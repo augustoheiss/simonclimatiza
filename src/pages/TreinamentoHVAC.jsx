@@ -1,9 +1,11 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { cursoInstalacaoHVAC } from '../data/cursoInstalacaoHVAC';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import DOMPurify from 'dompurify';
 import {
   ArrowRight,
+  ArrowLeft,
   CheckCircle2,
   ShieldCheck,
   Thermometer,
@@ -31,6 +33,9 @@ import {
   Video,
   Image,
   X,
+  Table2,
+  Info,
+  Layers,
 } from 'lucide-react';
 
 // ─── Animation Variants (reusing project pattern) ───────────────────────────
@@ -67,16 +72,21 @@ const staggerItem = {
   },
 };
 
-// ─── MAIN COMPONENT ─────────────────────────────────────────────────────────
+// Page-level transition variants
+const pageVariants = {
+  initial: { opacity: 0, y: 30 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+  exit: { opacity: 0, y: -20, transition: { duration: 0.3, ease: 'easeIn' } },
+};
+
 // ─── Helper: YouTube URL → embed ID ─────────────────────────────────────────
 function getYouTubeEmbedUrl(url) {
   if (!url) return null;
   const match = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([\w-]+)/);
-  return match ? `https://www.youtube.com/embed/${match[1]}?rel=0` : null;
+  return match ? `https://www.youtube.com/embed/${match[1]}?rel=0&modestbranding=1` : null;
 }
 
 // ─── Slide count map per lesson (aula.id → { folder, count, ext }) ──────────
-// Pattern: /images/academia/hvac-instalacao/moduloXX/moduloXX-YY/slideNN.png
 const SLIDE_MAP = {
   '01-01': { folder: 'modulo01/modulo01-01', count: 15, ext: 'png' },
   '01-02': { folder: 'modulo01/modulo01-02', count: 15, ext: 'png' },
@@ -98,12 +108,7 @@ const SLIDE_MAP = {
   '06-01': { folder: 'modulo06/modulo06-01', count: 15, ext: 'png' },
   '07-01': { folder: 'modulo07/modulo07-01', count: 12, ext: 'png' },
   '07-02': { folder: 'modulo07/modulo07-02', count: 15, ext: 'png' },
-};
-
-const APRESENTACAO_SLIDES = {
-  folder: 'aula01-apresentacao',
-  count: 15,
-  ext: 'jpg',
+  'apresentacao': { folder: 'aula01-apresentacao', count: 15, ext: 'jpg' },
 };
 
 function getSlidePaths(aulaId) {
@@ -118,25 +123,513 @@ function getSlidePaths(aulaId) {
   return slides;
 }
 
-function getApresentacaoSlidePaths() {
-  const { folder, count, ext } = APRESENTACAO_SLIDES;
-  const base = `/images/academia/hvac-instalacao/${folder}`;
-  const slides = [];
-  for (let i = 1; i <= count; i++) {
-    slides.push(`${base}/slide${String(i).padStart(2, '0')}.${ext}`);
-  }
-  slides.push(`${base}/infografico.jpg`);
-  return slides;
+// ─── Safe HTML renderer ─────────────────────────────────────────────────────
+function SafeHTML({ html, className = '' }) {
+  if (!html) return null;
+  return (
+    <div
+      className={className}
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }}
+    />
+  );
 }
 
+// ─── 7-Tab Definitions ──────────────────────────────────────────────────────
+const LESSON_TABS = [
+  { id: 'conteudo', label: 'Conteúdo Técnico', icon: BookOpen },
+  { id: 'tabelas', label: 'Tabelas & Parâmetros', icon: Table2 },
+  { id: 'infobox', label: 'Info de Campo', icon: Info },
+  { id: 'video', label: 'Videoaula', icon: Play },
+  { id: 'podcast', label: 'Podcast', icon: Headphones },
+  { id: 'slides', label: 'Slides & Infográfico', icon: Layers },
+  { id: 'fontes', label: 'Fontes & Pesquisa', icon: FileText },
+];
+
+// ─── Module Colors ──────────────────────────────────────────────────────────
+const moduleColors = [
+  { accent: '#0ea5e9', border: 'rgba(14,165,233,0.4)', bg: 'rgba(14,165,233,0.08)' },
+  { accent: '#3b82f6', border: 'rgba(59,130,246,0.4)', bg: 'rgba(59,130,246,0.08)' },
+  { accent: '#6366f1', border: 'rgba(99,102,241,0.4)', bg: 'rgba(99,102,241,0.08)' },
+  { accent: '#8b5cf6', border: 'rgba(139,92,246,0.4)', bg: 'rgba(139,92,246,0.08)' },
+  { accent: '#14b8a6', border: 'rgba(20,184,166,0.4)', bg: 'rgba(20,184,166,0.08)' },
+  { accent: '#f59e0b', border: 'rgba(245,158,11,0.4)', bg: 'rgba(245,158,11,0.08)' },
+  { accent: '#10b981', border: 'rgba(16,185,129,0.4)', bg: 'rgba(16,185,129,0.08)' },
+];
+
+// ═══════════════════════════════════════════════════════════════════════════════
+function LessonReaderView({ aula, onBack }) {
+  const [activeTab, setActiveTab] = useState(aula.defaultTab || 'conteudo');
+  const [slideIndex, setSlideIndex] = useState(0);
+  const [fonteIndex, setFonteIndex] = useState(0);
+
+  // Reset tab when lesson changes
+  useEffect(() => {
+    setActiveTab(aula.defaultTab || 'conteudo');
+    setSlideIndex(0);
+    setFonteIndex(0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [aula.id, aula.defaultTab]);
+
+  const slides = getSlidePaths(aula.id);
+  const fontes = aula.fontes_imagens || [];
+  const isApresentacao = aula.id === 'apresentacao';
+  const videoUrl = getYouTubeEmbedUrl(
+    isApresentacao
+      ? (aula.link_video || aula.videos?.find((v) => v.tipo === 'videoaula')?.link)
+      : (aula.link_podcast || aula.videos?.find((v) => v.tipo === 'podcast')?.link)
+  );
+  const podcastUrl = getYouTubeEmbedUrl(
+    isApresentacao
+      ? (aula.link_podcast || aula.videos?.find((v) => v.tipo === 'podcast')?.link)
+      : (aula.link_video || aula.videos?.find((v) => v.tipo === 'videoaula')?.link)
+  );
+
+  // Determine which tabs are available
+  const availableTabs = LESSON_TABS.filter(tab => {
+    if (tab.id === 'conteudo') return !!aula.conteudo_html;
+    if (tab.id === 'tabelas') return !!aula.tabelas_html;
+    if (tab.id === 'infobox') return !!aula.infobox_campo;
+    if (tab.id === 'video') return !!videoUrl;
+    if (tab.id === 'podcast') return !!podcastUrl;
+    if (tab.id === 'slides') return slides.length > 0;
+    if (tab.id === 'fontes') return fontes.length > 0;
+    return true;
+  });
+
+  // If current tab becomes unavailable, fall back
+  useEffect(() => {
+    if (!availableTabs.find(t => t.id === activeTab)) {
+      // Fall back to first available or 'video'
+      const fallback = availableTabs[0]?.id || 'video';
+      setActiveTab(fallback);
+    }
+  }, [aula.id]);
+
+  return (
+    <motion.div
+      key={aula.id}
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      className="w-full min-h-screen"
+      style={{ backgroundColor: '#0f172a' }}
+    >
+      <style dangerouslySetInnerHTML={{ __html: `
+        .prose-custom h2 {
+          font-size: 1.75rem;
+          font-weight: 700;
+          color: #0f172a;
+          margin-top: 2rem;
+          margin-bottom: 1rem;
+          line-height: 1.25;
+        }
+        .prose-custom h3 {
+          font-size: 1.35rem;
+          font-weight: 700;
+          color: #1e293b;
+          margin-top: 1.75rem;
+          margin-bottom: 0.75rem;
+          line-height: 1.3;
+        }
+        .prose-custom h4 {
+          font-size: 1.15rem;
+          font-weight: 600;
+          color: #334155;
+          margin-top: 1.5rem;
+          margin-bottom: 0.75rem;
+        }
+        .prose-custom p {
+          margin-top: 0;
+          margin-bottom: 1.25rem;
+          line-height: 1.75;
+          color: #334155;
+        }
+        .prose-custom ul {
+          list-style-type: disc;
+          margin-top: 0;
+          margin-bottom: 1.25rem;
+          padding-left: 1.5rem;
+        }
+        .prose-custom ol {
+          list-style-type: decimal;
+          margin-top: 0;
+          margin-bottom: 1.25rem;
+          padding-left: 1.5rem;
+        }
+        .prose-custom li {
+          margin-bottom: 0.5rem;
+          line-height: 1.75;
+          color: #334155;
+        }
+        .prose-custom strong {
+          font-weight: 700;
+          color: #0f172a;
+        }
+        .prose-custom code {
+          font-family: monospace;
+          background-color: #f1f5f9;
+          padding: 0.2rem 0.4rem;
+          border-radius: 0.25rem;
+          font-size: 0.875rem;
+          color: #0f172a;
+        }
+        .prose-custom pre {
+          background-color: #f8fafc;
+          border: 1px solid #e2e8f0;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          overflow-x: auto;
+          margin-bottom: 1.25rem;
+        }
+        .prose-custom a {
+          color: #0284c7;
+          text-decoration: underline;
+          font-weight: 500;
+        }
+        .prose-custom a:hover {
+          color: #0369a1;
+        }
+        .prose-custom table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 1.5rem;
+          margin-bottom: 1.5rem;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+        .prose-custom th {
+          background-color: #f1f5f9;
+          font-weight: 700;
+          text-align: left;
+          padding: 0.75rem 1rem;
+          border-bottom: 2px solid #cbd5e1;
+          color: #0f172a;
+          font-size: 0.875rem;
+        }
+        .prose-custom td {
+          padding: 0.75rem 1rem;
+          border-bottom: 1px solid #e2e8f0;
+          color: #334155;
+          font-size: 0.875rem;
+        }
+        .prose-custom tr:hover {
+          background-color: #f8fafc;
+        }
+        .prose-custom .infobox-warning {
+          background-color: #fef2f2 !important;
+          border: 1px solid #fecaca !important;
+          border-radius: 16px !important;
+          padding: 1.5rem !important;
+          margin-bottom: 1.5rem !important;
+        }
+        .prose-custom .infobox-warning h3 {
+          color: #991b1b !important;
+          margin-top: 0 !important;
+          margin-bottom: 0.5rem !important;
+        }
+        .prose-custom .infobox-warning p {
+          color: #7f1d1d !important;
+          margin-bottom: 0 !important;
+        }
+        .prose-custom .infobox-tip {
+          background-color: #f0f9ff !important;
+          border: 1px solid #bae6fd !important;
+          border-radius: 16px !important;
+          padding: 1.5rem !important;
+          margin-bottom: 1.5rem !important;
+        }
+        .prose-custom .infobox-tip h3 {
+          color: #075985 !important;
+          margin-top: 0 !important;
+          margin-bottom: 0.5rem !important;
+        }
+        .prose-custom .infobox-tip p {
+          color: #0c4a6e !important;
+          margin-bottom: 0 !important;
+        }
+        .prose-custom .infobox-tip ul {
+          margin-bottom: 0 !important;
+        }
+        .prose-custom .infobox-tip li {
+          color: #0c4a6e !important;
+        }
+      ` }} />
+      {/* ── Top Bar ── */}
+      <div className="sticky top-0 z-50 border-b" style={{ backgroundColor: 'rgba(15,23,42,0.95)', backdropFilter: 'blur(12px)', borderColor: 'rgba(51,65,85,0.5)' }}>
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-4">
+          <button
+            onClick={onBack}
+            className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg border transition-all duration-200 hover:bg-white/5 cursor-pointer flex-shrink-0"
+            style={{ borderColor: 'rgba(56,189,248,0.3)', color: '#38bdf8' }}
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Voltar para a Grade
+          </button>
+          <div className="min-w-0 flex-1">
+            <span className="text-xs font-bold uppercase tracking-widest block mb-0.5" style={{ color: '#0ea5e9' }}>
+              {aula.modulo}
+            </span>
+            <h1 className="text-base md:text-lg font-bold truncate" style={{ color: '#f1f5f9' }}>
+              {aula.titulo}
+            </h1>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Tab Switcher ── */}
+      <div className="border-b overflow-x-auto" style={{ borderColor: 'rgba(51,65,85,0.4)', backgroundColor: 'rgba(15,23,42,0.7)' }}>
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex gap-1 py-2" role="tablist">
+            {availableTabs.map((tab) => {
+              let Icon = tab.icon;
+              let label = tab.label;
+              if (aula.id === 'apresentacao') {
+                if (tab.id === 'video') label = 'Vídeo Parte 1';
+                if (tab.id === 'podcast') {
+                  label = 'Vídeo Parte 2';
+                  Icon = Play;
+                }
+              }
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => { setActiveTab(tab.id); if (tab.id === 'slides') setSlideIndex(0); if (tab.id === 'fontes') setFonteIndex(0); }}
+                  role="tab"
+                  aria-selected={isActive}
+                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                    isActive
+                      ? 'shadow-lg'
+                      : 'hover:bg-white/5'
+                  }`}
+                  style={isActive ? { backgroundColor: 'rgba(14,165,233,0.15)', borderColor: 'rgba(56,189,248,0.4)', color: '#38bdf8', border: '1px solid rgba(56,189,248,0.4)' } : { color: '#94a3b8', border: '1px solid transparent' }}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Tab Content Area ── */}
+      <div className="max-w-6xl mx-auto px-6 py-8">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* ─── CONTEÚDO TÉCNICO ─── */}
+            {activeTab === 'conteudo' && aula.conteudo_html && (
+              <div className="rounded-2xl border bg-white border-slate-200 p-8 md:p-12 shadow-sm">
+                <SafeHTML
+                  html={aula.conteudo_html}
+                  className="prose-custom max-w-none text-slate-800"
+                />
+              </div>
+            )}
+
+            {/* ─── TABELAS & PARÂMETROS ─── */}
+            {activeTab === 'tabelas' && aula.tabelas_html && (
+              <div className="rounded-2xl border bg-white border-slate-200 p-8 md:p-12 overflow-x-auto shadow-sm">
+                <SafeHTML
+                  html={aula.tabelas_html}
+                  className="prose-custom max-w-none text-slate-800"
+                />
+              </div>
+            )}
+
+            {/* ─── INFO DE CAMPO ─── */}
+            {activeTab === 'infobox' && aula.infobox_campo && (
+              <div className="rounded-2xl border bg-white border-slate-200 p-8 md:p-12 shadow-sm">
+                <SafeHTML
+                  html={aula.infobox_campo}
+                  className="prose-custom max-w-none text-slate-800"
+                />
+              </div>
+            )}
+
+            {/* ─── VIDEOAULA ─── */}
+            {activeTab === 'video' && videoUrl && (
+              <div className="rounded-2xl border overflow-hidden" style={{ borderColor: 'rgba(14,165,233,0.3)' }}>
+                <div className="aspect-video bg-black">
+                  <iframe
+                    src={videoUrl}
+                    title={`Videoaula: ${aula.titulo}`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="px-6 py-4" style={{ backgroundColor: 'rgba(15,23,42,0.9)' }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-sky-500/20 border border-sky-400/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Play className="w-4 h-4 text-sky-400" />
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold uppercase tracking-widest text-sky-400 block">
+                        {aula.id === 'apresentacao' ? 'Apresentação Parte 1' : 'Videoaula'}
+                      </span>
+                      <span className="text-sm font-semibold text-slate-200">{aula.titulo}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ─── PODCAST ─── */}
+            {activeTab === 'podcast' && podcastUrl && (
+              <div className="rounded-2xl border overflow-hidden" style={{ borderColor: 'rgba(139,92,246,0.3)' }}>
+                <div className="aspect-video bg-black">
+                  <iframe
+                    src={podcastUrl}
+                    title={aula.id === 'apresentacao' ? `Apresentação Parte 2: ${aula.titulo}` : `Podcast: ${aula.titulo}`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="px-6 py-4" style={{ backgroundColor: 'rgba(15,23,42,0.9)' }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-violet-500/20 border border-violet-400/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                      {aula.id === 'apresentacao' ? (
+                        <Play className="w-4 h-4 text-violet-400" />
+                      ) : (
+                        <Headphones className="w-4 h-4 text-violet-400" />
+                      )}
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold uppercase tracking-widest text-violet-400 block">
+                        {aula.id === 'apresentacao' ? 'Apresentação Parte 2' : 'Podcast'}
+                      </span>
+                      <span className="text-sm font-semibold text-slate-200">{aula.titulo}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ─── SLIDES & INFOGRÁFICO ─── */}
+            {activeTab === 'slides' && slides.length > 0 && (
+              <div className="rounded-2xl border p-6" style={{ backgroundColor: 'rgba(30,41,59,0.5)', borderColor: 'rgba(51,65,85,0.4)' }}>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#0ea5e9' }}>
+                    Slides — {aula.modulo}
+                  </span>
+                  <span className="text-sm font-semibold" style={{ color: '#94a3b8' }}>
+                    {slideIndex + 1} / {slides.length}
+                  </span>
+                </div>
+                <img
+                  src={slides[slideIndex]}
+                  alt={`Slide ${slideIndex + 1} - ${aula.titulo}`}
+                  className="w-full rounded-xl shadow-2xl"
+                />
+                <div className="flex items-center justify-between mt-4">
+                  <button
+                    onClick={() => setSlideIndex((p) => Math.max(0, p - 1))}
+                    disabled={slideIndex === 0}
+                    className="p-3 rounded-xl border transition-all cursor-pointer disabled:opacity-30 hover:bg-white/5"
+                    style={{ borderColor: 'rgba(14,165,233,0.3)', color: '#0ea5e9' }}
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <div className="flex gap-1">
+                    {slides.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setSlideIndex(i)}
+                        className={`w-2 h-2 rounded-full transition-all cursor-pointer ${i === slideIndex ? 'bg-sky-400 scale-125' : 'bg-slate-600 hover:bg-slate-500'}`}
+                        aria-label={`Ir para slide ${i + 1}`}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => setSlideIndex((p) => Math.min(slides.length - 1, p + 1))}
+                    disabled={slideIndex === slides.length - 1}
+                    className="p-3 rounded-xl border transition-all cursor-pointer disabled:opacity-30 hover:bg-white/5"
+                    style={{ borderColor: 'rgba(14,165,233,0.3)', color: '#0ea5e9' }}
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ─── FONTES & PESQUISA ─── */}
+            {activeTab === 'fontes' && fontes.length > 0 && (
+              <div className="rounded-2xl border p-6" style={{ backgroundColor: 'rgba(30,41,59,0.5)', borderColor: 'rgba(51,65,85,0.4)' }}>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#f59e0b' }}>
+                    Fontes de Pesquisa — Página {fonteIndex + 1} de {fontes.length}
+                  </span>
+                </div>
+                <img
+                  src={fontes[fonteIndex]}
+                  alt={`Fonte de pesquisa ${fonteIndex + 1} - ${aula.titulo}`}
+                  className="w-full rounded-xl shadow-2xl"
+                />
+                <div className="flex items-center justify-between mt-4">
+                  <button
+                    onClick={() => setFonteIndex((p) => Math.max(0, p - 1))}
+                    disabled={fonteIndex === 0}
+                    className="p-3 rounded-xl border transition-all cursor-pointer disabled:opacity-30 hover:bg-white/5"
+                    style={{ borderColor: 'rgba(245,158,11,0.3)', color: '#f59e0b' }}
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <span className="text-sm font-semibold" style={{ color: '#94a3b8' }}>
+                    {fonteIndex + 1} / {fontes.length}
+                  </span>
+                  <button
+                    onClick={() => setFonteIndex((p) => Math.min(fontes.length - 1, p + 1))}
+                    disabled={fonteIndex === fontes.length - 1}
+                    className="p-3 rounded-xl border transition-all cursor-pointer disabled:opacity-30 hover:bg-white/5"
+                    style={{ borderColor: 'rgba(245,158,11,0.3)', color: '#f59e0b' }}
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ─── Fallback: Tab has no content yet ─── */}
+            {((activeTab === 'conteudo' && !aula.conteudo_html) ||
+              (activeTab === 'tabelas' && !aula.tabelas_html) ||
+              (activeTab === 'infobox' && !aula.infobox_campo) ||
+              (activeTab === 'fontes' && fontes.length === 0)) && (
+              <div className="rounded-2xl border p-12 text-center bg-white border-slate-200 shadow-sm">
+                <div className="w-16 h-16 mx-auto mb-4 bg-slate-100 rounded-2xl flex items-center justify-center">
+                  <BookOpen className="w-8 h-8 text-slate-400" />
+                </div>
+                <h3 className="text-lg font-bold mb-2 text-slate-800">Conteúdo em Preparação</h3>
+                <p className="text-sm text-slate-500">
+                  O conteúdo desta aba está sendo finalizado pela equipe Simon Climatização. Enquanto isso, explore as outras abas disponíveis.
+                </p>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════════════════════════
 export default function TreinamentoHVAC() {
   const gradeSectionRef = useRef(null);
   const [openModulo, setOpenModulo] = useState(null);
-  const [activeVideo, setActiveVideo] = useState(null); // "aulaId-videoaula" | "aulaId-podcast"
-  const [activeSlides, setActiveSlides] = useState(null); // "aulaId" for slides gallery
-  const [slideIndex, setSlideIndex] = useState(0);
-  const [showApresentacaoSlides, setShowApresentacaoSlides] = useState(false);
-  const [apresentacaoSlideIndex, setApresentacaoSlideIndex] = useState(0);
+  const [activeTopic, setActiveTopic] = useState(null); // null = Dashboard, aulaObj = LessonReader
 
   const scrollToGrade = () => {
     gradeSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -144,21 +637,22 @@ export default function TreinamentoHVAC() {
 
   const toggleModulo = (id) => {
     setOpenModulo((prev) => (prev === id ? null : id));
-    setActiveVideo(null);
-    setActiveSlides(null);
   };
 
-  const toggleVideo = (key) => {
-    setActiveVideo((prev) => (prev === key ? null : key));
-    setActiveSlides(null);
+  const openLesson = (aula) => {
+    setActiveTopic(aula);
   };
 
-  const toggleSlides = (aulaId) => {
-    setActiveSlides((prev) => (prev === aulaId ? null : aulaId));
-    setSlideIndex(0);
-    setActiveVideo(null);
+  const closeLesson = () => {
+    setActiveTopic(null);
   };
 
+  // ─── If a lesson is active, render the LessonReaderView ───
+  if (activeTopic) {
+    return <LessonReaderView aula={activeTopic} onBack={closeLesson} />;
+  }
+
+  // ─── Otherwise, render the Dashboard ───
   return (
     <div className="w-full bg-white text-slate-900">
 
@@ -326,10 +820,6 @@ export default function TreinamentoHVAC() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════════
-          PLACEHOLDER — Seções seguintes serão adicionadas nas próximas fases
-      ════════════════════════════════════════════════════════════════════ */}
-
-      {/* ════════════════════════════════════════════════════════════════════
           2. CURRENT PAIN — O "Antes" (A Realidade Dolorosa do Campo)
       ════════════════════════════════════════════════════════════════════ */}
       <section
@@ -444,7 +934,6 @@ export default function TreinamentoHVAC() {
         className="py-24 px-6 md:px-12 bg-white border-t border-sky-100 relative overflow-hidden"
         aria-label="A transformação que o treinamento proporciona"
       >
-        {/* Ambient glows */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-sky-100/60 rounded-full blur-[140px] pointer-events-none" aria-hidden="true" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-teal-100/50 rounded-full blur-[120px] pointer-events-none" aria-hidden="true" />
 
@@ -676,7 +1165,7 @@ export default function TreinamentoHVAC() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="relative overflow-hidden rounded-3xl border border-sky-200 p-10 md:p-14 shadow-xl"
+            className="relative overflow-hidden rounded-3xl border p-10 md:p-14 shadow-xl mb-16"
             style={{ background: 'linear-gradient(135deg, #0c4a6e 0%, #0e1b2e 50%, #0f172a 100%)' }}
           >
             <div className="absolute -top-24 -right-24 w-80 h-80 bg-sky-500/10 rounded-full blur-[120px] pointer-events-none" aria-hidden="true" />
@@ -707,78 +1196,72 @@ export default function TreinamentoHVAC() {
             </div>
           </motion.div>
 
-          {/* Introductory Videos — Embedded */}
+          {/* Handbook Presentation Section — Premium Interactive Card */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="mt-16"
+            className="mt-20 max-w-4xl mx-auto"
           >
-            <h3 className="text-xl font-bold text-slate-900 mb-8 text-center">
-              📺 Vídeos de Apresentação da Apostila
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {cursoInstalacaoHVAC.apresentacao.videos.map((v, i) => (
-                <div key={i} className="rounded-2xl overflow-hidden border border-sky-100 shadow-lg bg-white">
-                  <div className="aspect-video">
-                    <iframe
-                      src={getYouTubeEmbedUrl(v.link)}
-                      title={v.titulo}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="w-full h-full"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="px-5 py-3 text-sm font-semibold text-slate-700">{v.titulo}</div>
-                </div>
-              ))}
-            </div>
+            <div 
+              className="relative overflow-hidden rounded-3xl border p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-8 md:gap-12 transition-all duration-300 hover:shadow-sky-900/20"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(30,41,59,0.7) 0%, rgba(15,23,42,0.9) 100%)',
+                borderColor: 'rgba(14,165,233,0.3)'
+              }}
+            >
+              {/* Ambient Glow */}
+              <div className="absolute top-0 right-0 w-60 h-60 bg-sky-500/10 rounded-full blur-[80px] pointer-events-none" aria-hidden="true" />
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-500/10 rounded-full blur-[60px] pointer-events-none" aria-hidden="true" />
 
-            {/* Presentation Slides Gallery */}
-            <div className="mt-8">
-              <button
-                onClick={() => { setShowApresentacaoSlides((p) => !p); setApresentacaoSlideIndex(0); }}
-                className="mx-auto flex items-center gap-2 px-6 py-3 rounded-xl border border-sky-200 text-sky-600 hover:bg-sky-50 font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer"
-              >
-                <Image className="w-4 h-4" aria-hidden="true" />
-                {showApresentacaoSlides ? 'Fechar Slides da Apresentação' : 'Ver Slides da Apresentação'}
-              </button>
-              {showApresentacaoSlides && (() => {
-                const slides = getApresentacaoSlidePaths();
-                return (
-                  <div className="mt-6 rounded-2xl border border-sky-100 bg-white shadow-lg overflow-hidden p-4">
-                    <div className="relative">
-                      <img
-                        src={slides[apresentacaoSlideIndex]}
-                        alt={`Slide ${apresentacaoSlideIndex + 1} da Apresentação`}
-                        className="w-full rounded-lg"
-                      />
-                      {/* Navigation */}
-                      <div className="flex items-center justify-between mt-4">
-                        <button
-                          onClick={() => setApresentacaoSlideIndex((p) => Math.max(0, p - 1))}
-                          disabled={apresentacaoSlideIndex === 0}
-                          className="p-2 rounded-lg border border-sky-200 text-sky-600 disabled:opacity-30 hover:bg-sky-50 transition-all cursor-pointer"
-                        >
-                          <ChevronLeft className="w-5 h-5" />
-                        </button>
-                        <span className="text-sm font-semibold text-slate-600">
-                          {apresentacaoSlideIndex + 1} / {slides.length}
-                        </span>
-                        <button
-                          onClick={() => setApresentacaoSlideIndex((p) => Math.min(slides.length - 1, p + 1))}
-                          disabled={apresentacaoSlideIndex === slides.length - 1}
-                          className="p-2 rounded-lg border border-sky-200 text-sky-600 disabled:opacity-30 hover:bg-sky-50 transition-all cursor-pointer"
-                        >
-                          <ChevronRight className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
+              {/* Left Column: Visual/Icon Representation */}
+              <div className="flex-shrink-0 relative">
+                <div 
+                  className="w-24 h-24 md:w-32 md:h-32 rounded-3xl flex items-center justify-center shadow-lg border relative"
+                  style={{ 
+                    backgroundColor: 'rgba(14,165,233,0.1)', 
+                    borderColor: 'rgba(14,165,233,0.4)',
+                    color: '#38bdf8'
+                  }}
+                >
+                  <BookOpen className="w-12 h-12 md:w-16 md:h-16" />
+                  <span className="absolute -bottom-2 -right-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-sky-500 text-white shadow">
+                    PDF 24 Pág.
+                  </span>
+                </div>
+              </div>
+
+              {/* Right Column: Copy & Actions */}
+              <div className="flex-1 text-center md:text-left">
+                <span className="inline-block px-3 py-1 rounded-full bg-sky-500/15 border border-sky-400/20 text-[#38bdf8] text-xs font-bold tracking-widest uppercase mb-4">
+                  Manual de Campo Oficial
+                </span>
+                <h3 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-4 leading-snug">
+                  Apresentação da Apostila de Instalação HVAC
+                </h3>
+                <p className="text-slate-300 text-sm md:text-base leading-relaxed mb-8">
+                  Explore o conteúdo teórico completo da Apostila 01 compilado em nossa plataforma interativa. Assista aos vídeos de introdução e consulte os slides esquemáticos oficiais com a metodologia Simon Climatização.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                  <button
+                    onClick={() => openLesson(cursoInstalacaoHVAC.apresentacao)}
+                    className="inline-flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-400 active:bg-sky-600 text-white font-bold px-6 py-3.5 rounded-xl transition-all duration-200 text-sm shadow-lg shadow-sky-500/20 hover:shadow-sky-400/25 hover:-translate-y-0.5 cursor-pointer"
+                  >
+                    <BookOpen className="w-4 h-4" />
+                    Iniciar Leitura Interativa
+                  </button>
+                  
+                  <button
+                    onClick={() => openLesson({ ...cursoInstalacaoHVAC.apresentacao, defaultTab: 'video' })}
+                    className="inline-flex items-center justify-center gap-2 border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 font-semibold px-6 py-3.5 rounded-xl transition-all duration-200 text-sm hover:bg-sky-500/10 cursor-pointer"
+                  >
+                    <Play className="w-4 h-4" />
+                    Assistir Apresentação
+                  </button>
+                </div>
+              </div>
             </div>
           </motion.div>
 
@@ -786,7 +1269,7 @@ export default function TreinamentoHVAC() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════════
-          5. GRADE CURRICULAR — Accordion Interativo (Fase 4)
+          5. GRADE CURRICULAR — Accordion + Lesson Opener
       ════════════════════════════════════════════════════════════════════ */}
       <section
         ref={gradeSectionRef}
@@ -794,7 +1277,6 @@ export default function TreinamentoHVAC() {
         style={{ backgroundColor: '#0f172a' }}
         aria-label="Grade Curricular Completa do Treinamento"
       >
-        {/* Ambient glows */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-sky-900/30 rounded-full blur-[160px] pointer-events-none" aria-hidden="true" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-900/20 rounded-full blur-[140px] pointer-events-none" aria-hidden="true" />
 
@@ -818,7 +1300,7 @@ export default function TreinamentoHVAC() {
               Zero Atalhos.
             </h2>
             <p className="max-w-2xl mx-auto text-lg leading-relaxed" style={{ color: '#94a3b8' }}>
-              Clique em cada módulo para explorar as aulas, assistir aos vídeos e acessar o material de apoio — tudo sem sair desta página.
+              Clique em cada módulo para explorar as aulas. Clique em uma aula para abrir o <strong style={{ color: '#e2e8f0' }}>Leitor Interativo</strong> com vídeo, podcast, slides e conteúdo técnico completo.
             </p>
           </motion.div>
 
@@ -826,15 +1308,6 @@ export default function TreinamentoHVAC() {
           <div className="space-y-4">
             {cursoInstalacaoHVAC.modulos.map((modulo, mIdx) => {
               const isOpen = openModulo === modulo.id;
-              const moduleColors = [
-                { accent: '#0ea5e9', border: 'rgba(14,165,233,0.4)', bg: 'rgba(14,165,233,0.08)' },
-                { accent: '#3b82f6', border: 'rgba(59,130,246,0.4)', bg: 'rgba(59,130,246,0.08)' },
-                { accent: '#6366f1', border: 'rgba(99,102,241,0.4)', bg: 'rgba(99,102,241,0.08)' },
-                { accent: '#8b5cf6', border: 'rgba(139,92,246,0.4)', bg: 'rgba(139,92,246,0.08)' },
-                { accent: '#14b8a6', border: 'rgba(20,184,166,0.4)', bg: 'rgba(20,184,166,0.08)' },
-                { accent: '#f59e0b', border: 'rgba(245,158,11,0.4)', bg: 'rgba(245,158,11,0.08)' },
-                { accent: '#10b981', border: 'rgba(16,185,129,0.4)', bg: 'rgba(16,185,129,0.08)' },
-              ];
               const mc = moduleColors[mIdx % moduleColors.length];
 
               return (
@@ -875,182 +1348,37 @@ export default function TreinamentoHVAC() {
                     </div>
                   </button>
 
-                  {/* Expanded Lessons */}
+                  {/* Expanded Lessons — Now with "Open Lesson" click action */}
                   {isOpen && (
                     <div className="px-6 pb-6 space-y-3">
-                      {modulo.aulas.map((aula) => {
-                        const videoaula = aula.videos?.find((v) => v.tipo === 'podcast');
-                        const podcast = aula.videos?.find((v) => v.tipo === 'videoaula');
-                        const videoKey = `${aula.id}-videoaula`;
-                        const podcastKey = `${aula.id}-podcast`;
-
-                        return (
-                          <div
-                            key={aula.id}
-                            className="rounded-xl border p-5"
-                            style={{ backgroundColor: 'rgba(15,23,42,0.7)', borderColor: 'rgba(51,65,85,0.4)' }}
-                          >
-                            {/* Lesson Title */}
-                            <div className="flex items-start gap-3 mb-4">
-                              <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: mc.accent }} aria-hidden="true" />
-                              <div>
-                                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: mc.accent }}>
-                                  {aula.modulo}
-                                </span>
-                                <h4 className="text-sm md:text-base font-semibold mt-0.5" style={{ color: '#e2e8f0' }}>
-                                  {aula.titulo}
-                                </h4>
-                              </div>
+                      {modulo.aulas.map((aula) => (
+                        <button
+                          key={aula.id}
+                          onClick={() => openLesson(aula)}
+                          className="w-full text-left rounded-xl border p-5 hover:bg-white/5 transition-all duration-200 cursor-pointer group"
+                          style={{ backgroundColor: 'rgba(15,23,42,0.7)', borderColor: 'rgba(51,65,85,0.4)' }}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: mc.accent }} aria-hidden="true" />
+                            <div className="flex-1 min-w-0">
+                              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: mc.accent }}>
+                                {aula.modulo}
+                              </span>
+                              <h4 className="text-sm md:text-base font-semibold mt-0.5 truncate" style={{ color: '#e2e8f0' }}>
+                                {aula.titulo}
+                              </h4>
                             </div>
-
-                            {/* Action Buttons */}
-                            <div className="flex flex-wrap gap-2 mb-2">
-                              {videoaula && (
-                                <button
-                                  onClick={() => toggleVideo(videoKey)}
-                                  className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg border transition-all duration-200 cursor-pointer"
-                                  style={{
-                                    backgroundColor: activeVideo === videoKey ? mc.bg : 'transparent',
-                                    borderColor: activeVideo === videoKey ? mc.border : 'rgba(51,65,85,0.5)',
-                                    color: activeVideo === videoKey ? mc.accent : '#94a3b8',
-                                  }}
-                                >
-                                  <Play className="w-3.5 h-3.5" aria-hidden="true" />
-                                  Aula em Vídeo
-                                </button>
-                              )}
-                              {podcast && (
-                                <button
-                                  onClick={() => toggleVideo(podcastKey)}
-                                  className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg border transition-all duration-200 cursor-pointer"
-                                  style={{
-                                    backgroundColor: activeVideo === podcastKey ? mc.bg : 'transparent',
-                                    borderColor: activeVideo === podcastKey ? mc.border : 'rgba(51,65,85,0.5)',
-                                    color: activeVideo === podcastKey ? mc.accent : '#94a3b8',
-                                  }}
-                                >
-                                  <Headphones className="w-3.5 h-3.5" aria-hidden="true" />
-                                  Ouvir Podcast
-                                </button>
-                              )}
-                              {SLIDE_MAP[aula.id] && (
-                                <button
-                                  onClick={() => toggleSlides(aula.id)}
-                                  className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg border transition-all duration-200 cursor-pointer"
-                                  style={{
-                                    backgroundColor: activeSlides === aula.id ? mc.bg : 'transparent',
-                                    borderColor: activeSlides === aula.id ? mc.border : 'rgba(51,65,85,0.5)',
-                                    color: activeSlides === aula.id ? mc.accent : '#94a3b8',
-                                  }}
-                                >
-                                  <Image className="w-3.5 h-3.5" aria-hidden="true" />
-                                  Slides e Material
-                                </button>
-                              )}
-                              {aula.apresentacao && (
-                                Array.isArray(aula.apresentacao) ? (
-                                  aula.apresentacao.map((pdfUrl, pdfIdx) => (
-                                    <a
-                                      key={pdfIdx}
-                                      href={pdfUrl}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg border transition-all duration-200"
-                                      style={{ borderColor: 'rgba(51,65,85,0.5)', color: '#94a3b8' }}
-                                    >
-                                      <FileText className="w-3.5 h-3.5" aria-hidden="true" />
-                                      Fonte de Pesquisa {pdfIdx + 1}
-                                    </a>
-                                  ))
-                                ) : (
-                                  <a
-                                    href={aula.apresentacao}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg border transition-all duration-200"
-                                    style={{ borderColor: 'rgba(51,65,85,0.5)', color: '#94a3b8' }}
-                                  >
-                                    <FileText className="w-3.5 h-3.5" aria-hidden="true" />
-                                    Fontes de Pesquisa
-                                  </a>
-                                )
-                              )}
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              {/* Availability indicators */}
+                              {aula.conteudo_html && <BookOpen className="w-3.5 h-3.5 text-sky-500" title="Conteúdo Técnico" />}
+                              {(aula.link_video || aula.videos?.find(v => v.tipo === 'videoaula')) && <Play className="w-3.5 h-3.5 text-sky-500" title="Videoaula" />}
+                              {(aula.link_podcast || aula.videos?.find(v => v.tipo === 'podcast')) && <Headphones className="w-3.5 h-3.5 text-violet-500" title="Podcast" />}
+                              {SLIDE_MAP[aula.id] && <Layers className="w-3.5 h-3.5 text-emerald-500" title="Slides" />}
+                              <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-sky-400 transition-colors ml-1" />
                             </div>
-
-                            {/* Embedded Video Player (videoaula) */}
-                            {activeVideo === videoKey && videoaula && (
-                              <div className="mt-4 rounded-xl overflow-hidden border" style={{ borderColor: mc.border }}>
-                                <div className="aspect-video">
-                                  <iframe
-                                    src={getYouTubeEmbedUrl(videoaula.link)}
-                                    title={videoaula.titulo}
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                    className="w-full h-full"
-                                    loading="lazy"
-                                  />
-                                </div>
-                              </div>
-                            )}
-                            {/* Embedded Podcast Player */}
-                            {activeVideo === podcastKey && podcast && (
-                              <div className="mt-4 rounded-xl overflow-hidden border" style={{ borderColor: mc.border }}>
-                                <div className="aspect-video">
-                                  <iframe
-                                    src={getYouTubeEmbedUrl(podcast.link)}
-                                    title={podcast.titulo}
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                    className="w-full h-full"
-                                    loading="lazy"
-                                  />
-                                </div>
-                              </div>
-                            )}
-                            {/* Inline Slides Gallery */}
-                            {activeSlides === aula.id && (() => {
-                              const slides = getSlidePaths(aula.id);
-                              if (!slides.length) return null;
-                              return (
-                                <div className="mt-4 rounded-xl overflow-hidden border p-4" style={{ borderColor: mc.border, backgroundColor: 'rgba(15,23,42,0.9)' }}>
-                                  <div className="flex items-center justify-between mb-3">
-                                    <span className="text-xs font-bold uppercase tracking-widest" style={{ color: mc.accent }}>Slides — {aula.modulo}</span>
-                                    <button onClick={() => setActiveSlides(null)} className="p-1 rounded-md hover:bg-white/10 transition-colors cursor-pointer" style={{ color: '#94a3b8' }}>
-                                      <X className="w-4 h-4" />
-                                    </button>
-                                  </div>
-                                  <img
-                                    src={slides[slideIndex]}
-                                    alt={`Slide ${slideIndex + 1} - ${aula.titulo}`}
-                                    className="w-full rounded-lg"
-                                  />
-                                  <div className="flex items-center justify-between mt-3">
-                                    <button
-                                      onClick={() => setSlideIndex((p) => Math.max(0, p - 1))}
-                                      disabled={slideIndex === 0}
-                                      className="p-2 rounded-lg border transition-all cursor-pointer disabled:opacity-30"
-                                      style={{ borderColor: mc.border, color: mc.accent }}
-                                    >
-                                      <ChevronLeft className="w-5 h-5" />
-                                    </button>
-                                    <span className="text-sm font-semibold" style={{ color: '#94a3b8' }}>
-                                      {slideIndex + 1} / {slides.length}
-                                    </span>
-                                    <button
-                                      onClick={() => setSlideIndex((p) => Math.min(slides.length - 1, p + 1))}
-                                      disabled={slideIndex === slides.length - 1}
-                                      className="p-2 rounded-lg border transition-all cursor-pointer disabled:opacity-30"
-                                      style={{ borderColor: mc.border, color: mc.accent }}
-                                    >
-                                      <ChevronRight className="w-5 h-5" />
-                                    </button>
-                                  </div>
-                                </div>
-                              );
-                            })()}
                           </div>
-                        );
-                      })}
+                        </button>
+                      ))}
                     </div>
                   )}
                 </motion.div>
@@ -1083,14 +1411,13 @@ export default function TreinamentoHVAC() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════════
-          6. CTA FINAL — Fechamento de Alta Conversão (Fase 5)
+          6. CTA FINAL — Fechamento de Alta Conversão
       ════════════════════════════════════════════════════════════════════ */}
       <section
         className="relative py-24 px-6 md:px-12 overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #0c1426 0%, #0f172a 40%, #1e293b 100%)' }}
         aria-label="Chamada final para inscrição"
       >
-        {/* Ambient glows */}
         <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full opacity-15 blur-3xl pointer-events-none" style={{ backgroundColor: '#0ea5e9' }} />
         <div className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ backgroundColor: '#3b82f6' }} />
 
@@ -1151,7 +1478,7 @@ export default function TreinamentoHVAC() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════════
-          7. FAQ — Perguntas Frequentes (Fase 5)
+          7. FAQ — Perguntas Frequentes
       ════════════════════════════════════════════════════════════════════ */}
       <section className="py-20 px-6 md:px-12 bg-slate-50" aria-label="Perguntas Frequentes">
         <div className="max-w-3xl mx-auto">

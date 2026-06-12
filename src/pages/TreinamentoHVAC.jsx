@@ -793,11 +793,11 @@ export default function TreinamentoHVAC() {
                 {/* Course topics preview */}
                 <ul className="space-y-3 mb-6" role="list">
                   {[
-                    'Termodinâmica e Ciclo de Refrigeração',
-                    'Tubulação de Cobre e Brasagem com N₂',
-                    'Elétrica, VRF/VRV e Comunicação',
-                    'Vácuo Profundo e Estanqueidade',
-                    'Comissionamento e Handover Digital',
+                    'Fundamentos da Engenharia Térmica de Elite',
+                    'Circuito Frigorífico e Maestria do Cobre',
+                    'Rigor Elétrico e Comunicação de Dados',
+                    'O Protocolo "Vazamento Zero"',
+                    'Comissionamento, Diagnóstico e Handover',
                   ].map((topic, i) => (
                     <li key={i} className="flex items-center gap-3 text-slate-300 text-sm font-medium">
                       <div className="w-1.5 h-1.5 rounded-full bg-sky-400 flex-shrink-0" aria-hidden="true" />

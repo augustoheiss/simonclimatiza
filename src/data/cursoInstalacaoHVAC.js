@@ -170,19 +170,19 @@ export const cursoInstalacaoHVAC = {
   // ──────────────────────────────────────────────────────────────────────────
   modulos: [
     // ════════════════════════════════════════════════════════════════════════
-    // MÓDULO 01 - Fundamentos da Refrigeração e Termodinâmica
+    // MÓDULO 01 - Fundamentos da Engenharia Térmica de Elite
     // ════════════════════════════════════════════════════════════════════════
     {
       id: 1,
-      titulo: "MÓDULO 01 — Fundamentos da Refrigeração e Termodinâmica",
+      titulo: "MÓDULO 01 — Fundamentos da Engenharia Térmica de Elite",
       descricao:
-        "O alicerce teórico de toda instalação de excelência. Do ciclo de refrigeração à segurança com fluidos A2L.",
+        "A base teórica que todo técnico de elite deve dominar antes de tocar em uma ferramenta.",
       icone: "thermometer",
       cor: "sky",
       aulas: [
         {
           id: "01-01",
-          titulo: "A mecânica do ciclo de refrigeração profissional",
+          titulo: "O Ciclo de Refrigeração por Compressão de Vapor",
           modulo: "MÓDULO 01 - 01",
           videos: [
             {
@@ -351,7 +351,7 @@ export const cursoInstalacaoHVAC = {
         {
           id: "01-02",
           titulo:
-            "Diagnóstico técnico de sobreaquecimento e subarrefecimento",
+            "Termodinâmica Aplicada: Sobreaquecimento e Subarrefecimento",
           modulo: "MÓDULO 01 - 02",
           videos: [
             {
@@ -571,7 +571,7 @@ export const cursoInstalacaoHVAC = {
         },
         {
           id: "01-03",
-          titulo: "Por que a umidade destrói sistemas A2L",
+          titulo: "Fluidos Refrigerantes Ecológicos Modernos",
           modulo: "MÓDULO 01 - 03",
           videos: [
             {
@@ -824,7 +824,7 @@ export const cursoInstalacaoHVAC = {
         },
         {
           id: "01-04",
-          titulo: "Por que 500 mícrons salvam o compressor",
+          titulo: "Segurança, Saúde e Ferramental de Precisão",
           modulo: "MÓDULO 01 - 04",
           videos: [
             {
@@ -975,19 +975,19 @@ export const cursoInstalacaoHVAC = {
     },
 
     // ════════════════════════════════════════════════════════════════════════
-    // MÓDULO 02 - Planejamento e Infraestrutura
+    // MÓDULO 02 - Pré-Instalação, Dimensionamento e Infraestrutura
     // ════════════════════════════════════════════════════════════════════════
     {
       id: 2,
-      titulo: "MÓDULO 02 — Planejamento e Infraestrutura",
+      titulo: "MÓDULO 02 — Pré-Instalação, Dimensionamento e Infraestrutura",
       descricao:
-        "A engenharia por trás do posicionamento perfeito. Carga térmica, drenagem e dimensionamento.",
+        "Garantindo a combinação perfeita entre o ambiente e o equipamento.",
       icone: "ruler",
       cor: "blue",
       aulas: [
         {
           id: "02-01",
-          titulo: "A física invisível do ar condicionado",
+          titulo: "Dimensionamento de Carga Térmica de Precisão",
           modulo: "MÓDULO 02 - 01",
           videos: [
             {
@@ -1141,7 +1141,7 @@ export const cursoInstalacaoHVAC = {
         },
         {
           id: "02-02",
-          titulo: "Engenharia de precisão nas instalações de AVAC",
+          titulo: "Estratégia de Posicionamento de Equipamentos",
           modulo: "MÓDULO 02 - 02",
           videos: [
             {
@@ -1336,7 +1336,7 @@ export const cursoInstalacaoHVAC = {
         },
         {
           id: "02-03",
-          titulo: "O cano barato que destrói servidores",
+          titulo: "Sistemas de Drenagem de Condensado",
           modulo: "MÓDULO 02 - 03",
           videos: [
             {
@@ -1543,19 +1543,19 @@ export const cursoInstalacaoHVAC = {
     },
 
     // ════════════════════════════════════════════════════════════════════════
-    // MÓDULO 03 - Tubulação e Brasagem
+    // MÓDULO 03 - O Circuito Frigorífico e Maestria do Cobre
     // ════════════════════════════════════════════════════════════════════════
     {
       id: 3,
-      titulo: "MÓDULO 03 — Tubulação e Brasagem",
+      titulo: "MÓDULO 03 — O Circuito Frigorífico e Maestria do Cobre",
       descricao:
-        "Domine a arte da tubulação de cobre, brasagem com nitrogênio e isolamento térmico profissional.",
+        "Garantindo estanqueidade perfeita e longevidade do sistema.",
       icone: "flame",
       cor: "orange",
       aulas: [
         {
           id: "03-01",
-          titulo: "Como rebarbas de cobre matam compressores",
+          titulo: "Preparação de Tubulação de Cobre",
           modulo: "MÓDULO 03 - 01",
           videos: [
             {
@@ -1760,7 +1760,7 @@ export const cursoInstalacaoHVAC = {
         },
         {
           id: "03-02",
-          titulo: "Solda com nitrogênio evita falhas no VRF",
+          titulo: "Brasagem com Purga de Nitrogênio",
           modulo: "MÓDULO 03 - 02",
           videos: [
             {
@@ -1939,7 +1939,7 @@ export const cursoInstalacaoHVAC = {
         },
         {
           id: "03-03",
-          titulo: "Como o isolamento térmico salva o compressor",
+          titulo: "Isolamento Térmico Blindado",
           modulo: "MÓDULO 03 - 03",
           videos: [
             {
@@ -2143,19 +2143,19 @@ export const cursoInstalacaoHVAC = {
     },
 
     // ════════════════════════════════════════════════════════════════════════
-    // MÓDULO 04 - Elétrica e Cabeamento
+    // MÓDULO 04 - Rigor Elétrico e Comunicação de Dados
     // ════════════════════════════════════════════════════════════════════════
     {
       id: 4,
-      titulo: "MÓDULO 04 — Elétrica e Cabeamento",
+      titulo: "MÓDULO 04 — Rigor Elétrico e Comunicação de Dados",
       descricao:
-        "Segurança elétrica, terminais de alta precisão e cabeamento de dados VRF/VRV.",
+        "ACs modernos são computadores que movem calor. A fiação deve ser impecável.",
       icone: "zap",
       cor: "yellow",
       aulas: [
         {
           id: "04-01",
-          titulo: "Como evitar a queima do VRF",
+          titulo: "Segurança da Alimentação Elétrica",
           modulo: "MÓDULO 04 - 01",
           videos: [
             {
@@ -2346,7 +2346,7 @@ export const cursoInstalacaoHVAC = {
         },
         {
           id: "04-02",
-          titulo: "Como erros milimétricos destroem máquinas gigantes",
+          titulo: "A Regra do Terminal Elétrico",
           modulo: "MÓDULO 04 - 02",
           videos: [
             {
@@ -2585,7 +2585,7 @@ export const cursoInstalacaoHVAC = {
         },
         {
           id: "04-03",
-          titulo: "Como cabos de dados explodem compressores",
+          titulo: "Fiação de Comunicação de Dados",
           modulo: "MÓDULO 04 - 03",
           videos: [
             {
@@ -2757,19 +2757,19 @@ export const cursoInstalacaoHVAC = {
     },
 
     // ════════════════════════════════════════════════════════════════════════
-    // MÓDULO 05 - Aplicações Comerciais e Industriais
+    // MÓDULO 05 - Arquitetura de Instalação por Sistema
     // ════════════════════════════════════════════════════════════════════════
     {
       id: 5,
-      titulo: "MÓDULO 05 — Aplicações Comerciais e Industriais",
+      titulo: "MÓDULO 05 — Arquitetura de Instalação por Sistema",
       descricao:
-        "HVAC comercial de elite, tubulação VRF avançada, câmaras frias e o padrão Zero Leak.",
+        "Aplicando os fundamentos ao portfólio específico de serviços B2B da Simon.",
       icone: "building",
       cor: "indigo",
       aulas: [
         {
           id: "05-01",
-          titulo: "Engenharia de precisão na climatização comercial",
+          titulo: "Sistemas Split e Inverter de Alto Padrão",
           modulo: "MÓDULO 05 - 01",
           videos: [
             {
@@ -2927,7 +2927,7 @@ export const cursoInstalacaoHVAC = {
         },
         {
           id: "05-02",
-          titulo: "Por que 15 graus destroem o VRF",
+          titulo: "Instalação de Sistemas VRF / VRV",
           modulo: "MÓDULO 05 - 02",
           videos: [
             {
@@ -3086,7 +3086,7 @@ export const cursoInstalacaoHVAC = {
         },
         {
           id: "05-03",
-          titulo: "A física das câmaras frias industriais",
+          titulo: "Montagem de Câmaras Frias",
           modulo: "MÓDULO 05 - 03",
           videos: [
             {
@@ -3312,7 +3312,7 @@ export const cursoInstalacaoHVAC = {
         },
         {
           id: "05-04",
-          titulo: "Como atingir o padrão Zero Leak",
+          titulo: "Protocolo de Pressurização e Teste de Estanqueidade",
           modulo: "MÓDULO 05 - 04",
           videos: [
             {
@@ -3473,19 +3473,19 @@ export const cursoInstalacaoHVAC = {
     },
 
     // ════════════════════════════════════════════════════════════════════════
-    // MÓDULO 06 - Vácuo e Desidratação
+    // MÓDULO 06 - O Protocolo "Vazamento Zero" (Teste e Evacuação)
     // ════════════════════════════════════════════════════════════════════════
     {
       id: 6,
-      titulo: "MÓDULO 06 — Vácuo e Desidratação",
+      titulo: "MÓDULO 06 — O Protocolo \"Vazamento Zero\"",
       descricao:
-        "Evacuação de alto desempenho e a ciência por trás do vácuo profundo.",
+        "A marca registrada das instalações de alto padrão da Simon Climatização.",
       icone: "gauge",
       cor: "teal",
       aulas: [
         {
           id: "06-01",
-          titulo: "Bomba de vácuo HVAC não suga água",
+          titulo: "Vácuo Profundo, Evacuação e Domínio do Vacuômetro",
           modulo: "MÓDULO 06 - 01",
           videos: [
             {
@@ -3639,19 +3639,19 @@ export const cursoInstalacaoHVAC = {
     },
 
     // ════════════════════════════════════════════════════════════════════════
-    // MÓDULO 07 - Comissionamento e Handover Digital
+    // MÓDULO 07 - Comissionamento, Diagnóstico e Handover
     // ════════════════════════════════════════════════════════════════════════
     {
       id: 7,
-      titulo: "MÓDULO 07 — Comissionamento e Handover Digital",
+      titulo: "MÓDULO 07 — Comissionamento, Diagnóstico e Handover",
       descricao:
-        "O fim do achismo. Carga de refrigerante, startup profissional e telemetria digital.",
+        "Provando a economia de energia e o controle climático perfeito prometidos.",
       icone: "rocket",
       cor: "emerald",
       aulas: [
         {
           id: "07-01",
-          titulo: "O fim do achismo no comissionamento VRF",
+          titulo: "Carga de Refrigerante de Precisão e Startup",
           modulo: "MÓDULO 07 - 01",
           videos: [
             {
@@ -3871,7 +3871,7 @@ export const cursoInstalacaoHVAC = {
         },
         {
           id: "07-02",
-          titulo: "Telemetria digital blinda contratos de manutenção",
+          titulo: "Rastreabilidade 100% Digital e Handover",
           modulo: "MÓDULO 07 - 02",
           videos: [
             {

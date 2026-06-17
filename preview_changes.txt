@@ -1,0 +1,194 @@
+Total lines changed in preview: 48
+
+Line 3618:
+  OLD: <li><strong>Queda de Tensão (Subtensão):</strong> Os motores CA atuam como dispositivos de potência constante ($P = V \times I$). Se a tensão cai, a corrente aumenta proporcionalmente para manter o torque. Uma queda de 10% na tensão pode resultar em um aumento de 10% a 15% na amperagem. Meça a tensão diretamente nos bornes do contator sob carga para isolar conexões frouxas ou condutores subdimensionados.</li>
+  NEW: <li><strong>Queda de Tensão (Subtensão):</strong> Os motores CA atuam como dispositivos de potência constante (P = V × I). Se a tensão cai, a corrente aumenta proporcionalmente para manter o torque. Uma queda de 10% na tensão pode resultar em um aumento de 10% a 15% na amperagem. Meça a tensão diretamente nos bornes do contator sob carga para isolar conexões frouxas ou condutores subdimensionados.</li>
+
+Line 3639:
+  OLD: <li><strong>Capacitores de Marcha (Run):</strong> Permanecem no circuito continuamente. São componentes de precisão com tolerância de <strong>±6%</strong> [6]. Substitua se estiver fora da faixa (ex. capacitor de $45\ \mu\text{F}$ lendo menos que $42,3\ \mu\text{F}$).</li>
+  NEW: <li><strong>Capacitores de Marcha (Run):</strong> Permanecem no circuito continuamente. São componentes de precisão com tolerância de <strong>±6%</strong> [6]. Substitua se estiver fora da faixa (ex. capacitor de 45 µF lendo menos que 42,3 µF).</li>
+
+Line 3645:
+  OLD: <li><strong>Circuito Aberto:</strong> O rompimento da conexão interna faz o multímetro ler $0\ \mu\text{F}$. O motor zumbirá mas não partirá, consumindo a corrente LRA até desarmar o protetor térmico.</li>
+  NEW: <li><strong>Circuito Aberto:</strong> O rompimento da conexão interna faz o multímetro ler 0 µF. O motor zumbirá mas não partirá, consumindo a corrente LRA até desarmar o protetor térmico.</li>
+
+Line 3651:
+  OLD: <p>Os capacitores de partida possuem <strong>resistores de sangria</strong> (15.000 a 20.000 $\Omega$ a 2 W) para descarregar a tensão residual para menos de 50V em até um minuto após desligado [7]. Contudo, o técnico deve descarregar o capacitor manualmente por segurança usando um resistor de potência com pontas isoladas. <strong>Nunca curto-circuite os terminais com uma chave de fenda comum</strong>, pois o arco elétrico danifica o dielétrico interno e pode soldar a chave ou gerar faíscas perigosas.</p>
+  NEW: <p>Os capacitores de partida possuem <strong>resistores de sangria</strong> (15.000 a 20.000 Ω a 2 W) para descarregar a tensão residual para menos de 50V em até um minuto após desligado [7]. Contudo, o técnico deve descarregar o capacitor manualmente por segurança usando um resistor de potência com pontas isoladas. <strong>Nunca curto-circuite os terminais com uma chave de fenda comum</strong>, pois o arco elétrico danifica o dielétrico interno e pode soldar a chave ou gerar faíscas perigosas.</p>
+
+Line 3654:
+  OLD: <p>A perda de capacitância no capacitor de marcha reduz o fator de potência. Para manter o mesmo torque mecânico, o motor é forçado a consumir mais corrente, aumentando exponencialmente as perdas térmicas por efeito Joule ($I^2 R$) nos enrolamentos de cobre. O motor opera mais quente, consumindo mais energia e acelerando o desgaste do isolamento.</p>
+  NEW: <p>A perda de capacitância no capacitor de marcha reduz o fator de potência. Para manter o mesmo torque mecânico, o motor é forçado a consumir mais corrente, aumentando exponencialmente as perdas térmicas por efeito Joule (I² R) nos enrolamentos de cobre. O motor opera mais quente, consumindo mais energia e acelerando o desgaste do isolamento.</p>
+
+Line 3667:
+  OLD: <li>Se a queda de tensão for superior a **0,5 V CA**, a resistência elétrica atingiu nível crítico [9]. Sob $30\text{ A}$, uma queda de $1\text{ V}$ gera $30\text{ W}$ de calor concentrado no bloco plástico, provocando derretimento e queda na tensão fornecida ao compressor [9].</li>
+  NEW: <li>Se a queda de tensão for superior a **0,5 V CA**, a resistência elétrica atingiu nível crítico [9]. Sob 30A, uma queda de 1V gera 30W de calor concentrado no bloco plástico, provocando derretimento e queda na tensão fornecida ao compressor [9].</li>
+
+Line 3672:
+  OLD: <p>Uma bobina de controle chacoalhando (zumbido alto ou abrindo e fechando repetidamente a 120 Hz) indica oscilação na tensão de controle. Se cair abaixo do limite (geralmente $19\text{ V CA}$ em sistemas de $24\text{ V CA}$), a bobina perde a retenção. Se a armadura magnética não se fechar completamente devido a resíduos ou sujeira, a bobina consome a elevada corrente de partida (<em>inrush VA</em>) continuamente, aquecendo e queimando a bobina ou o transformador de comando.</p>
+  NEW: <p>Uma bobina de controle chacoalhando (zumbido alto ou abrindo e fechando repetidamente a 120 Hz) indica oscilação na tensão de controle. Se cair abaixo do limite (geralmente 19V CA em sistemas de 24V CA), a bobina perde a retenção. Se a armadura magnética não se fechar completamente devido a resíduos ou sujeira, a bobina consome a elevada corrente de partida (<em>inrush VA</em>) continuamente, aquecendo e queimando a bobina ou o transformador de comando.</p>
+
+Line 3675:
+  OLD: <p>SSRs utilizam semicondutores (IGBTs ou MOSFETs) para chaveamento rápido sem arco elétrico. Contudo, apresentam quedas de tensão operacionais normais de <strong>1,0 V a 2,5 V</strong> devido à física das barreiras P-N [8]. Essa queda constante gera alta dissipação térmica ($P = V \times I$), exigindo o uso de dissipadores de alumínio e pasta térmica de alta condutividade para evitar curtos destrutivos na junção.</p>
+  NEW: <p>SSRs utilizam semicondutores (IGBTs ou MOSFETs) para chaveamento rápido sem arco elétrico. Contudo, apresentam quedas de tensão operacionais normais de <strong>1,0 V a 2,5 V</strong> devido à física das barreiras P-N [8]. Essa queda constante gera alta dissipação térmica (P = V × I), exigindo o uso de dissipadores de alumínio e pasta térmica de alta condutividade para evitar curtos destrutivos na junção.</p>
+
+Line 3708:
+  OLD: <p>A tensão contínua esperada após retificação e filtragem pelos capacitores eletrolíticos é calculada multiplicando-se a tensão eficaz CA da rede por $\sqrt{2}$ (1,414):</p>
+  NEW: <p>A tensão contínua esperada após retificação e filtragem pelos capacitores eletrolíticos é calculada multiplicando-se a tensão eficaz CA da rede por √2 (1,414):</p>
+
+Line 3839:
+  OLD: <p>Para indústrias e sistemas comerciais com redes VRF, a resistência de terra recomendada deve estar entre **1,0 $\Omega$ e 5,0 $\Omega$** [29].</p>
+  NEW: <p>Para indústrias e sistemas comerciais com redes VRF, a resistência de terra recomendada deve estar entre **1,0 Ω e 5,0 Ω** [29].</p>
+
+Line 3842:
+  OLD: <p>Os sinais de comunicação serial em redes VRF operam em baixas tensões (ex. rede Daikin D-III de $16\text{ V CC}$) e sofrem com loops de terra e induções magnéticas [32]:</p>
+  NEW: <p>Os sinais de comunicação serial em redes VRF operam em baixas tensões (ex. rede Daikin D-III de 16V CC) e sofrem com loops de terra e induções magnéticas [32]:</p>
+
+Line 3844:
+  OLD: <li><strong>Daikin (VRV):</strong> Exige fiação flexível de $16\text{ a }18\text{ AWG}$ multifilar **sem blindagem** [33]. A blindagem é proibida porque induz ruído elétrico se aterrada incorretamente. Caso use cabo blindado, a malha de blindagem deve ser aterrada em **apenas um ponto** da cascata [33].</li>
+  NEW: <li><strong>Daikin (VRV):</strong> Exige fiação flexível de 16a 18AWG multifilar **sem blindagem** [33]. A blindagem é proibida porque induz ruído elétrico se aterrada incorretamente. Caso use cabo blindado, a malha de blindagem deve ser aterrada em **apenas um ponto** da cascata [33].</li>
+
+Line 7702:
+  OLD: <span class="text-emerald-400 font-semibold">✔ Compensação Bomba de Calor:</span> O dial deve ser ajustado para 1.25x o valor real ($0.20 \times 1.25 = 0.25$) para mitigar ciclagens indesejadas sob maior torque do compressor.
+  NEW: <span class="text-emerald-400 font-semibold">✔ Compensação Bomba de Calor:</span> O dial deve ser ajustado para 1.25x o valor real (0.20 × 1.25 = 0.25) para mitigar ciclagens indesejadas sob maior torque do compressor.
+
+Line 7709:
+  OLD: <span class="text-emerald-400 font-semibold">✔ Compensação Bomba de Calor:</span> O dial deve ser ajustado para 1.25x o valor real ($0.35 \times 1.25 = 0.4375 \approx 0.44$) para mitigar ciclagens indesejadas sob maior torque do compressor.
+  NEW: <span class="text-emerald-400 font-semibold">✔ Compensação Bomba de Calor:</span> O dial deve ser ajustado para 1.25x o valor real (0.35 × 1.25 = 0.4375 ≈ 0.44) para mitigar ciclagens indesejadas sob maior torque do compressor.
+
+Line 7716:
+  OLD: <span class="text-emerald-400 font-semibold">✔ Compensação Bomba de Calor:</span> O dial deve ser ajustado para 1.25x o valor real ($0.48 \times 1.25 = 0.60$) para mitigar ciclagens indesejadas sob maior torque do compressor.
+  NEW: <span class="text-emerald-400 font-semibold">✔ Compensação Bomba de Calor:</span> O dial deve ser ajustado para 1.25x o valor real (0.48 × 1.25 = 0.60) para mitigar ciclagens indesejadas sob maior torque do compressor.
+
+Line 7723:
+  OLD: <span class="text-emerald-400 font-semibold">✔ Compensação Bomba de Calor:</span> O dial deve ser ajustado para 1.25x o valor real ($0.60 \times 1.25 = 0.75$) para mitigar ciclagens indesejadas sob maior torque do compressor.
+  NEW: <span class="text-emerald-400 font-semibold">✔ Compensação Bomba de Calor:</span> O dial deve ser ajustado para 1.25x o valor real (0.60 × 1.25 = 0.75) para mitigar ciclagens indesejadas sob maior torque do compressor.
+
+Line 7731:
+  OLD: <p>A verificação da precisão do sensor de temperatura interno exige um termômetro de referência de alta precisão calibrado (rastreável NIST em ambientes críticos, como laboratórios ou salas de servidores). A sonda de referência deve ser posicionada adjacente ao invólucro do termistor interno do termostato, e o técnico deve afastar-se para evitar a influência do calor corporal ou da umidade da respiração. Qualquer discrepância que exceda <strong>$\pm 0,5^\circ\text{C}$</strong> tipicamente exige a aplicação de um offset de calibração via matriz de configuração digital do termostato. Se o offset necessário exceder os limites permitidos pelo firmware (geralmente <strong>$\pm 3^\circ\text{C}$</strong>), significa que o termistor interno sofreu uma deriva (<em>drift</em>) irreversível, exigindo a substituição completa do termostato [2].</p>
+  NEW: <p>A verificação da precisão do sensor de temperatura interno exige um termômetro de referência de alta precisão calibrado (rastreável NIST em ambientes críticos, como laboratórios ou salas de servidores). A sonda de referência deve ser posicionada adjacente ao invólucro do termistor interno do termostato, e o técnico deve afastar-se para evitar a influência do calor corporal ou da umidade da respiração. Qualquer discrepância que exceda <strong>± 0,5°C</strong> tipicamente exige a aplicação de um offset de calibração via matriz de configuração digital do termostato. Se o offset necessário exceder os limites permitidos pelo firmware (geralmente <strong>± 3°C</strong>), significa que o termistor interno sofreu uma deriva (<em>drift</em>) irreversível, exigindo a substituição completa do termostato [2].</p>
+
+Line 7746:
+  OLD: <p>Esta arquitetura frequentemente falha em aplicações modernas. Se o equipamento físico utilizar micro-relés altamente sensíveis ou entradas lógicas digitais em sua placa de controle, a corrente parasita do roubo de energia pode causar a oscilação rápida do relé (repique ou <em>chatter</em>), levando a operações erráticas do sistema ou à queima prematura de componentes [5]. Além disso, como o termostato só consegue roubar energia de forma eficaz quando o sistema está desligado (OFF), longos períodos de aquecimento ou resfriamento contínuo, ou inatividade sazonal extrema, podem drenar totalmente a bateria interna de lítio [5]. Quando a tensão da bateria cai abaixo de um limiar crítico (tipicamente <strong>$3,6\text{VDC}$</strong> para células internas), o dispositivo desativa agressivamente a rede Wi-Fi para conservar energia, reduz o brilho da tela e pode iniciar reinicializações em loop (<em>reboots</em>), resultando na perda do controle térmico local [5].</p>
+  NEW: <p>Esta arquitetura frequentemente falha em aplicações modernas. Se o equipamento físico utilizar micro-relés altamente sensíveis ou entradas lógicas digitais em sua placa de controle, a corrente parasita do roubo de energia pode causar a oscilação rápida do relé (repique ou <em>chatter</em>), levando a operações erráticas do sistema ou à queima prematura de componentes [5]. Além disso, como o termostato só consegue roubar energia de forma eficaz quando o sistema está desligado (OFF), longos períodos de aquecimento ou resfriamento contínuo, ou inatividade sazonal extrema, podem drenar totalmente a bateria interna de lítio [5]. Quando a tensão da bateria cai abaixo de um limiar crítico (tipicamente <strong>3,6VDC</strong> para células internas), o dispositivo desativa agressivamente a rede Wi-Fi para conservar energia, reduz o brilho da tela e pode iniciar reinicializações em loop (<em>reboots</em>), resultando na perda do controle térmico local [5].</p>
+
+Line 7800:
+  OLD: <p class="text-xs text-slate-300 mt-2"><strong>Ações Necessárias:</strong> Limpar fuligem no sensor de chama com lã de aço (não lixar), medir microampères da chama (alvo: $>1.0\mu\text{A}$ CC), e checar aterramento da placa.</p>
+  NEW: <p class="text-xs text-slate-300 mt-2"><strong>Ações Necessárias:</strong> Limpar fuligem no sensor de chama com lã de aço (não lixar), medir microampères da chama (alvo: >1.0µA CC), e checar aterramento da placa.</p>
+
+Line 7814:
+  OLD: <li><strong>Degradação de Capacitores Eletrolíticos:</strong> Os capacitores eletrolíticos da placa lógica são vulneráveis a falhas por estresse térmico, picos de tensão ou degradação química natural por envelhecimento [16]. Um capacitor em falha frequentemente apresenta estufamento na tampa metálica superior, trincas radiais ou vazamento de eletrólito dielétrico marrom na superfície da placa [16]. Mesmo que mantenha integridade física visual, a Resistência de Série Equivalente (ESR) interna pode ter degradado gravemente [17]. O uso de um multímetro avançado com função de medição de capacitância e teste de ESR permite aferir se o componente derivou para fora de sua faixa de tolerância de microfarads ($\mu\text{F}$), provocando instabilidade nas tensões DC dos circuitos lógicos da placa [17].</li>
+  NEW: <li><strong>Degradação de Capacitores Eletrolíticos:</strong> Os capacitores eletrolíticos da placa lógica são vulneráveis a falhas por estresse térmico, picos de tensão ou degradação química natural por envelhecimento [16]. Um capacitor em falha frequentemente apresenta estufamento na tampa metálica superior, trincas radiais ou vazamento de eletrólito dielétrico marrom na superfície da placa [16]. Mesmo que mantenha integridade física visual, a Resistência de Série Equivalente (ESR) interna pode ter degradado gravemente [17]. O uso de um multímetro avançado com função de medição de capacitância e teste de ESR permite aferir se o componente derivou para fora de sua faixa de tolerância de microfarads (µF), provocando instabilidade nas tensões DC dos circuitos lógicos da placa [17].</li>
+
+Line 7825:
+  OLD: <p>Os sistemas de HVAC utilizam amplamente termistores do tipo Coeficiente de Temperatura Negativo (NTC), nos quais a resistência elétrica diminui de forma não linear com o aumento da temperatura ambiente. O padrão de referência da indústria comercial de HVAC é o termistor <strong>NTC 10k$\Omega$</strong>, o que significa que o sensor garante exatamente <strong>$10,000\Omega$</strong> de resistência elétrica na temperatura de referência de <strong>$25^\circ\text{C}$ ($77^\circ\text{F}$)</strong> [21].</p>
+  NEW: <p>Os sistemas de HVAC utilizam amplamente termistores do tipo Coeficiente de Temperatura Negativo (NTC), nos quais a resistência elétrica diminui de forma não linear com o aumento da temperatura ambiente. O padrão de referência da indústria comercial de HVAC é o termistor <strong>NTC 10kΩ</strong>, o que significa que o sensor garante exatamente <strong>10,000Ω</strong> de resistência elétrica na temperatura de referência de <strong>25°C (77°F)</strong> [21].</p>
+
+Line 7826:
+  OLD: <p>Contudo, o diagnóstico desses componentes exige compreender a distinção crítica entre curvas semicondutoras de materiais internos, principalmente as curvas <strong>Tipo II</strong> e <strong>Tipo III</strong>. Embora ambos os tipos apresentem exatamente $10,000\Omega$ a $25^\circ\text{C}$, suas curvas de resistência divergem significativamente em temperaturas extremas devido a diferentes constantes <strong>Beta ($B$)</strong> e fatores de dissipação térmica [21]. A substituição acidental de um sensor Tipo II queimado por um Tipo III causará um desvio severo na medição de temperatura do controlador, desestabilizando completamente os laços de controle Proporcional-Integral-Derivativo (PID) do sistema [21].</p>
+  NEW: <p>Contudo, o diagnóstico desses componentes exige compreender a distinção crítica entre curvas semicondutoras de materiais internos, principalmente as curvas <strong>Tipo II</strong> e <strong>Tipo III</strong>. Embora ambos os tipos apresentem exatamente 10,000Ω a 25°C, suas curvas de resistência divergem significativamente em temperaturas extremas devido a diferentes constantes <strong>Beta (B)</strong> e fatores de dissipação térmica [21]. A substituição acidental de um sensor Tipo II queimado por um Tipo III causará um desvio severo na medição de temperatura do controlador, desestabilizando completamente os laços de controle Proporcional-Integral-Derivativo (PID) do sistema [21].</p>
+
+Line 7854:
+  OLD: <p class="text-slate-300">Ao instalar um sensor Tipo III no lugar de um Tipo II a 0°C, a diferença de $2,701\Omega$ fará o controlador ler uma temperatura de aproximadamente <strong class="text-rose-400">+2.5°C</strong>, desregulando loops de controle em chillers e evaporadoras.</p>
+  NEW: <p class="text-slate-300">Ao instalar um sensor Tipo III no lugar de um Tipo II a 0°C, a diferença de 2,701Ω fará o controlador ler uma temperatura de aproximadamente <strong class="text-rose-400">+2.5°C</strong>, desregulando loops de controle em chillers e evaporadoras.</p>
+
+Line 7864:
+  OLD: <p class="text-slate-300">Ambas as curvas NTC convergem exatamente para $10k\Omega$. O RTD PT1000 apresenta $1,097.4\Omega$. A esta temperatura neutra, o erro de swap NTC é nulo.</p>
+  NEW: <p class="text-slate-300">Ambas as curvas NTC convergem exatamente para 10kΩ. O RTD PT1000 apresenta 1,097.4Ω. A esta temperatura neutra, o erro de swap NTC é nulo.</p>
+
+Line 7874:
+  OLD: <p class="text-slate-300">Uma diferença de $290\Omega$ entre os sensores NTC a 50°C provoca um desvio na leitura de aproximadamente <strong class="text-rose-400">-2.1°C</strong>, levando a controlador a superaquecer a linha.</p>
+  NEW: <p class="text-slate-300">Uma diferença de 290Ω entre os sensores NTC a 50°C provoca um desvio na leitura de aproximadamente <strong class="text-rose-400">-2.1°C</strong>, levando a controlador a superaquecer a linha.</p>
+
+Line 7884:
+  OLD: <p class="text-slate-300">A divergência de $269\Omega$ a 75°C induz um erro de leitura severo de <strong class="text-rose-400">-4.3°C</strong> no controlador, comprometendo a lógica de segurança de descarga.</p>
+  NEW: <p class="text-slate-300">A divergência de 269Ω a 75°C induz um erro de leitura severo de <strong class="text-rose-400">-4.3°C</strong> no controlador, comprometendo a lógica de segurança de descarga.</p>
+
+Line 7890:
+  OLD: <p>Os transdutores de pressão convertem a deformação mecânica de diafragmas sob pressão pneumática ou hidráulica em sinais analógicos de tensão ou corrente escalonados. Eles são fundamentais no monitoramento de caixas de Volume de Ar Variável (VAV), bombas de água gelada e ciclos de refrigerante. O formato padrão de instrumentação utiliza uma tensão de referência fornecida pelo controlador de 5VDC, com um sinal de retorno linear variando de <strong>$0.5\text{VDC}$ a $4.5\text{VDC}$</strong> profissional ao span de pressão projetado [26].</p>
+  NEW: <p>Os transdutores de pressão convertem a deformação mecânica de diafragmas sob pressão pneumática ou hidráulica em sinais analógicos de tensão ou corrente escalonados. Eles são fundamentais no monitoramento de caixas de Volume de Ar Variável (VAV), bombas de água gelada e ciclos de refrigerante. O formato padrão de instrumentação utiliza uma tensão de referência fornecida pelo controlador de 5VDC, com um sinal de retorno linear variando de <strong>0.5VDC a 4.5VDC</strong> profissional ao span de pressão projetado [26].</p>
+
+Line 7891:
+  OLD: <p>Para um transdutor comercial especificado de <strong>$0$ a $500\text{ PSI}$</strong>, a correlação matemática é linear:</p>
+  NEW: <p>Para um transdutor comercial especificado de <strong>$0$ a 500PSI</strong>, a correlação matemática é linear:</p>
+
+Line 7893:
+  OLD: <li><strong>$0.5\text{V}$</strong> equivale a <strong>$0\text{ PSI}$</strong> [26]</li>
+  NEW: <li><strong>0.5V</strong> equivale a <strong>0PSI</strong> [26]</li>
+
+Line 7894:
+  OLD: <li><strong>$2.5\text{V}$</strong> equivale a <strong>$250\text{ PSI}$</strong> [26]</li>
+  NEW: <li><strong>2.5V</strong> equivale a <strong>250PSI</strong> [26]</li>
+
+Line 7895:
+  OLD: <li><strong>$4.5\text{V}$</strong> equivale a <strong>$500\text{ PSI}$</strong> [26]</li>
+  NEW: <li><strong>4.5V</strong> equivale a <strong>500PSI</strong> [26]</li>
+
+Line 7897:
+  OLD: <p>Em caixas de controle VAV da fabricante Trane, o sensor de fluxo lê diferenciais de pressão dinâmica muito baixos. O circuito opera na faixa de <strong>$0.25\text{VDC}$ a $1.75\text{VDC}$</strong>, utilizando a equação específica de calibração [28]:</p>
+  NEW: <p>Em caixas de controle VAV da fabricante Trane, o sensor de fluxo lê diferenciais de pressão dinâmica muito baixos. O circuito opera na faixa de <strong>0.25VDC a 1.75VDC</strong>, utilizando a equação específica de calibração [28]:</p>
+
+Line 7899:
+  OLD: <p>Onde a tensão de saída de <strong>$1.75\text{VDC}$</strong> equivale ao limite máximo de fluxo de <strong>$2.0\text{ in. w.c.}$</strong> (polegadas de coluna d'água) medidos no anel de amostragem de fluxo [28].</p>
+  NEW: <p>Onde a tensão de saída de <strong>1.75VDC</strong> equivale ao limite máximo de fluxo de <strong>2.0in. w.c.</strong> (polegadas de coluna d'água) medidos no anel de amostragem de fluxo [28].</p>
+
+Line 7962:
+  OLD: <p class="text-xs text-slate-400 mt-2 border-t border-slate-800 pt-2"><span class="text-emerald-400 font-semibold">✔ Condição de Meia Escala:</span> Transdutor funcionando corretamente. Manômetro de referência deve indicar de $245$ a $255\text{ PSI}$ ($\pm 2\%$ FS).</p>
+  NEW: <p class="text-xs text-slate-400 mt-2 border-t border-slate-800 pt-2"><span class="text-emerald-400 font-semibold">✔ Condição de Meia Escala:</span> Transdutor funcionando corretamente. Manômetro de referência deve indicar de $245$ a 255PSI (± 2% FS).</p>
+
+Line 7993:
+  OLD: <p>Os sensores de Umidade Relativa (UR) do tipo capacitivo são notórios pelo elevado desvio de calibração ao longo do tempo (<em>sensor drift</em>), causado pela degradação do polímero ativo sensível exposto e pela contaminação contínua por compostos e poeiras em dutos de ar. A calibração precisa em campo utiliza o método físico-químico das soluções de sais saturados, que geram microclimas de umidade perfeitamente estáveis e conhecidos quando selados a uma temperatura fixa de <strong>$25^\circ\text{C}$</strong> [29]:</p>
+  NEW: <p>Os sensores de Umidade Relativa (UR) do tipo capacitivo são notórios pelo elevado desvio de calibração ao longo do tempo (<em>sensor drift</em>), causado pela degradação do polímero ativo sensível exposto e pela contaminação contínua por compostos e poeiras em dutos de ar. A calibração precisa em campo utiliza o método físico-químico das soluções de sais saturados, que geram microclimas de umidade perfeitamente estáveis e conhecidos quando selados a uma temperatura fixa de <strong>25°C</strong> [29]:</p>
+
+Line 7995:
+  OLD: <li><strong>Calibração de Ponto Baixo (33% UR):</strong> Utiliza um frasco hermético contendo uma solução saturada de Cloreto de Magnésio ($\text{MgCl}_2$) [31].</li>
+  NEW: <li><strong>Calibração de Ponto Baixo (33% UR):</strong> Utiliza um frasco hermético contendo uma solução saturada de Cloreto de Magnésio (MgCl₂) [31].</li>
+
+Line 7996:
+  OLD: <li><strong>Calibração de Ponto Alto (75% UR):</strong> Utiliza um frasco contendo uma solução saturada de Cloreto de Sódio ($\text{NaCl}$) [31].</li>
+  NEW: <li><strong>Calibração de Ponto Alto (75% UR):</strong> Utiliza um frasco contendo uma solução saturada de Cloreto de Sódio (NaCl) [31].</li>
+
+Line 8001:
+  OLD: <p>Os Transformadores de Corrente (TCs) são sensores indutivos utilizados para rebaixar e ler correntes elétricas elevadas em barramentos de potência (como alimentadores principais e motores de chillers), convertendo-as em sinais seguros de instrumentação secundária de $0 \sim 5\text{A}$ ou em escalas de tensão proporcional de $0 \sim 10\text{VDC}$ para monitoramento energético no BMS [33].</p>
+  NEW: <p>Os Transformadores de Corrente (TCs) são sensores indutivos utilizados para rebaixar e ler correntes elétricas elevadas em barramentos de potência (como alimentadores principais e motores de chillers), convertendo-as em sinais seguros de instrumentação secundária de 0 ~ 5A ou em escalas de tensão proporcional de 0 ~ 10VDC para monitoramento energético no BMS [33].</p>
+
+Line 8003:
+  OLD: <p>Na indisponibilidade de instrumentos automatizados em campo, o teste de conformidade de escala pode ser executado utilizando uma carga resistiva pura. Ao passar o condutor que alimenta uma lâmpada incandescente de alta potência pelo centro da janela do TC, estabelece-se uma carga com Fator de Potência perfeitamente unitário (<strong>$PF = 1$</strong>), neutralizando distorções harmônicas e de fase provocadas por fontes eletrônicas de reatores de LED ou lâmpadas fluorescentes compactas [35]. O técnico mede a corrente real do circuito com um alicate amperímetro de precisão calibrado e compara a leitura obtida com o valor de corrente recebido e exibido na tela do BMS. Para ensaios em altas faixas de corrente, são utilizados blocos calibradores (como o Fluke 5560A) providos de bobinas de 50 voltas; a injeção controlada de $10\text{ A}$ no enrolamento simula fisicamente uma corrente contínua de $500\text{ A}$ no núcleo do TC, permitindo validar a linearidade das leituras elétricas ao longo de todo o span operacional [36].</p>
+  NEW: <p>Na indisponibilidade de instrumentos automatizados em campo, o teste de conformidade de escala pode ser executado utilizando uma carga resistiva pura. Ao passar o condutor que alimenta uma lâmpada incandescente de alta potência pelo centro da janela do TC, estabelece-se uma carga com Fator de Potência perfeitamente unitário (<strong>PF = 1</strong>), neutralizando distorções harmônicas e de fase provocadas por fontes eletrônicas de reatores de LED ou lâmpadas fluorescentes compactas [35]. O técnico mede a corrente real do circuito com um alicate amperímetro de precisão calibrado e compara a leitura obtida com o valor de corrente recebido e exibido na tela do BMS. Para ensaios em altas faixas de corrente, são utilizados blocos calibradores (como o Fluke 5560A) providos de bobinas de 50 voltas; a injeção controlada de 10A no enrolamento simula fisicamente uma corrente contínua de 500A no núcleo do TC, permitindo validar a linearidade das leituras elétricas ao longo de todo o span operacional [36].</p>
+
+Line 8013:
+  OLD: <li><strong>Daikin VRV (Variable Refrigerant Volume):</strong> Utiliza um barramento serial de dados de dois fios sem polaridade denominado <strong>D-III Net</strong> (terminais F1/F2) [38]. Um parâmetro de instalação obrigatório é que o barramento D-III Net exige fiação de bitola <strong>16 a 18 AWG cabo de cobre flexível trançado, não blindado</strong> [39]. O uso de fiação blindada (<em>shielded</em>) constitui um erro comum; a blindagem aterrada de forma inadequada atua como uma antena captadora de ruído eletromagnético externo (EMI) [39]. Além disso, o uso de condutores rígidos é proibido, pois a corrente de comunicação viaja predominantemente por efeito pelicular (<em>skin effect</em>) na superfície dos filamentos metálicos, causando atenuação do sinal [39]. A comunicação opera a uma tensão de sinal nominal de <strong>$16\text{VDC}$</strong>, contudo, a medição do canal F1/F2 com multímetro digital em escala DC deve revelar flutuação contínua variando entre <strong>$2\text{VDC}$ e $4\text{VDC}$</strong> com os pulsos dinâmicos dos pacotes lógicos [38]. O <strong>Código de Erro Daikin U4</strong> acusa a falha total de comunicação no barramento [38].</li>
+  NEW: <li><strong>Daikin VRV (Variable Refrigerant Volume):</strong> Utiliza um barramento serial de dados de dois fios sem polaridade denominado <strong>D-III Net</strong> (terminais F1/F2) [38]. Um parâmetro de instalação obrigatório é que o barramento D-III Net exige fiação de bitola <strong>16 a 18 AWG cabo de cobre flexível trançado, não blindado</strong> [39]. O uso de fiação blindada (<em>shielded</em>) constitui um erro comum; a blindagem aterrada de forma inadequada atua como uma antena captadora de ruído eletromagnético externo (EMI) [39]. Além disso, o uso de condutores rígidos é proibido, pois a corrente de comunicação viaja predominantemente por efeito pelicular (<em>skin effect</em>) na superfície dos filamentos metálicos, causando atenuação do sinal [39]. A comunicação opera a uma tensão de sinal nominal de <strong>16VDC</strong>, contudo, a medição do canal F1/F2 com multímetro digital em escala DC deve revelar flutuação contínua variando entre <strong>2VDC e 4VDC</strong> com os pulsos dinâmicos dos pacotes lógicos [38]. O <strong>Código de Erro Daikin U4</strong> acusa a falha total de comunicação no barramento [38].</li>
+
+Line 8014:
+  OLD: <li><strong>Mitsubishi City Multi:</strong> Adota um barramento serial próprio denominado <strong>M-Net</strong>, operando sob uma tensão nominal mais elevada de aproximadamente <strong>$29\text{VDC}$</strong> [40]. O <strong>Código de Erro Mitsubishi 6607</strong> aponta falha de confirmação lógica ("ACK Error"), indicando que a placa controladora central não detecta a resposta de um determinado endereço físico [40]. Por sua vez, o <strong>Código de Erro Mitsubishi 6608</strong> acusa falha de "Sem Resposta" ("No Response"), tipicamente gerado por excesso de ruído induzido na rede serial, ramificações de comunicação cruzadas excedendo o limite físico máximo de <strong>$200\text{ metros}$</strong> de comprimento do barramento M-Net ou bitola insuficiente de cabos elétricos [41].</li>
+  NEW: <li><strong>Mitsubishi City Multi:</strong> Adota um barramento serial próprio denominado <strong>M-Net</strong>, operando sob uma tensão nominal mais elevada de aproximadamente <strong>29VDC</strong> [40]. O <strong>Código de Erro Mitsubishi 6607</strong> aponta falha de confirmação lógica ("ACK Error"), indicando que a placa controladora central não detecta a resposta de um determinado endereço físico [40]. Por sua vez, o <strong>Código de Erro Mitsubishi 6608</strong> acusa falha de "Sem Resposta" ("No Response"), tipicamente gerado por excesso de ruído induzido na rede serial, ramificações de comunicação cruzadas excedendo o limite físico máximo de <strong>200metros</strong> de comprimento do barramento M-Net ou bitola insuficiente de cabos elétricos [41].</li>
+
+Line 8117:
+  OLD: <p class="text-slate-300 mt-1"><strong>Diagnóstico:</strong> Verificar se a rede F1/F2 foi passada em paralelo com linhas de potência (manter distância $>30\text{cm}$). Substituir cabos rígidos de termostato por cabos flexíveis trançados de 16/18 AWG.</p>
+  NEW: <p class="text-slate-300 mt-1"><strong>Diagnóstico:</strong> Verificar se a rede F1/F2 foi passada em paralelo com linhas de potência (manter distância >30cm). Substituir cabos rígidos de termostato por cabos flexíveis trançados de 16/18 AWG.</p>
+
+Line 8151:
+  OLD: <li><strong>Reflexão de Ondas e Terminação de Rede:</strong> Devido a comprimentos de rede que chegam a milhares de metros, a fiação de dados se comporta como uma linha de transmissão eletromagnética de alta frequência. Se as extremidades do barramento serial em daisy-chain forem mantidas abelas e sem terminação, os pulsos eletromagnéticos que trafegam pelo condutor batem no final físico do fio e sofrem reflexão ("eco elétrico") retornando ao condutor de origem [45]. A instalação de um resistor de terminação de <strong>$120\Omega$</strong> nas linhas Data+ e Data- nas duas pontas físicas extremas do barramento absorve a energia restante do pulso elétrico, eliminando reflexões e restaurando o sinal lógico quadrado limpo na tela do osciloscópio [44].</li>
+  NEW: <li><strong>Reflexão de Ondas e Terminação de Rede:</strong> Devido a comprimentos de rede que chegam a milhares de metros, a fiação de dados se comporta como uma linha de transmissão eletromagnética de alta frequência. Se as extremidades do barramento serial em daisy-chain forem mantidas abelas e sem terminação, os pulsos eletromagnéticos que trafegam pelo condutor batem no final físico do fio e sofrem reflexão ("eco elétrico") retornando ao condutor de origem [45]. A instalação de um resistor de terminação de <strong>120Ω</strong> nas linhas Data+ e Data- nas duas pontas físicas extremas do barramento absorve a energia restante do pulso elétrico, eliminando reflexões e restaurando o sinal lógico quadrado limpo na tela do osciloscópio [44].</li>
+
+Line 8209:
+  OLD: <p>O computador equipado com o Wireshark deve ser conectado a uma porta espelhada (<em>port mirroring</em>) em um switch de rede gerenciável, permitindo monitorar o tráfego total de dados dos controladores [55]. Para redes seriais MS/TP convertidas, a captura de tráfego deve rodar por um tempo mínimo de <strong>15 a 20 minutos</strong> para obter uma amostragem estatística útil de múltiplos ciclos de passagem de token [55]. Um tempo de round-trip de token considerado excelente deve situar-se abaixo de <strong>$85\text{ milissegundos}$</strong>; tempos de tráfego excedendo <strong>$2\text{ segundos}$</strong> acusam problemas de ruído por indução, ausência de terminadores de fim de linha ou excesso de nós acoplados a um único segmento físico de rede [52].</p>
+  NEW: <p>O computador equipado com o Wireshark deve ser conectado a uma porta espelhada (<em>port mirroring</em>) em um switch de rede gerenciável, permitindo monitorar o tráfego total de dados dos controladores [55]. Para redes seriais MS/TP convertidas, a captura de tráfego deve rodar por um tempo mínimo de <strong>15 a 20 minutos</strong> para obter uma amostragem estatística útil de múltiplos ciclos de passagem de token [55]. Um tempo de round-trip de token considerado excelente deve situar-se abaixo de <strong>85milissegundos</strong>; tempos de tráfego excedendo <strong>2segundos</strong> acusam problemas de ruído por indução, ausência de terminadores de fim de linha ou excesso de nós acoplados a um único segmento físico de rede [52].</p>
+
+Line 8219:
+  OLD: <li><strong>Setback de Arrefecimento (Verão):</strong> Relaxar o setpoint de refrigeração para <strong>$26^\circ\text{C}$ ($79^\circ\text{F}$)</strong> após o encerramento do expediente.</li>
+  NEW: <li><strong>Setback de Arrefecimento (Verão):</strong> Relaxar o setpoint de refrigeração para <strong>26°C (79°F)</strong> após o encerramento do expediente.</li>
+
+Line 8220:
+  OLD: <li><strong>Setback de Aquecimento (Inverno):</strong> Reduzir o setpoint de aquecimento para <strong>$16^\circ\text{C}$ ($61^\circ\text{F}$)</strong> em períodos noturnos.</li>
+  NEW: <li><strong>Setback de Aquecimento (Inverno):</strong> Reduzir o setpoint de aquecimento para <strong>16°C (61°F)</strong> em períodos noturnos.</li>
+
+Line 8222:
+  OLD: <p>Lógicas mais modernas prevêem a integração por <strong>Resposta à Demanda (Demand-Response)</strong> com concessionárias locais de energia. Ao receber pulsos lógicos seguros do Smart-Grid em horários de pico energético, o controlador BMS reduz temporariamente cargas mecânicas de forma programada, ampliando as faixas de banda morta térmica das zonas em <strong>$1^\circ\text{C}$</strong> e limitando a velocidade máxima de inversores de frequência (VFDs) de motores de ventiladores em $80\%$.</p>
+  NEW: <p>Lógicas mais modernas prevêem a integração por <strong>Resposta à Demanda (Demand-Response)</strong> com concessionárias locais de energia. Ao receber pulsos lógicos seguros do Smart-Grid em horários de pico energético, o controlador BMS reduz temporariamente cargas mecânicas de forma programada, ampliando as faixas de banda morta térmica das zonas em <strong>1°C</strong> e limitando a velocidade máxima de inversores de frequência (VFDs) de motores de ventiladores em 80%.</p>
+
+Line 8226:
+  OLD: <p>O PMOC exige conformidade técnica integrada com a norma <strong>ABNT NBR 16401</strong> (Sistemas de ar condicionado para conforto - Parte 1, 2 e 3) e diretrizes da ASHRAE Standard 62.1 [57]. A Parte 3 da NBR 16401 normatiza as taxas mínimas admissíveis de renovação de ar externo para diluição de dióxido de carbono ($CO_2$) e compostos orgânicos voláteis (VOCs), exigindo vazões de projeto entre <strong>$5\text{ e }7,5\text{ l/s por pessoa}$</strong> com base no perfil de densidade ocupacional do ambiente [60].</p>
+  NEW: <p>O PMOC exige conformidade técnica integrada com a norma <strong>ABNT NBR 16401</strong> (Sistemas de ar condicionado para conforto - Parte 1, 2 e 3) e diretrizes da ASHRAE Standard 62.1 [57]. A Parte 3 da NBR 16401 normatiza as taxas mínimas admissíveis de renovação de ar externo para diluição de dióxido de carbono (CO₂) e compostos orgânicos voláteis (VOCs), exigindo vazões de projeto entre <strong>5e 7,5l/s por pessoa</strong> com base no perfil de densidade ocupacional do ambiente [60].</p>
+

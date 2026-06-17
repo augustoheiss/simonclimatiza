@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { cursoInstalacaoHVAC } from '../data/cursoInstalacaoHVAC';
+import { cursoManutencaoHVAC } from '../data/cursoManutencaoHVAC';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import DOMPurify from 'dompurify';
@@ -8,11 +8,10 @@ import {
   ArrowLeft,
   CheckCircle2,
   ShieldCheck,
+  Stethoscope,
   Thermometer,
   Zap,
-  Flame,
-  Gauge,
-  Rocket,
+  Wrench,
   Building,
   BookOpen,
   Play,
@@ -25,20 +24,18 @@ import {
   GraduationCap,
   Activity,
   AlertTriangle,
-  Wrench,
-  TrendingUp,
+  Rocket,
   Star,
   Target,
   Award,
   Video,
-  Image,
-  X,
+  Handshake,
   Table2,
   Info,
   Layers,
 } from 'lucide-react';
 
-// ─── Animation Variants (reusing project pattern) ───────────────────────────
+// ─── Animation Variants ─────────────────────────────────────────────────────
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
   visible: (delay = 0) => ({
@@ -72,56 +69,11 @@ const staggerItem = {
   },
 };
 
-// Page-level transition variants
 const pageVariants = {
   initial: { opacity: 0, y: 30 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
   exit: { opacity: 0, y: -20, transition: { duration: 0.3, ease: 'easeIn' } },
 };
-
-// ─── Helper: YouTube URL → embed ID ─────────────────────────────────────────
-function getYouTubeEmbedUrl(url) {
-  if (!url) return null;
-  const match = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([\w-]+)/);
-  return match ? `https://www.youtube.com/embed/${match[1]}?rel=0&modestbranding=1` : null;
-}
-
-// ─── Slide count map per lesson (aula.id → { folder, count, ext }) ──────────
-const SLIDE_MAP = {
-  '01-01': { folder: 'modulo01/modulo01-01', count: 15, ext: 'png' },
-  '01-02': { folder: 'modulo01/modulo01-02', count: 15, ext: 'png' },
-  '01-03': { folder: 'modulo01/modulo01-03', count: 15, ext: 'png' },
-  '01-04': { folder: 'modulo01/modulo01-04', count: 15, ext: 'png' },
-  '02-01': { folder: 'modulo02/modulo02-01', count: 13, ext: 'png' },
-  '02-02': { folder: 'modulo02/modulo02-02', count: 15, ext: 'png' },
-  '02-03': { folder: 'modulo02/modulo02-03', count: 15, ext: 'png' },
-  '03-01': { folder: 'modulo03/modulo03-01', count: 15, ext: 'png' },
-  '03-02': { folder: 'modulo03/modulo03-02', count: 15, ext: 'png' },
-  '03-03': { folder: 'modulo03/modulo03-03', count: 15, ext: 'png' },
-  '04-01': { folder: 'modulo04/modulo04-01', count: 14, ext: 'png' },
-  '04-02': { folder: 'modulo04/modulo04-02', count: 13, ext: 'png' },
-  '04-03': { folder: 'modulo04/modulo04-03', count: 15, ext: 'png' },
-  '05-01': { folder: 'modulo05/modulo05-01', count: 15, ext: 'png' },
-  '05-02': { folder: 'modulo05/modulo05-02', count: 15, ext: 'png' },
-  '05-03': { folder: 'modulo05/modulo05-03', count: 15, ext: 'png' },
-  '05-04': { folder: 'modulo05/modulo05-04', count: 15, ext: 'png' },
-  '06-01': { folder: 'modulo06/modulo06-01', count: 15, ext: 'png' },
-  '07-01': { folder: 'modulo07/modulo07-01', count: 12, ext: 'png' },
-  '07-02': { folder: 'modulo07/modulo07-02', count: 15, ext: 'png' },
-  'apresentacao': { folder: 'aula01-apresentacao', count: 15, ext: 'jpg' },
-};
-
-function getSlidePaths(aulaId) {
-  const info = SLIDE_MAP[aulaId];
-  if (!info) return [];
-  const base = `/images/academia/hvac-instalacao/${info.folder}`;
-  const slides = [];
-  for (let i = 1; i <= info.count; i++) {
-    slides.push(`${base}/slide${String(i).padStart(2, '0')}.${info.ext}`);
-  }
-  slides.push(`${base}/infografico.jpg`);
-  return slides;
-}
 
 // ─── Safe HTML renderer ─────────────────────────────────────────────────────
 function SafeHTML({ html, className = '' }) {
@@ -151,62 +103,66 @@ const LESSON_TABS = [
   { id: 'fontes', label: 'Fontes & Pesquisa', icon: FileText },
 ];
 
-// ─── Module Colors ──────────────────────────────────────────────────────────
+// ─── Module Colors (Emerald-based palette) ──────────────────────────────────
 const moduleColors = [
-  { accent: '#0ea5e9', border: 'rgba(14,165,233,0.4)', bg: 'rgba(14,165,233,0.08)' },
-  { accent: '#3b82f6', border: 'rgba(59,130,246,0.4)', bg: 'rgba(59,130,246,0.08)' },
-  { accent: '#6366f1', border: 'rgba(99,102,241,0.4)', bg: 'rgba(99,102,241,0.08)' },
-  { accent: '#8b5cf6', border: 'rgba(139,92,246,0.4)', bg: 'rgba(139,92,246,0.08)' },
-  { accent: '#14b8a6', border: 'rgba(20,184,166,0.4)', bg: 'rgba(20,184,166,0.08)' },
-  { accent: '#f59e0b', border: 'rgba(245,158,11,0.4)', bg: 'rgba(245,158,11,0.08)' },
-  { accent: '#10b981', border: 'rgba(16,185,129,0.4)', bg: 'rgba(16,185,129,0.08)' },
+  { accent: '#10b981', border: 'rgba(16,185,129,0.4)', bg: 'rgba(16,185,129,0.08)' },  // M01 Emerald
+  { accent: '#06b6d4', border: 'rgba(6,182,212,0.4)', bg: 'rgba(6,182,212,0.08)' },    // M02 Cyan
+  { accent: '#3b82f6', border: 'rgba(59,130,246,0.4)', bg: 'rgba(59,130,246,0.08)' },   // M03 Blue
+  { accent: '#8b5cf6', border: 'rgba(139,92,246,0.4)', bg: 'rgba(139,92,246,0.08)' },   // M04 Violet
+  { accent: '#f59e0b', border: 'rgba(245,158,11,0.4)', bg: 'rgba(245,158,11,0.08)' },   // M05 Amber
+  { accent: '#ef4444', border: 'rgba(239,68,68,0.4)', bg: 'rgba(239,68,68,0.08)' },     // M06 Red
+  { accent: '#14b8a6', border: 'rgba(20,184,166,0.4)', bg: 'rgba(20,184,166,0.08)' },   // M07 Teal
+  { accent: '#f97316', border: 'rgba(249,115,22,0.4)', bg: 'rgba(249,115,22,0.08)' },   // M08 Orange
 ];
 
+// ─── Module icons mapping ───────────────────────────────────────────────────
+const MODULE_ICONS = {
+  'shield-check': ShieldCheck,
+  'stethoscope': Stethoscope,
+  'wrench': Wrench,
+  'thermometer': Thermometer,
+  'zap': Zap,
+  'building': Building,
+  'activity': Activity,
+  'handshake': Handshake,
+};
+
+// ─── Accent color constants ─────────────────────────────────────────────────
+const ACCENT = '#10b981';
+const ACCENT_LIGHT = '#34d399';
+const ACCENT_BG = 'rgba(16,185,129,0.15)';
+const ACCENT_BORDER = 'rgba(52,211,153,0.3)';
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// LESSON READER VIEW
 // ═══════════════════════════════════════════════════════════════════════════════
 function LessonReaderView({ aula, onBack }) {
   const [activeTab, setActiveTab] = useState(aula.defaultTab || 'conteudo');
-  const [slideIndex, setSlideIndex] = useState(0);
   const [fonteIndex, setFonteIndex] = useState(0);
 
-  // Reset tab when lesson changes
   useEffect(() => {
     setActiveTab(aula.defaultTab || 'conteudo');
-    setSlideIndex(0);
     setFonteIndex(0);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [aula.id, aula.defaultTab]);
 
-  const slides = getSlidePaths(aula.id);
   const fontes = aula.fontes_imagens || [];
-  const isApresentacao = aula.id === 'apresentacao';
-  const videoUrl = getYouTubeEmbedUrl(
-    isApresentacao
-      ? (aula.link_video || aula.videos?.find((v) => v.tipo === 'videoaula')?.link)
-      : (aula.link_podcast || aula.videos?.find((v) => v.tipo === 'podcast')?.link)
-  );
-  const podcastUrl = getYouTubeEmbedUrl(
-    isApresentacao
-      ? (aula.link_podcast || aula.videos?.find((v) => v.tipo === 'podcast')?.link)
-      : (aula.link_video || aula.videos?.find((v) => v.tipo === 'videoaula')?.link)
-  );
 
   // Determine which tabs are available
   const availableTabs = LESSON_TABS.filter(tab => {
     if (tab.id === 'conteudo') return !!aula.conteudo_html;
     if (tab.id === 'tabelas') return !!aula.tabelas_html;
     if (tab.id === 'infobox') return !!aula.infobox_campo;
-    if (tab.id === 'video') return !!videoUrl;
-    if (tab.id === 'podcast') return !!podcastUrl;
-    if (tab.id === 'slides') return slides.length > 0;
+    if (tab.id === 'video') return false; // No videos yet
+    if (tab.id === 'podcast') return false; // No podcasts yet
+    if (tab.id === 'slides') return false; // No slides yet
     if (tab.id === 'fontes') return fontes.length > 0;
     return true;
   });
 
-  // If current tab becomes unavailable, fall back
   useEffect(() => {
     if (!availableTabs.find(t => t.id === activeTab)) {
-      // Fall back to first available or 'video'
-      const fallback = availableTabs[0]?.id || 'video';
+      const fallback = availableTabs[0]?.id || 'conteudo';
       setActiveTab(fallback);
     }
   }, [aula.id]);
@@ -222,7 +178,7 @@ function LessonReaderView({ aula, onBack }) {
       style={{ backgroundColor: '#0f172a' }}
     >
       <style dangerouslySetInnerHTML={{ __html: `
-        .prose-custom h2 {
+        .prose-manut h2 {
           font-size: 1.75rem;
           font-weight: 700;
           color: #0f172a;
@@ -230,7 +186,7 @@ function LessonReaderView({ aula, onBack }) {
           margin-bottom: 1rem;
           line-height: 1.25;
         }
-        .prose-custom h3 {
+        .prose-manut h3 {
           font-size: 1.35rem;
           font-weight: 700;
           color: #1e293b;
@@ -238,49 +194,49 @@ function LessonReaderView({ aula, onBack }) {
           margin-bottom: 0.75rem;
           line-height: 1.3;
         }
-        .prose-custom h4 {
+        .prose-manut h4 {
           font-size: 1.15rem;
           font-weight: 600;
           color: #334155;
           margin-top: 1.5rem;
           margin-bottom: 0.75rem;
         }
-        .prose-custom p {
+        .prose-manut p {
           margin-top: 0;
           margin-bottom: 1.25rem;
           line-height: 1.75;
           color: #334155;
         }
-        .prose-custom ul {
+        .prose-manut ul {
           list-style-type: disc;
           margin-top: 0;
           margin-bottom: 1.25rem;
           padding-left: 1.5rem;
         }
-        .prose-custom ol {
+        .prose-manut ol {
           list-style-type: decimal;
           margin-top: 0;
           margin-bottom: 1.25rem;
           padding-left: 1.5rem;
         }
-        .prose-custom li {
+        .prose-manut li {
           margin-bottom: 0.5rem;
           line-height: 1.75;
           color: #334155;
         }
-        .prose-custom strong {
+        .prose-manut strong {
           font-weight: 700;
           color: #0f172a;
         }
-        .prose-custom code {
+        .prose-manut code {
           font-family: monospace;
-          background-color: rgba(220, 38, 38, 0.06);
+          background-color: rgba(16, 185, 129, 0.06);
           padding: 0.2rem 0.4rem;
           border-radius: 0.25rem;
           font-size: 0.875rem;
-          color: #991b1b;
+          color: #065f46;
         }
-        .prose-custom pre {
+        .prose-manut pre {
           background-color: #f8fafc;
           border: 1px solid #e2e8f0;
           padding: 1rem;
@@ -288,15 +244,15 @@ function LessonReaderView({ aula, onBack }) {
           overflow-x: auto;
           margin-bottom: 1.25rem;
         }
-        .prose-custom a {
-          color: #dc2626;
+        .prose-manut a {
+          color: #10b981;
           text-decoration: underline;
           font-weight: 500;
         }
-        .prose-custom a:hover {
-          color: #b91c1c;
+        .prose-manut a:hover {
+          color: #059669;
         }
-        .prose-custom table {
+        .prose-manut table {
           width: 100%;
           border-collapse: collapse;
           margin-top: 1.5rem;
@@ -305,61 +261,122 @@ function LessonReaderView({ aula, onBack }) {
           overflow: hidden;
           box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
         }
-        .prose-custom th {
-          background-color: rgba(220, 38, 38, 0.07);
-          font-weight: 700;
+        .prose-manut th {
+          background-color: rgba(16, 185, 129, 0.07) !important;
+          font-weight: 700 !important;
           text-align: left;
           padding: 0.75rem 1rem;
-          border-bottom: 2px solid #fca5a5;
-          color: #0f172a;
+          border-bottom: 2px solid #6ee7b7;
+          color: #0f172a !important;
           font-size: 0.875rem;
         }
-        .prose-custom td {
+        .prose-manut td {
           padding: 0.75rem 1rem;
           border-bottom: 1px solid #e2e8f0;
-          color: #334155;
+          color: #334155 !important;
           font-size: 0.875rem;
         }
-        .prose-custom tr:hover {
-          background-color: rgba(220, 38, 38, 0.04);
+        .prose-manut table.tab-custom th {
+          background-color: rgba(16, 185, 129, 0.07) !important;
+          color: #0f172a !important;
+          font-weight: 700 !important;
         }
-        .prose-custom .infobox-warning {
+        .prose-manut table.tab-custom td {
+          color: #334155 !important;
+        }
+        .prose-manut tr:hover {
+          background-color: rgba(16, 185, 129, 0.04);
+        }
+        .prose-manut .infobox-warning {
           background-color: #fef2f2 !important;
           border: 1px solid #fecaca !important;
           border-radius: 16px !important;
           padding: 1.5rem !important;
           margin-bottom: 1.5rem !important;
         }
-        .prose-custom .infobox-warning h3 {
+        .prose-manut .infobox-warning h3 {
           color: #991b1b !important;
           margin-top: 0 !important;
           margin-bottom: 0.5rem !important;
         }
-        .prose-custom .infobox-warning p {
+        .prose-manut .infobox-warning p {
           color: #7f1d1d !important;
           margin-bottom: 0 !important;
         }
-        .prose-custom .infobox-tip {
-          background-color: #f0f9ff !important;
-          border: 1px solid #bae6fd !important;
+        .prose-manut .infobox-tip {
+          background-color: #ecfdf5 !important;
+          border: 1px solid #a7f3d0 !important;
           border-radius: 16px !important;
           padding: 1.5rem !important;
           margin-bottom: 1.5rem !important;
         }
-        .prose-custom .infobox-tip h3 {
-          color: #075985 !important;
+        .prose-manut .infobox-tip h3 {
+          color: #065f46 !important;
           margin-top: 0 !important;
           margin-bottom: 0.5rem !important;
         }
-        .prose-custom .infobox-tip p {
-          color: #0c4a6e !important;
+        .prose-manut .infobox-tip p {
+          color: #064e3b !important;
           margin-bottom: 0 !important;
         }
-        .prose-custom .infobox-tip ul {
+        .prose-manut .infobox-tip ul {
           margin-bottom: 0 !important;
         }
-        .prose-custom .infobox-tip li {
-          color: #0c4a6e !important;
+        .prose-manut .infobox-tip li {
+          color: #064e3b !important;
+        }
+        .prose-manut .infobox-dor {
+          background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%) !important;
+          border: 1px solid #fbbf24 !important;
+          border-left: 5px solid #f59e0b !important;
+          border-radius: 16px !important;
+          padding: 1.5rem 1.5rem 1.5rem 1.75rem !important;
+          margin-top: 1.5rem !important;
+          margin-bottom: 2rem !important;
+          box-shadow: 0 2px 8px 0 rgba(245, 158, 11, 0.08) !important;
+        }
+        .prose-manut .infobox-dor h4 {
+          color: #92400e !important;
+          margin-top: 0 !important;
+          margin-bottom: 0.75rem !important;
+          font-size: 1rem !important;
+          font-weight: 700 !important;
+        }
+        .prose-manut .infobox-dor p {
+          color: #78350f !important;
+          margin-bottom: 0.5rem !important;
+          font-size: 0.9375rem !important;
+        }
+        .prose-manut .infobox-dor p:last-child {
+          margin-bottom: 0 !important;
+        }
+        .prose-manut .infobox-dor em {
+          font-style: italic;
+          color: #92400e !important;
+        }
+        .prose-manut .infobox-dor strong {
+          color: #78350f !important;
+        }
+        .prose-manut .formula {
+          background-color: #f0fdf4 !important;
+          border: 1px solid #a7f3d0 !important;
+          border-left: 4px solid #10b981 !important;
+          border-radius: 12px !important;
+          padding: 1rem 1.25rem !important;
+          margin: 1rem 0 1.5rem 0 !important;
+          font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace !important;
+          font-size: 1rem !important;
+          color: #065f46 !important;
+          letter-spacing: 0.01em !important;
+          text-align: center !important;
+        }
+        .prose-manut .formula strong {
+          color: #065f46 !important;
+        }
+        .prose-manut hr {
+          border: none !important;
+          border-top: 2px solid #d1fae5 !important;
+          margin: 3rem 0 !important;
         }
 
         /* ── Dark containers text readability overrides ── */
@@ -689,23 +706,24 @@ function LessonReaderView({ aula, onBack }) {
         .prose-custom li.text-gray-300, .prose-manut li.text-gray-300,
         .prose-custom div.text-gray-300, .prose-manut div.text-gray-300 { color: #d1d5db !important; }
 
-        .prose-custom table tr:hover td {
+        .prose-manut table tr:hover td {
           color: inherit;
         }
       ` }} />
+
       {/* ── Top Bar ── */}
       <div className="sticky top-0 z-50 border-b" style={{ backgroundColor: 'rgba(15,23,42,0.95)', backdropFilter: 'blur(12px)', borderColor: 'rgba(51,65,85,0.5)' }}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-4">
           <button
             onClick={onBack}
             className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg border transition-all duration-200 hover:bg-white/5 cursor-pointer flex-shrink-0"
-            style={{ borderColor: 'rgba(56,189,248,0.3)', color: '#38bdf8' }}
+            style={{ borderColor: ACCENT_BORDER, color: ACCENT_LIGHT }}
           >
             <ArrowLeft className="w-4 h-4" />
             Voltar para a Grade
           </button>
           <div className="min-w-0 flex-1">
-            <span className="text-xs font-bold uppercase tracking-widest block mb-0.5" style={{ color: '#0ea5e9' }}>
+            <span className="text-xs font-bold uppercase tracking-widest block mb-0.5" style={{ color: ACCENT }}>
               {aula.modulo}
             </span>
             <h1 className="text-base md:text-lg font-bold truncate" style={{ color: '#f1f5f9' }}>
@@ -720,31 +738,21 @@ function LessonReaderView({ aula, onBack }) {
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex gap-1 py-2" role="tablist">
             {availableTabs.map((tab) => {
-              let Icon = tab.icon;
-              let label = tab.label;
-              if (aula.id === 'apresentacao') {
-                if (tab.id === 'video') label = 'Vídeo Parte 1';
-                if (tab.id === 'podcast') {
-                  label = 'Vídeo Parte 2';
-                  Icon = Play;
-                }
-              }
+              const Icon = tab.icon;
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
-                  onClick={() => { setActiveTab(tab.id); if (tab.id === 'slides') setSlideIndex(0); if (tab.id === 'fontes') setFonteIndex(0); }}
+                  onClick={() => { setActiveTab(tab.id); if (tab.id === 'fontes') setFonteIndex(0); }}
                   role="tab"
                   aria-selected={isActive}
                   className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
-                    isActive
-                      ? 'shadow-lg'
-                      : 'hover:bg-white/5'
+                    isActive ? 'shadow-lg' : 'hover:bg-white/5'
                   }`}
-                  style={isActive ? { backgroundColor: 'rgba(14,165,233,0.15)', borderColor: 'rgba(56,189,248,0.4)', color: '#38bdf8', border: '1px solid rgba(56,189,248,0.4)' } : { color: '#94a3b8', border: '1px solid transparent' }}
+                  style={isActive ? { backgroundColor: ACCENT_BG, borderColor: ACCENT_BORDER, color: ACCENT_LIGHT, border: `1px solid ${ACCENT_BORDER}` } : { color: '#94a3b8', border: '1px solid transparent' }}
                 >
                   <Icon className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">{label}</span>
+                  <span className="hidden sm:inline">{tab.label}</span>
                 </button>
               );
             })}
@@ -764,140 +772,31 @@ function LessonReaderView({ aula, onBack }) {
           >
             {/* ─── CONTEÚDO TÉCNICO ─── */}
             {activeTab === 'conteudo' && aula.conteudo_html && (
-              <div className="rounded-2xl border p-8 md:p-12 shadow-sm" style={{ backgroundColor: '#FFF8F6', borderColor: '#FECACA', boxShadow: '0 1px 3px 0 rgba(220, 38, 38, 0.06), 0 0 0 1px rgba(220, 38, 38, 0.03)' }}>
+              <div className="rounded-2xl border p-8 md:p-12 shadow-sm" style={{ backgroundColor: '#f0fdf4', borderColor: '#a7f3d0', boxShadow: '0 1px 3px 0 rgba(16,185,129,0.06), 0 0 0 1px rgba(16,185,129,0.03)' }}>
                 <SafeHTML
                   html={aula.conteudo_html}
-                  className="prose-custom max-w-none text-slate-800"
+                  className="prose-manut max-w-none text-slate-800"
                 />
               </div>
             )}
 
             {/* ─── TABELAS & PARÂMETROS ─── */}
             {activeTab === 'tabelas' && aula.tabelas_html && (
-              <div className="rounded-2xl border p-8 md:p-12 overflow-x-auto shadow-sm" style={{ backgroundColor: '#FFF8F6', borderColor: '#FECACA', boxShadow: '0 1px 3px 0 rgba(220, 38, 38, 0.06), 0 0 0 1px rgba(220, 38, 38, 0.03)' }}>
+              <div className="rounded-2xl border p-8 md:p-12 overflow-x-auto shadow-sm" style={{ backgroundColor: '#f0fdf4', borderColor: '#a7f3d0', boxShadow: '0 1px 3px 0 rgba(16,185,129,0.06), 0 0 0 1px rgba(16,185,129,0.03)' }}>
                 <SafeHTML
                   html={aula.tabelas_html}
-                  className="prose-custom max-w-none text-slate-800"
+                  className="prose-manut max-w-none text-slate-800"
                 />
               </div>
             )}
 
             {/* ─── INFO DE CAMPO ─── */}
             {activeTab === 'infobox' && aula.infobox_campo && (
-              <div className="rounded-2xl border p-8 md:p-12 shadow-sm" style={{ backgroundColor: '#FFF8F6', borderColor: '#FECACA', boxShadow: '0 1px 3px 0 rgba(220, 38, 38, 0.06), 0 0 0 1px rgba(220, 38, 38, 0.03)' }}>
+              <div className="rounded-2xl border p-8 md:p-12 shadow-sm" style={{ backgroundColor: '#f0fdf4', borderColor: '#a7f3d0', boxShadow: '0 1px 3px 0 rgba(16,185,129,0.06), 0 0 0 1px rgba(16,185,129,0.03)' }}>
                 <SafeHTML
                   html={aula.infobox_campo}
-                  className="prose-custom max-w-none text-slate-800"
+                  className="prose-manut max-w-none text-slate-800"
                 />
-              </div>
-            )}
-
-            {/* ─── VIDEOAULA ─── */}
-            {activeTab === 'video' && videoUrl && (
-              <div className="rounded-2xl border overflow-hidden" style={{ borderColor: 'rgba(14,165,233,0.3)' }}>
-                <div className="aspect-video bg-black">
-                  <iframe
-                    src={videoUrl}
-                    title={`Videoaula: ${aula.titulo}`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="px-6 py-4" style={{ backgroundColor: 'rgba(15,23,42,0.9)' }}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-sky-500/20 border border-sky-400/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Play className="w-4 h-4 text-sky-400" />
-                    </div>
-                    <div>
-                      <span className="text-xs font-bold uppercase tracking-widest text-sky-400 block">
-                        {aula.id === 'apresentacao' ? 'Apresentação Parte 1' : 'Videoaula'}
-                      </span>
-                      <span className="text-sm font-semibold text-slate-200">{aula.titulo}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* ─── PODCAST ─── */}
-            {activeTab === 'podcast' && podcastUrl && (
-              <div className="rounded-2xl border overflow-hidden" style={{ borderColor: 'rgba(139,92,246,0.3)' }}>
-                <div className="aspect-video bg-black">
-                  <iframe
-                    src={podcastUrl}
-                    title={aula.id === 'apresentacao' ? `Apresentação Parte 2: ${aula.titulo}` : `Podcast: ${aula.titulo}`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="px-6 py-4" style={{ backgroundColor: 'rgba(15,23,42,0.9)' }}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-violet-500/20 border border-violet-400/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                      {aula.id === 'apresentacao' ? (
-                        <Play className="w-4 h-4 text-violet-400" />
-                      ) : (
-                        <Headphones className="w-4 h-4 text-violet-400" />
-                      )}
-                    </div>
-                    <div>
-                      <span className="text-xs font-bold uppercase tracking-widest text-violet-400 block">
-                        {aula.id === 'apresentacao' ? 'Apresentação Parte 2' : 'Podcast'}
-                      </span>
-                      <span className="text-sm font-semibold text-slate-200">{aula.titulo}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* ─── SLIDES & INFOGRÁFICO ─── */}
-            {activeTab === 'slides' && slides.length > 0 && (
-              <div className="rounded-2xl border p-6" style={{ backgroundColor: 'rgba(30,41,59,0.5)', borderColor: 'rgba(51,65,85,0.4)' }}>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#0ea5e9' }}>
-                    Slides — {aula.modulo}
-                  </span>
-                  <span className="text-sm font-semibold" style={{ color: '#94a3b8' }}>
-                    {slideIndex + 1} / {slides.length}
-                  </span>
-                </div>
-                <img
-                  src={slides[slideIndex]}
-                  alt={`Slide ${slideIndex + 1} - ${aula.titulo}`}
-                  className="w-full rounded-xl shadow-2xl"
-                />
-                <div className="flex items-center justify-between mt-4">
-                  <button
-                    onClick={() => setSlideIndex((p) => Math.max(0, p - 1))}
-                    disabled={slideIndex === 0}
-                    className="p-3 rounded-xl border transition-all cursor-pointer disabled:opacity-30 hover:bg-white/5"
-                    style={{ borderColor: 'rgba(14,165,233,0.3)', color: '#0ea5e9' }}
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  <div className="flex gap-1">
-                    {slides.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setSlideIndex(i)}
-                        className={`w-2 h-2 rounded-full transition-all cursor-pointer ${i === slideIndex ? 'bg-sky-400 scale-125' : 'bg-slate-600 hover:bg-slate-500'}`}
-                        aria-label={`Ir para slide ${i + 1}`}
-                      />
-                    ))}
-                  </div>
-                  <button
-                    onClick={() => setSlideIndex((p) => Math.min(slides.length - 1, p + 1))}
-                    disabled={slideIndex === slides.length - 1}
-                    className="p-3 rounded-xl border transition-all cursor-pointer disabled:opacity-30 hover:bg-white/5"
-                    style={{ borderColor: 'rgba(14,165,233,0.3)', color: '#0ea5e9' }}
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </div>
               </div>
             )}
 
@@ -906,35 +805,49 @@ function LessonReaderView({ aula, onBack }) {
               <div className="rounded-2xl border p-6" style={{ backgroundColor: 'rgba(30,41,59,0.5)', borderColor: 'rgba(51,65,85,0.4)' }}>
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#f59e0b' }}>
-                    Fontes de Pesquisa — Página {fonteIndex + 1} de {fontes.length}
+                    Fontes de Pesquisa (PDF) — {fonteIndex + 1} de {fontes.length}
                   </span>
                 </div>
-                <img
-                  src={fontes[fonteIndex]}
-                  alt={`Fonte de pesquisa ${fonteIndex + 1} - ${aula.titulo}`}
-                  className="w-full rounded-xl shadow-2xl"
-                />
-                <div className="flex items-center justify-between mt-4">
-                  <button
-                    onClick={() => setFonteIndex((p) => Math.max(0, p - 1))}
-                    disabled={fonteIndex === 0}
-                    className="p-3 rounded-xl border transition-all cursor-pointer disabled:opacity-30 hover:bg-white/5"
-                    style={{ borderColor: 'rgba(245,158,11,0.3)', color: '#f59e0b' }}
+                <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center">
+                  <FileText className="w-12 h-12 mx-auto mb-4" style={{ color: '#f59e0b' }} />
+                  <h3 className="text-lg font-bold text-white mb-2">Material de Pesquisa em PDF</h3>
+                  <p className="text-sm text-slate-400 mb-4 max-w-md mx-auto">
+                    {fontes[fonteIndex].split('/').pop()}
+                  </p>
+                  <a
+                    href={fontes[fonteIndex]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:-translate-y-0.5"
+                    style={{ backgroundColor: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.3)', color: '#f59e0b' }}
                   >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  <span className="text-sm font-semibold" style={{ color: '#94a3b8' }}>
-                    {fonteIndex + 1} / {fontes.length}
-                  </span>
-                  <button
-                    onClick={() => setFonteIndex((p) => Math.min(fontes.length - 1, p + 1))}
-                    disabled={fonteIndex === fontes.length - 1}
-                    className="p-3 rounded-xl border transition-all cursor-pointer disabled:opacity-30 hover:bg-white/5"
-                    style={{ borderColor: 'rgba(245,158,11,0.3)', color: '#f59e0b' }}
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
+                    <FileText className="w-4 h-4" />
+                    Abrir PDF
+                  </a>
                 </div>
+                {fontes.length > 1 && (
+                  <div className="flex items-center justify-between mt-4">
+                    <button
+                      onClick={() => setFonteIndex((p) => Math.max(0, p - 1))}
+                      disabled={fonteIndex === 0}
+                      className="p-3 rounded-xl border transition-all cursor-pointer disabled:opacity-30 hover:bg-white/5"
+                      style={{ borderColor: 'rgba(245,158,11,0.3)', color: '#f59e0b' }}
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <span className="text-sm font-semibold" style={{ color: '#94a3b8' }}>
+                      {fonteIndex + 1} / {fontes.length}
+                    </span>
+                    <button
+                      onClick={() => setFonteIndex((p) => Math.min(fontes.length - 1, p + 1))}
+                      disabled={fonteIndex === fontes.length - 1}
+                      className="p-3 rounded-xl border transition-all cursor-pointer disabled:opacity-30 hover:bg-white/5"
+                      style={{ borderColor: 'rgba(245,158,11,0.3)', color: '#f59e0b' }}
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
@@ -943,9 +856,9 @@ function LessonReaderView({ aula, onBack }) {
               (activeTab === 'tabelas' && !aula.tabelas_html) ||
               (activeTab === 'infobox' && !aula.infobox_campo) ||
               (activeTab === 'fontes' && fontes.length === 0)) && (
-              <div className="rounded-2xl border p-12 text-center shadow-sm" style={{ backgroundColor: '#FFF8F6', borderColor: '#FECACA', boxShadow: '0 1px 3px 0 rgba(220, 38, 38, 0.06), 0 0 0 1px rgba(220, 38, 38, 0.03)' }}>
-                <div className="w-16 h-16 mx-auto mb-4 bg-slate-100 rounded-2xl flex items-center justify-center">
-                  <BookOpen className="w-8 h-8 text-slate-400" />
+              <div className="rounded-2xl border p-12 text-center shadow-sm" style={{ backgroundColor: '#f0fdf4', borderColor: '#a7f3d0', boxShadow: '0 1px 3px 0 rgba(16,185,129,0.06), 0 0 0 1px rgba(16,185,129,0.03)' }}>
+                <div className="w-16 h-16 mx-auto mb-4 bg-emerald-50 rounded-2xl flex items-center justify-center">
+                  <BookOpen className="w-8 h-8 text-emerald-400" />
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-slate-800">Conteúdo em Preparação</h3>
                 <p className="text-sm text-slate-500">
@@ -961,12 +874,12 @@ function LessonReaderView({ aula, onBack }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// MAIN COMPONENT
+// MAIN COMPONENT — TreinamentoManutencao
 // ═══════════════════════════════════════════════════════════════════════════════
-export default function TreinamentoHVAC() {
+export default function TreinamentoManutencao() {
   const gradeSectionRef = useRef(null);
   const [openModulo, setOpenModulo] = useState(null);
-  const [activeTopic, setActiveTopic] = useState(null); // null = Dashboard, aulaObj = LessonReader
+  const [activeTopic, setActiveTopic] = useState(null);
 
   const scrollToGrade = () => {
     gradeSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -989,7 +902,11 @@ export default function TreinamentoHVAC() {
     return <LessonReaderView aula={activeTopic} onBack={closeLesson} />;
   }
 
-  // ─── Otherwise, render the Dashboard ───
+  // Count total lessons
+  const totalAulas = cursoManutencaoHVAC.modulos.reduce((acc, m) => acc + m.aulas.length, 0);
+  const totalPDFs = cursoManutencaoHVAC.modulos.reduce((acc, m) => acc + m.aulas.reduce((a2, aula) => a2 + (aula.fontes_imagens?.length || 0), 0), 0);
+
+  // ─── Dashboard ───
   return (
     <div className="w-full bg-white text-slate-900">
 
@@ -999,23 +916,23 @@ export default function TreinamentoHVAC() {
       <section
         className="relative min-h-screen flex items-center py-24 md:py-32 px-6 md:px-12 overflow-hidden"
         style={{
-          backgroundImage: 'url(/images/home-servicos.jpg)',
+          backgroundImage: 'url(/images/home-manutencao-01.jpeg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
-        aria-label="Treinamento Completo de Instalação HVAC — Simon Climatização"
+        aria-label="Treinamento Avançado de Manutenção HVAC — Simon Climatização"
       >
-        {/* Layered overlays for guaranteed text readability */}
+        {/* Overlays */}
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundColor: 'rgba(2, 6, 23, 0.85)' }} aria-hidden="true" />
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(2,6,23,0.98) 0%, rgba(2,6,23,0.90) 40%, rgba(2,6,23,0.50) 70%, rgba(2,6,23,0.30) 100%)' }} aria-hidden="true" />
 
-        {/* Ambient glow */}
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-sky-500/8 rounded-full blur-[140px] pointer-events-none" aria-hidden="true" />
+        {/* Ambient glow — emerald */}
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-500/8 rounded-full blur-[140px] pointer-events-none" aria-hidden="true" />
 
         <div className="max-w-6xl mx-auto relative z-10 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
-            {/* Left Column — Copy (dark glass card for guaranteed readability) */}
+            {/* Left Column — Copy */}
             <motion.div
               variants={fadeUp}
               initial="hidden"
@@ -1025,32 +942,32 @@ export default function TreinamentoHVAC() {
               style={{ backgroundColor: '#0a0f1e' }}
             >
               {/* Pre-headline badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-500/15 border border-sky-400/30 text-sky-300 text-xs font-bold tracking-widest uppercase mb-7">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase mb-7" style={{ backgroundColor: ACCENT_BG, border: `1px solid ${ACCENT_BORDER}`, color: ACCENT_LIGHT }}>
                 <GraduationCap className="w-3.5 h-3.5" aria-hidden="true" />
-                Academia Simon — Treinamento de Instalação
+                Academia Simon — Treinamento de Manutenção
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-[3.25rem] font-extrabold leading-[1.1] mb-6 tracking-tight" style={{ color: '#ffffff' }}>
-                Pare de Queimar Compressores.{' '}
-                <span style={{ color: '#38bdf8' }}>
-                  Domine a Instalação HVAC com a Metodologia de Elite.
+                Pare de Apagar Incêndios.{' '}
+                <span style={{ color: ACCENT_LIGHT }}>
+                  Domine a Manutenção HVAC com a Metodologia de Gestão de Ativos.
                 </span>
               </h1>
 
               <p className="text-base sm:text-lg leading-relaxed mb-8 max-w-xl" style={{ color: '#cbd5e1' }}>
-                Para instaladores e técnicos que querem sair do achismo e entrar no{' '}
-                <strong style={{ color: '#ffffff' }}>padrão de excelência técnica</strong> da Simon Climatização.
-                7 módulos, 22 aulas e mais de 44 vídeos práticos — da termodinâmica ao handover digital.
+                Para técnicos e empresas que querem sair da manutenção reativa e entrar no{' '}
+                <strong style={{ color: '#ffffff' }}>padrão de receita recorrente e eficiência energética</strong> da Simon Climatização.
+                8 módulos, {totalAulas} aulas e {totalPDFs}+ PDFs — do TCO ao contrato PMOC.
               </p>
 
               {/* Bullet points */}
               <ul className="space-y-3 mb-10" role="list">
                 {[
-                  'Ciclo de refrigeração profissional com diagnóstico real de sobreaquecimento e subarrefecimento',
-                  'Brasagem com nitrogênio: a blindagem que protege o compressor contra fuligem interna',
-                  'Vácuo profundo de 500 mícrons: a ciência por trás da desidratação extrema',
-                  'Comissionamento VRF sem achismo: carga líquida, balança digital e protocolo inflexível',
-                  'Handover digital: telemetria que blinda contratos de manutenção',
+                  'Filosofia TCO: transforme manutenção de "custo" em investimento de alto retorno',
+                  'Diagnóstico dos 5 Sentidos e Diagrama P-H para troubleshooting cirúrgico',
+                  'Protocolos de preventiva: serpentinas, filtros, condensado e circuito frigorífico',
+                  'Manutenção preditiva: vibração, termografia e CMMS digital',
+                  'Contratos PMOC e receita recorrente: blindagem regulatória e fidelização',
                 ].map((item, i) => (
                   <motion.li
                     key={i}
@@ -1061,7 +978,7 @@ export default function TreinamentoHVAC() {
                     className="flex items-start gap-3 text-sm font-medium"
                     style={{ color: '#e2e8f0' }}
                   >
-                    <CheckCircle2 className="w-5 h-5 text-sky-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                    <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: ACCENT }} aria-hidden="true" />
                     {item}
                   </motion.li>
                 ))}
@@ -1071,18 +988,19 @@ export default function TreinamentoHVAC() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={scrollToGrade}
-                  id="hero-cta-grade"
-                  className="inline-flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-400 active:bg-sky-600 text-white font-bold px-8 py-4 rounded-xl transition-all duration-200 text-base shadow-lg shadow-sky-500/30 hover:shadow-xl hover:shadow-sky-400/35 hover:-translate-y-0.5"
+                  id="hero-cta-grade-manut"
+                  className="inline-flex items-center justify-center gap-2 text-white font-bold px-8 py-4 rounded-xl transition-all duration-200 text-base shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                  style={{ backgroundColor: ACCENT }}
                 >
                   Ver Grade Completa do Treinamento
                   <ArrowRight className="w-5 h-5" aria-hidden="true" />
                 </button>
                 <a
-                  href="https://wa.me/5511942163150?text=Olá! Tenho interesse no Treinamento de Instalação HVAC."
+                  href="https://wa.me/5511942163150?text=Olá! Tenho interesse no Treinamento de Manutenção HVAC."
                   target="_blank"
                   rel="noopener noreferrer"
-                  id="hero-cta-contato"
-                  className="inline-flex items-center justify-center gap-2 border-2 border-white/40 hover:border-sky-400 text-white hover:text-sky-300 font-semibold px-8 py-4 rounded-xl transition-all duration-200 text-base hover:bg-sky-500/10"
+                  id="hero-cta-contato-manut"
+                  className="inline-flex items-center justify-center gap-2 border-2 border-white/40 hover:border-emerald-400 text-white hover:text-emerald-300 font-semibold px-8 py-4 rounded-xl transition-all duration-200 text-base hover:bg-emerald-500/10"
                 >
                   Falar com um Especialista
                 </a>
@@ -1097,30 +1015,30 @@ export default function TreinamentoHVAC() {
               custom={0.25}
               className="relative"
             >
-              <div className="absolute inset-0 bg-sky-500/15 blur-[80px] rounded-full pointer-events-none" aria-hidden="true" />
+              <div className="absolute inset-0 bg-emerald-500/15 blur-[80px] rounded-full pointer-events-none" aria-hidden="true" />
 
               <div className="relative z-10 bg-white/8 backdrop-blur-xl border border-white/15 rounded-3xl p-8 shadow-2xl">
 
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="w-12 h-12 bg-sky-500/20 border border-sky-400/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Activity className="w-6 h-6 text-sky-400" aria-hidden="true" />
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: ACCENT_BG, border: `1px solid ${ACCENT_BORDER}` }}>
+                    <Activity className="w-6 h-6" style={{ color: ACCENT }} aria-hidden="true" />
                   </div>
                   <div>
-                    <span className="block text-xs font-bold text-sky-400 uppercase tracking-widest mb-0.5">Treinamento Completo</span>
-                    <span className="text-lg font-bold text-white">Instalação HVAC</span>
+                    <span className="block text-xs font-bold uppercase tracking-widest mb-0.5" style={{ color: ACCENT }}>Treinamento Avançado</span>
+                    <span className="text-lg font-bold text-white">Manutenção HVAC</span>
                   </div>
                 </div>
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 gap-4 mb-8">
                   {[
-                    { value: '7', label: 'Módulos', icon: <BookOpen className="w-4 h-4" /> },
-                    { value: '22', label: 'Aulas', icon: <Video className="w-4 h-4" /> },
-                    { value: '44+', label: 'Vídeos', icon: <Play className="w-4 h-4" /> },
-                    { value: '22', label: 'PDFs', icon: <FileText className="w-4 h-4" /> },
+                    { value: '8', label: 'Módulos', icon: <BookOpen className="w-4 h-4" /> },
+                    { value: String(totalAulas), label: 'Aulas', icon: <Video className="w-4 h-4" /> },
+                    { value: `${totalPDFs}+`, label: 'PDFs', icon: <FileText className="w-4 h-4" /> },
+                    { value: '100%', label: 'Prático', icon: <Wrench className="w-4 h-4" /> },
                   ].map(({ value, label, icon }, i) => (
                     <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-                      <div className="flex justify-center mb-2 text-sky-400">{icon}</div>
+                      <div className="flex justify-center mb-2" style={{ color: ACCENT }}>{icon}</div>
                       <span className="block text-2xl font-black text-white">{value}</span>
                       <span className="text-xs text-slate-400 font-medium">{label}</span>
                     </div>
@@ -1130,14 +1048,15 @@ export default function TreinamentoHVAC() {
                 {/* Course topics preview */}
                 <ul className="space-y-3 mb-6" role="list">
                   {[
-                    'Fundamentos da Engenharia Térmica de Elite',
-                    'Circuito Frigorífico e Maestria do Cobre',
-                    'Rigor Elétrico e Comunicação de Dados',
-                    'O Protocolo "Vazamento Zero"',
-                    'Comissionamento, Diagnóstico e Handover',
+                    'Mindset de Manutenção e Framework Regulatório',
+                    'Diagnóstico Avançado: Sinais Vitais do Sistema',
+                    'Manutenção Preventiva Sistemática',
+                    'Circuito Frigorífico: Integridade e Carga',
+                    'Manutenção Preditiva e Digital',
+                    'Gestão do Cliente e Receita Recorrente',
                   ].map((topic, i) => (
                     <li key={i} className="flex items-center gap-3 text-slate-300 text-sm font-medium">
-                      <div className="w-1.5 h-1.5 rounded-full bg-sky-400 flex-shrink-0" aria-hidden="true" />
+                      <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: ACCENT }} aria-hidden="true" />
                       {topic}
                     </li>
                   ))}
@@ -1160,8 +1079,8 @@ export default function TreinamentoHVAC() {
           2. CURRENT PAIN — O "Antes" (A Realidade Dolorosa do Campo)
       ════════════════════════════════════════════════════════════════════ */}
       <section
-        className="py-24 px-6 md:px-12 bg-slate-50 border-t border-sky-100"
-        aria-label="Os problemas reais que instaladores enfrentam"
+        className="py-24 px-6 md:px-12 bg-slate-50 border-t border-emerald-100"
+        aria-label="Os problemas reais que técnicos de manutenção enfrentam"
       >
         <div className="max-w-6xl mx-auto">
 
@@ -1182,7 +1101,7 @@ export default function TreinamentoHVAC() {
               </span>
             </h2>
             <p className="text-slate-600 max-w-2xl mx-auto text-lg leading-relaxed">
-              A maioria dos instaladores aprende "na marra" — e paga o preço com equipamentos destruídos, clientes perdidos e reputação comprometida.
+              A maioria das empresas de manutenção HVAC opera no modo "apagar incêndios" — e paga o preço com faturamento volátil, multas regulatórias e perda de clientes.
             </p>
           </motion.div>
 
@@ -1200,27 +1119,27 @@ export default function TreinamentoHVAC() {
                 accent: 'text-orange-500',
                 bg: 'bg-orange-50',
                 border: 'border-orange-200',
-                title: 'O Achismo que Mata Máquinas',
-                subtitle: 'Instalações sem Protocolo',
-                body: 'Sem um checklist rigoroso, cada instalação é uma roleta-russa. Pressurização "no olho", vácuo pela metade, carga de gás "por pressão" — e quando o compressor queima em 6 meses, ninguém sabe explicar o porquê.',
+                title: 'Receita Volátil',
+                subtitle: 'O Ciclo Destrutivo do Break-Fix',
+                body: 'Faturamento que depende de emergências e picos de calor. Nos meses de clima ameno, a equipe fica ociosa. Sem contratos PMOC, cada chamado é uma roleta-russa financeira que gasta 3–5× mais que a preventiva programada.',
               },
               {
-                icon: <Flame className="w-7 h-7" aria-hidden="true" />,
+                icon: <ShieldCheck className="w-7 h-7" aria-hidden="true" />,
                 accent: 'text-red-500',
                 bg: 'bg-red-50',
                 border: 'border-red-200',
-                title: 'Compressores Destruídos',
-                subtitle: 'A Fuligem que Você Não Vê',
-                body: 'Brasagem sem fluxo contínuo de nitrogênio gera fuligem de óxido de cobre que viaja pelo sistema inteiro. Essa "neve negra" invisível entope válvulas, desgasta mancais e queima compressores de R$ 15.000+ silenciosamente.',
+                title: 'Risco Regulatório',
+                subtitle: 'PMOC: A Lei que Poucos Cumprem',
+                body: 'A Lei Federal 13.589/2018 obriga PMOC para edifícios com climatização acima de 60.000 BTU/h. Multas de R$ 2.000 a R$ 1.500.000 por não-conformidade. Surtos de Legionella geram responsabilidade criminal pessoal do gestor predial e do RT.',
               },
               {
                 icon: <BookOpen className="w-7 h-7" aria-hidden="true" />,
                 accent: 'text-amber-600',
                 bg: 'bg-amber-50',
                 border: 'border-amber-200',
-                title: 'Cursos sem Visão de Campo',
-                subtitle: 'A Teoria que Não Instala Nada',
-                body: 'Você já fez cursos que ensinam fórmulas de termodinâmica, mas nunca mostram como posicionar uma refnet a 10° de inclinação máxima ou por que o sifão de óleo a cada 10m salva o sistema? A lacuna entre sala de aula e canteiro de obras é onde os prejuízos nascem.',
+                title: 'Diagnóstico no Escuro',
+                subtitle: 'Trocar Peças ≠ Resolver Problemas',
+                body: 'Técnicos que "trocam peças" sem entender a raiz da falha destroem a confiança do cliente. Sem domínio do diagrama P-H, dos 5 sentidos e do megômetro, cada diagnóstico é um palpite que custa caro.',
               },
             ].map(({ icon, accent, bg, border, title, subtitle, body }, i) => (
               <motion.div
@@ -1244,19 +1163,19 @@ export default function TreinamentoHVAC() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="relative overflow-hidden rounded-2xl border border-sky-200 bg-gradient-to-br from-sky-50 via-white to-white p-10 md:p-12 shadow-xl shadow-sky-100/60"
+            className="relative overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-white p-10 md:p-12 shadow-xl shadow-emerald-100/60"
           >
-            <div className="absolute -top-20 -right-20 w-72 h-72 bg-sky-300/15 rounded-full blur-[100px] pointer-events-none" aria-hidden="true" />
+            <div className="absolute -top-20 -right-20 w-72 h-72 bg-emerald-300/15 rounded-full blur-[100px] pointer-events-none" aria-hidden="true" />
             <div className="relative z-10 max-w-4xl">
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-1.5 h-12 bg-gradient-to-b from-sky-400 to-blue-600 rounded-full" aria-hidden="true" />
-                <span className="text-xs font-bold uppercase tracking-widest text-sky-600">Desconstrução de Crença</span>
+                <div className="w-1.5 h-12 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-full" aria-hidden="true" />
+                <span className="text-xs font-bold uppercase tracking-widest text-emerald-600">Desconstrução de Crença</span>
               </div>
               <p className="text-slate-700 text-lg md:text-xl leading-relaxed">
-                <strong className="text-slate-900">"Basta fazer um curso teórico e eu já estou pronto para o campo."</strong>{' '}
-                Na verdade, a teoria pura sem a visão de campo cria instaladores que sabem recitar o diagrama P-H, mas não sabem por que 500 mícrons salvam o compressor ou como uma rebarba de cobre de 2mm destrói um sistema VRF inteiro. A{' '}
-                <em className="text-sky-600 not-italic font-bold">verdadeira competência técnica</em>{' '}
-                nasce da fusão entre o "porquê" científico e o "como" prático de quem já viveu centenas de instalações reais.
+                <strong className="text-slate-900">"Manutenção preventiva é custo desnecessário — o sistema está funcionando bem."</strong>{' '}
+                Na verdade, sem manutenção regular, o COP do sistema degrada silenciosamente, resultando em faturas de eletricidade <strong className="text-emerald-600">5% a 30% maiores</strong>. O custo de aquisição do equipamento representa apenas 15% do TCO — os outros 85% são energia e manutenção. Cada real investido em preventiva{' '}
+                <em className="text-emerald-600 not-italic font-bold">retorna multiplicado</em>{' '}
+                em economia de energia, extensão de vida útil e proteção regulatória.
               </p>
             </div>
           </motion.div>
@@ -1265,13 +1184,13 @@ export default function TreinamentoHVAC() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════════
-          3. DESIRED OUTCOME — O "Depois" (A Transformação Técnica)
+          3. DESIRED OUTCOME — O "Depois"
       ════════════════════════════════════════════════════════════════════ */}
       <section
-        className="py-24 px-6 md:px-12 bg-white border-t border-sky-100 relative overflow-hidden"
+        className="py-24 px-6 md:px-12 bg-white border-t border-emerald-100 relative overflow-hidden"
         aria-label="A transformação que o treinamento proporciona"
       >
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-sky-100/60 rounded-full blur-[140px] pointer-events-none" aria-hidden="true" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-100/60 rounded-full blur-[140px] pointer-events-none" aria-hidden="true" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-teal-100/50 rounded-full blur-[120px] pointer-events-none" aria-hidden="true" />
 
         <div className="max-w-6xl mx-auto relative z-10">
@@ -1283,18 +1202,18 @@ export default function TreinamentoHVAC() {
             viewport={{ once: true, amount: 0.2 }}
             className="text-center mb-16"
           >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-sky-50 border border-sky-200 text-sky-600 text-xs font-bold tracking-widest uppercase mb-5">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs font-bold tracking-widest uppercase mb-5">
               A Transformação
             </span>
             <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-5 text-slate-900 max-w-4xl mx-auto leading-tight">
               Imagine Ter a Confiança de um{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-teal-400">
-                Instalador de Elite
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-400">
+                Gestor de Ativos de Elite
               </span>
             </h2>
           </motion.div>
 
-          {/* Outcome Cards — Glassmorphism */}
+          {/* Outcome Cards */}
           <motion.div
             variants={staggerContainer}
             initial="hidden"
@@ -1305,31 +1224,31 @@ export default function TreinamentoHVAC() {
             {[
               {
                 icon: <ShieldCheck className="w-7 h-7" aria-hidden="true" />,
-                accent: 'from-sky-500 to-blue-600',
-                textAccent: 'text-sky-500',
-                tag: 'Execução Impecável',
-                title: 'Instalações Zero-Defeito com Protocolo Completo',
-                body: 'Cada etapa documentada e executada com precisão: pressurização em degraus até 4.2 MPa, brasagem sob nitrogênio a 0.02 MPa, vácuo de -756 mmHg. Você não torce para dar certo — você sabe que vai dar certo.',
-                metric: 'Zero',
-                metricLabel: 'retrabalho',
+                accent: 'from-emerald-500 to-teal-600',
+                textAccent: 'text-emerald-500',
+                tag: 'Receita Previsível',
+                title: 'MRR Sólida com Contratos PMOC de Longo Prazo',
+                body: 'Receita Recorrente Mensal garantida por contratos de 3 a 5 anos. Equipe 100% produtiva o ano inteiro. Fim da dependência de emergências e picos climáticos.',
+                metric: 'MRR',
+                metricLabel: 'receita previsível',
               },
               {
                 icon: <Target className="w-7 h-7" aria-hidden="true" />,
-                accent: 'from-blue-600 to-indigo-600',
-                textAccent: 'text-blue-600',
-                tag: 'Diagnóstico Cirúrgico',
-                title: 'Precisão Técnica que Inspira Confiança no Cliente',
-                body: 'Sobreaquecimento, subarrefecimento, erro de comunicação P-Q-E — você identifica a causa raiz em minutos, não em dias. Seus clientes passam a confiar no seu veredicto técnico como um laudo de engenharia.',
+                accent: 'from-teal-500 to-cyan-600',
+                textAccent: 'text-teal-500',
+                tag: 'Diagnóstico Preditivo',
+                title: 'Detectar Falhas Semanas Antes da Paralisação',
+                body: 'Vibração, termografia e telemetria remota identificam degradação mecânica e elétrica antes da falha catastrófica. Reparos planejados em horário comercial.',
                 metric: '100%',
-                metricLabel: 'confiança técnica',
+                metricLabel: 'controle preditivo',
               },
               {
                 icon: <Award className="w-7 h-7" aria-hidden="true" />,
-                accent: 'from-teal-400 to-sky-500',
-                textAccent: 'text-teal-500',
-                tag: 'Diferenciação de Mercado',
-                title: 'Do "Instalador Comum" ao Especialista Requisitado',
-                body: 'Quem domina o protocolo completo — do dimensionamento térmico ao handover digital — não disputa preço. Você passa a ser requisitado por construtoras, integradores e clientes premium que sabem o valor da excelência.',
+                accent: 'from-cyan-400 to-emerald-500',
+                textAccent: 'text-cyan-500',
+                tag: 'Parceria Estratégica',
+                title: 'De "Prestador de Serviço" a Consultor de Eficiência',
+                body: 'Seja reconhecido como gestor de ativos e consultor energético. Seu serviço se paga pela redução na fatura de eletricidade e extensão da vida útil do sistema.',
                 metric: '3×',
                 metricLabel: 'valorização profissional',
               },
@@ -1337,7 +1256,7 @@ export default function TreinamentoHVAC() {
               <motion.div
                 key={i}
                 variants={staggerItem}
-                className="relative group bg-white/70 backdrop-blur-xl border border-sky-100 rounded-3xl p-8 shadow-xl shadow-sky-900/8 hover:shadow-2xl hover:shadow-sky-900/12 hover:-translate-y-1.5 transition-all duration-300 overflow-hidden"
+                className="relative group bg-white/70 backdrop-blur-xl border border-emerald-100 rounded-3xl p-8 shadow-xl shadow-emerald-900/8 hover:shadow-2xl hover:shadow-emerald-900/12 hover:-translate-y-1.5 transition-all duration-300 overflow-hidden"
               >
                 <div className={`absolute -top-16 -right-16 w-40 h-40 bg-gradient-to-br ${accent} opacity-8 rounded-full blur-[60px] group-hover:opacity-12 transition-opacity pointer-events-none`} aria-hidden="true" />
 
@@ -1348,7 +1267,7 @@ export default function TreinamentoHVAC() {
                 <h3 className="text-lg font-bold text-slate-900 mb-4 leading-snug">{title}</h3>
                 <p className="text-slate-600 text-sm leading-relaxed mb-6">{body}</p>
 
-                <div className="pt-5 border-t border-sky-100 flex items-baseline gap-2">
+                <div className="pt-5 border-t border-emerald-100 flex items-baseline gap-2">
                   <span className={`text-3xl font-black ${textAccent}`}>{metric}</span>
                   <span className="text-slate-500 text-xs font-medium">{metricLabel}</span>
                 </div>
@@ -1356,7 +1275,7 @@ export default function TreinamentoHVAC() {
             ))}
           </motion.div>
 
-          {/* New Paradigm Quote */}
+          {/* Quote */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -1365,12 +1284,12 @@ export default function TreinamentoHVAC() {
             className="text-center max-w-3xl mx-auto"
           >
             <blockquote className="relative">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-8xl text-sky-200 font-serif leading-none select-none pointer-events-none" aria-hidden="true">"</div>
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-8xl text-emerald-200 font-serif leading-none select-none pointer-events-none" aria-hidden="true">"</div>
               <p className="text-slate-700 text-xl md:text-2xl leading-relaxed font-light italic pt-6">
-                A diferença entre um instalador comum e um especialista de elite não é talento —{' '}
+                A diferença entre apagar incêndios e gestão de ativos não é tecnologia —{' '}
                 <strong className="text-slate-900 not-italic">é método.</strong>{' '}
-                A metodologia Simon Climatização é a ponte definitiva entre{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-blue-600 not-italic font-bold">a teoria da sala de aula e a excelência no canteiro de obras.</span>
+                A metodologia Simon Climatização é a ponte entre{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-600 not-italic font-bold">a manutenção reativa e a excelência preditiva.</span>
               </p>
             </blockquote>
           </motion.div>
@@ -1379,14 +1298,14 @@ export default function TreinamentoHVAC() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════════
-          4. PRODUCT INTRO — A Ponte (O Treinamento)
+          4. APRESENTAÇÃO DA APOSTILA — Handbook Card
       ════════════════════════════════════════════════════════════════════ */}
       <section
-        className="py-24 px-6 md:px-12 border-t border-sky-100 relative overflow-hidden"
+        className="py-24 px-6 md:px-12 border-t border-emerald-100 relative overflow-hidden"
         style={{ backgroundColor: '#f8fafc' }}
-        aria-label="Apresentação do Treinamento"
+        aria-label="Apresentação da Apostila"
       >
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-sky-100/50 rounded-full blur-[160px] pointer-events-none" aria-hidden="true" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-emerald-100/50 rounded-full blur-[160px] pointer-events-none" aria-hidden="true" />
 
         <div className="max-w-6xl mx-auto relative z-10">
 
@@ -1398,17 +1317,17 @@ export default function TreinamentoHVAC() {
             viewport={{ once: true, amount: 0.2 }}
             className="text-center mb-16"
           >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-sky-50 border border-sky-200 text-sky-600 text-xs font-bold tracking-widest uppercase mb-5">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs font-bold tracking-widest uppercase mb-5">
               A Ponte Para a Excelência
             </span>
             <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-5 text-slate-900 max-w-4xl mx-auto leading-tight">
               Apresentando o{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-blue-600">
-                Treinamento Completo de Instalação HVAC
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-600">
+                Treinamento Avançado de Manutenção HVAC
               </span>
             </h2>
             <p className="text-slate-600 max-w-2xl mx-auto text-lg leading-relaxed">
-              A metodologia de campo da Simon Climatização, condensada em 7 módulos progressivos que transformam conhecimento em competência real.
+              A metodologia de gestão de ativos da Simon Climatização, condensada em 8 módulos progressivos que transformam técnicos em especialistas em receita recorrente.
             </p>
           </motion.div>
 
@@ -1421,181 +1340,78 @@ export default function TreinamentoHVAC() {
             className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20"
           >
             {[
-              { value: '7', label: 'Módulos Progressivos', icon: <BookOpen className="w-5 h-5" /> },
-              { value: '22', label: 'Aulas Técnicas', icon: <Video className="w-5 h-5" /> },
-              { value: '44+', label: 'Vídeos Práticos', icon: <Play className="w-5 h-5" /> },
-              { value: '22', label: 'PDFs de Apresentação', icon: <FileText className="w-5 h-5" /> },
+              { value: '8', label: 'Módulos Progressivos', icon: <BookOpen className="w-5 h-5" /> },
+              { value: String(totalAulas), label: 'Aulas Técnicas', icon: <Video className="w-5 h-5" /> },
+              { value: `${totalPDFs}+`, label: 'PDFs de Pesquisa', icon: <FileText className="w-5 h-5" /> },
+              { value: '100%', label: 'Prático & Aplicável', icon: <Wrench className="w-5 h-5" /> },
             ].map(({ value, label, icon }, i) => (
               <motion.div
                 key={i}
                 variants={staggerItem}
-                className="text-center bg-white rounded-2xl border border-sky-100 p-6 shadow-lg shadow-sky-900/5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                className="text-center bg-white rounded-2xl border border-emerald-100 p-6 shadow-lg shadow-emerald-900/5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
               >
-                <div className="flex justify-center mb-3 text-sky-500">{icon}</div>
+                <div className="flex justify-center mb-3 text-emerald-500">{icon}</div>
                 <span className="block text-3xl md:text-4xl font-black text-slate-900">{value}</span>
                 <span className="text-xs text-slate-500 font-medium mt-1 block">{label}</span>
               </motion.div>
             ))}
           </motion.div>
 
-          {/* 3-Step Process */}
+          {/* Handbook Presentation Card */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="mb-20"
-          >
-            <h3 className="text-2xl md:text-3xl font-bold text-center text-slate-900 mb-12">
-              Seu Caminho em <span className="text-sky-500">3 Passos Simples</span>
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                {
-                  step: '01',
-                  icon: <Play className="w-8 h-8" />,
-                  title: 'Assista',
-                  description: 'Cada aula combina videoaula técnica + podcast de reforço. Assista no seu ritmo, pause, revise e absorva o conhecimento com dois formatos complementares.',
-                  accent: 'from-sky-500 to-blue-600',
-                },
-                {
-                  step: '02',
-                  icon: <FileText className="w-8 h-8" />,
-                  title: 'Estude',
-                  description: 'Aprofunde cada conceito com as apresentações em PDF exclusivas — diagramas técnicos, tabelas de referência e checklists prontos para o campo.',
-                  accent: 'from-blue-600 to-indigo-600',
-                },
-                {
-                  step: '03',
-                  icon: <Wrench className="w-8 h-8" />,
-                  title: 'Aplique',
-                  description: 'Leve o protocolo diretamente para o canteiro de obras. Cada módulo foi desenhado para ser aplicado imediatamente na sua próxima instalação real.',
-                  accent: 'from-indigo-600 to-violet-600',
-                },
-              ].map(({ step, icon, title, description, accent }, i) => (
-                <motion.div
-                  key={i}
-                  variants={staggerItem}
-                  className="relative text-center group"
-                >
-                  {/* Connector line */}
-                  {i < 2 && (
-                    <div className="hidden md:block absolute top-12 right-0 translate-x-1/2 w-full h-0.5 bg-gradient-to-r from-sky-200 to-transparent z-0 pointer-events-none" aria-hidden="true" />
-                  )}
-
-                  <div className="relative z-10">
-                    <div className={`w-24 h-24 mx-auto bg-gradient-to-br ${accent} rounded-3xl flex items-center justify-center text-white shadow-xl mb-6 group-hover:scale-105 transition-transform duration-300`}>
-                      {icon}
-                    </div>
-                    <span className="text-xs font-black uppercase tracking-widest text-sky-500 mb-2 block">Passo {step}</span>
-                    <h4 className="text-xl font-bold text-slate-900 mb-3">{title}</h4>
-                    <p className="text-slate-600 text-sm leading-relaxed max-w-xs mx-auto">{description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Specialist Manifesto */}
-          <motion.div
-            variants={fadeIn}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="relative overflow-hidden rounded-3xl border p-10 md:p-14 shadow-xl mb-16"
-            style={{ background: 'linear-gradient(135deg, #0c4a6e 0%, #0e1b2e 50%, #0f172a 100%)' }}
-          >
-            <div className="absolute -top-24 -right-24 w-80 h-80 bg-sky-500/10 rounded-full blur-[120px] pointer-events-none" aria-hidden="true" />
-            <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-teal-500/10 rounded-full blur-[100px] pointer-events-none" aria-hidden="true" />
-
-            <div className="relative z-10 max-w-3xl mx-auto text-center">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-500/15 border border-sky-400/30 text-xs font-bold tracking-widest uppercase mb-8" style={{ color: '#38bdf8' }}>
-                <Star className="w-3.5 h-3.5" aria-hidden="true" />
-                Manifesto do Especialista
-              </div>
-
-              <p className="text-lg md:text-xl leading-relaxed mb-8" style={{ color: '#cbd5e1' }}>
-                "Eu criei este treinamento porque vi centenas de instalações falharem por{' '}
-                <strong style={{ color: '#ffffff' }}>erros que ninguém ensina a evitar</strong>.{' '}
-                Não é um curso teórico. É a <em className="not-italic font-bold" style={{ color: '#38bdf8' }}>transferência direta</em>{' '}
-                de protocolos que a Simon Climatização desenvolveu em anos de engenharia de campo — cada módulo é uma blindagem contra os erros que destroem equipamentos, reputações e carreiras."
-              </p>
-
-              <div className="flex items-center justify-center gap-4">
-                <div className="w-12 h-12 bg-sky-500/20 border border-sky-400/30 rounded-full flex items-center justify-center" aria-hidden="true">
-                  <GraduationCap className="w-6 h-6" style={{ color: '#38bdf8' }} />
-                </div>
-                <div className="text-left">
-                  <span className="block text-sm font-bold" style={{ color: '#ffffff' }}>Simon Climatização</span>
-                  <span className="text-xs" style={{ color: '#94a3b8' }}>Engenharia Térmica de Alta Performance</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Handbook Presentation Section — Premium Interactive Card */}
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="mt-20 max-w-4xl mx-auto"
+            className="max-w-4xl mx-auto"
           >
             <div 
-              className="relative overflow-hidden rounded-3xl border p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-8 md:gap-12 transition-all duration-300 hover:shadow-sky-900/20"
+              className="relative overflow-hidden rounded-3xl border p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-8 md:gap-12 transition-all duration-300 hover:shadow-emerald-900/20"
               style={{ 
                 background: 'linear-gradient(135deg, rgba(30,41,59,0.7) 0%, rgba(15,23,42,0.9) 100%)',
-                borderColor: 'rgba(14,165,233,0.3)'
+                borderColor: ACCENT_BORDER
               }}
             >
-              {/* Ambient Glow */}
-              <div className="absolute top-0 right-0 w-60 h-60 bg-sky-500/10 rounded-full blur-[80px] pointer-events-none" aria-hidden="true" />
-              <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-500/10 rounded-full blur-[60px] pointer-events-none" aria-hidden="true" />
+              <div className="absolute top-0 right-0 w-60 h-60 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" aria-hidden="true" />
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-teal-500/10 rounded-full blur-[60px] pointer-events-none" aria-hidden="true" />
 
-              {/* Left Column: Visual/Icon Representation */}
+              {/* Left Column: Visual */}
               <div className="flex-shrink-0 relative">
                 <div 
                   className="w-24 h-24 md:w-32 md:h-32 rounded-3xl flex items-center justify-center shadow-lg border relative"
                   style={{ 
-                    backgroundColor: 'rgba(14,165,233,0.1)', 
-                    borderColor: 'rgba(14,165,233,0.4)',
-                    color: '#38bdf8'
+                    backgroundColor: ACCENT_BG, 
+                    borderColor: ACCENT_BORDER,
+                    color: ACCENT_LIGHT
                   }}
                 >
                   <BookOpen className="w-12 h-12 md:w-16 md:h-16" />
-                  <span className="absolute -bottom-2 -right-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-sky-500 text-white shadow">
-                    PDF 24 Pág.
+                  <span className="absolute -bottom-2 -right-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider text-white shadow" style={{ backgroundColor: ACCENT }}>
+                    8 Módulos
                   </span>
                 </div>
               </div>
 
               {/* Right Column: Copy & Actions */}
               <div className="flex-1 text-center md:text-left">
-                <span className="inline-block px-3 py-1 rounded-full bg-sky-500/15 border border-sky-400/20 text-[#38bdf8] text-xs font-bold tracking-widest uppercase mb-4">
+                <span className="inline-block px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-4" style={{ backgroundColor: ACCENT_BG, border: `1px solid ${ACCENT_BORDER}`, color: ACCENT_LIGHT }}>
                   Manual de Campo Oficial
                 </span>
                 <h3 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-4 leading-snug">
-                  Apresentação da Apostila de Instalação HVAC
+                  Apostila de Manutenção Avançada HVAC
                 </h3>
                 <p className="text-slate-300 text-sm md:text-base leading-relaxed mb-8">
-                  Explore o conteúdo teórico completo da Apostila 01 compilado em nossa plataforma interativa. Assista aos vídeos de introdução e consulte os slides esquemáticos oficiais com a metodologia Simon Climatização.
+                  Explore o conteúdo teórico completo da Apostila 02 compilado em nossa plataforma interativa. Consulte a metodologia BAB, parâmetros regulatórios e checklists de campo.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                   <button
-                    onClick={() => openLesson(cursoInstalacaoHVAC.apresentacao)}
-                    className="inline-flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-400 active:bg-sky-600 text-white font-bold px-6 py-3.5 rounded-xl transition-all duration-200 text-sm shadow-lg shadow-sky-500/20 hover:shadow-sky-400/25 hover:-translate-y-0.5 cursor-pointer"
+                    onClick={() => openLesson(cursoManutencaoHVAC.apresentacao)}
+                    className="inline-flex items-center justify-center gap-2 text-white font-bold px-6 py-3.5 rounded-xl transition-all duration-200 text-sm shadow-lg hover:-translate-y-0.5 cursor-pointer"
+                    style={{ backgroundColor: ACCENT }}
                   >
                     <BookOpen className="w-4 h-4" />
                     Iniciar Leitura Interativa
-                  </button>
-                  
-                  <button
-                    onClick={() => openLesson({ ...cursoInstalacaoHVAC.apresentacao, defaultTab: 'video' })}
-                    className="inline-flex items-center justify-center gap-2 border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 font-semibold px-6 py-3.5 rounded-xl transition-all duration-200 text-sm hover:bg-sky-500/10 cursor-pointer"
-                  >
-                    <Play className="w-4 h-4" />
-                    Assistir Apresentação
                   </button>
                 </div>
               </div>
@@ -1612,10 +1428,10 @@ export default function TreinamentoHVAC() {
         ref={gradeSectionRef}
         className="py-24 px-6 md:px-12 relative overflow-hidden"
         style={{ backgroundColor: '#0f172a' }}
-        aria-label="Grade Curricular Completa do Treinamento"
+        aria-label="Grade Curricular Completa do Treinamento de Manutenção"
       >
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-sky-900/30 rounded-full blur-[160px] pointer-events-none" aria-hidden="true" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-900/20 rounded-full blur-[140px] pointer-events-none" aria-hidden="true" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-900/30 rounded-full blur-[160px] pointer-events-none" aria-hidden="true" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-teal-900/20 rounded-full blur-[140px] pointer-events-none" aria-hidden="true" />
 
         <div className="max-w-5xl mx-auto relative z-10">
 
@@ -1627,25 +1443,26 @@ export default function TreinamentoHVAC() {
             viewport={{ once: true, amount: 0.2 }}
             className="text-center mb-16"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-bold tracking-widest uppercase mb-5" style={{ backgroundColor: 'rgba(14,165,233,0.15)', borderColor: 'rgba(56,189,248,0.3)', color: '#38bdf8' }}>
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-bold tracking-widest uppercase mb-5" style={{ backgroundColor: ACCENT_BG, borderColor: ACCENT_BORDER, color: ACCENT_LIGHT }}>
               <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
               Grade Curricular Completa
             </span>
             <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-5 leading-tight" style={{ color: '#ffffff' }}>
-              7 Módulos.{' '}
-              <span style={{ color: '#38bdf8' }}>22 Aulas.</span>{' '}
+              8 Módulos.{' '}
+              <span style={{ color: ACCENT_LIGHT }}>{totalAulas} Aulas.</span>{' '}
               Zero Atalhos.
             </h2>
             <p className="max-w-2xl mx-auto text-lg leading-relaxed" style={{ color: '#94a3b8' }}>
-              Clique em cada módulo para explorar as aulas. Clique em uma aula para abrir o <strong style={{ color: '#e2e8f0' }}>Leitor Interativo</strong> com vídeo, podcast, slides e conteúdo técnico completo.
+              Clique em cada módulo para explorar as aulas. Clique em uma aula para abrir o <strong style={{ color: '#e2e8f0' }}>Leitor Interativo</strong> com conteúdo técnico completo e material de pesquisa.
             </p>
           </motion.div>
 
           {/* Accordion Modules */}
           <div className="space-y-4">
-            {cursoInstalacaoHVAC.modulos.map((modulo, mIdx) => {
+            {cursoManutencaoHVAC.modulos.map((modulo, mIdx) => {
               const isOpen = openModulo === modulo.id;
               const mc = moduleColors[mIdx % moduleColors.length];
+              const IconComponent = MODULE_ICONS[modulo.icone] || BookOpen;
 
               return (
                 <motion.div
@@ -1667,10 +1484,10 @@ export default function TreinamentoHVAC() {
                     aria-expanded={isOpen}
                   >
                     <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-black text-lg"
+                      className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                       style={{ backgroundColor: mc.bg, color: mc.accent, border: `1px solid ${mc.border}` }}
                     >
-                      {String(modulo.id).padStart(2, '0')}
+                      <IconComponent className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="text-base md:text-lg font-bold truncate" style={{ color: '#f1f5f9' }}>
@@ -1685,7 +1502,7 @@ export default function TreinamentoHVAC() {
                     </div>
                   </button>
 
-                  {/* Expanded Lessons — Now with "Open Lesson" click action */}
+                  {/* Expanded Lessons */}
                   {isOpen && (
                     <div className="px-6 pb-6 space-y-3">
                       {modulo.aulas.map((aula) => (
@@ -1706,12 +1523,9 @@ export default function TreinamentoHVAC() {
                               </h4>
                             </div>
                             <div className="flex items-center gap-2 flex-shrink-0">
-                              {/* Availability indicators */}
-                              {aula.conteudo_html && <BookOpen className="w-3.5 h-3.5 text-sky-500" title="Conteúdo Técnico" />}
-                              {(aula.link_video || aula.videos?.find(v => v.tipo === 'videoaula')) && <Play className="w-3.5 h-3.5 text-sky-500" title="Videoaula" />}
-                              {(aula.link_podcast || aula.videos?.find(v => v.tipo === 'podcast')) && <Headphones className="w-3.5 h-3.5 text-violet-500" title="Podcast" />}
-                              {SLIDE_MAP[aula.id] && <Layers className="w-3.5 h-3.5 text-emerald-500" title="Slides" />}
-                              <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-sky-400 transition-colors ml-1" />
+                              {aula.conteudo_html && <BookOpen className="w-3.5 h-3.5 text-emerald-500" title="Conteúdo Técnico" />}
+                              {aula.fontes_imagens?.length > 0 && <FileText className="w-3.5 h-3.5 text-amber-500" title="PDF Disponível" />}
+                              <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors ml-1" />
                             </div>
                           </div>
                         </button>
@@ -1732,12 +1546,12 @@ export default function TreinamentoHVAC() {
             className="text-center mt-16"
           >
             <p className="text-lg mb-6" style={{ color: '#94a3b8' }}>
-              São <strong style={{ color: '#ffffff' }}>7 módulos, 22 aulas e mais de 44 vídeos</strong> prontos para transformar sua carreira.
+              São <strong style={{ color: '#ffffff' }}>8 módulos, {totalAulas} aulas e {totalPDFs}+ PDFs</strong> prontos para transformar sua operação de manutenção.
             </p>
             <Link
               to="/contato"
               className="inline-flex items-center justify-center gap-2 font-bold px-10 py-4 rounded-xl transition-all duration-200 text-base shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-              style={{ backgroundColor: '#0ea5e9', color: '#ffffff' }}
+              style={{ backgroundColor: ACCENT, color: '#ffffff' }}
             >
               Quero me Inscrever no Treinamento
               <ArrowRight className="w-5 h-5" aria-hidden="true" />
@@ -1748,45 +1562,45 @@ export default function TreinamentoHVAC() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════════
-          6. CTA FINAL — Fechamento de Alta Conversão
+          6. CTA FINAL
       ════════════════════════════════════════════════════════════════════ */}
       <section
         className="relative py-24 px-6 md:px-12 overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0c1426 0%, #0f172a 40%, #1e293b 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #042f2e 0%, #0f172a 40%, #1e293b 100%)' }}
         aria-label="Chamada final para inscrição"
       >
-        <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full opacity-15 blur-3xl pointer-events-none" style={{ backgroundColor: '#0ea5e9' }} />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ backgroundColor: '#3b82f6' }} />
+        <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full opacity-15 blur-3xl pointer-events-none" style={{ backgroundColor: ACCENT }} />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ backgroundColor: '#14b8a6' }} />
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            <span className="inline-block bg-sky-500/10 border border-sky-400/20 text-sky-400 text-xs font-bold uppercase tracking-widest px-5 py-2 rounded-full mb-6">
+            <span className="inline-block border text-xs font-bold uppercase tracking-widest px-5 py-2 rounded-full mb-6" style={{ backgroundColor: ACCENT_BG, borderColor: ACCENT_BORDER, color: ACCENT }}>
               🎯 Decisão de Elite
             </span>
             <h2 className="text-3xl md:text-5xl font-black leading-tight mb-6" style={{ color: '#ffffff' }}>
-              Chega de Improvisar.{' '}
-              <span style={{ color: '#38bdf8' }}>Comece a Dominar.</span>
+              Chega de Apagar Incêndios.{' '}
+              <span style={{ color: ACCENT_LIGHT }}>Comece a Gerenciar Ativos.</span>
             </h2>
             <p className="text-lg md:text-xl leading-relaxed max-w-2xl mx-auto mb-10" style={{ color: '#94a3b8' }}>
-              O mercado HVAC separa profissionais em dois grupos: os que seguem métodos comprovados e os que queimam compressores. Este treinamento coloca você definitivamente no primeiro grupo.
+              O mercado HVAC separa profissionais em dois grupos: os que vendem contratos PMOC de longo prazo e os que disputam preço em chamados de emergência. Este treinamento coloca você definitivamente no primeiro grupo.
             </p>
           </motion.div>
 
           {/* Trust Indicators */}
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
             {[
-              { value: '7', label: 'Módulos', icon: '📦' },
-              { value: '22', label: 'Aulas Completas', icon: '📚' },
-              { value: '44+', label: 'Vídeos + Podcasts', icon: '🎬' },
+              { value: '8', label: 'Módulos', icon: '📦' },
+              { value: String(totalAulas), label: 'Aulas Completas', icon: '📚' },
+              { value: `${totalPDFs}+`, label: 'PDFs Técnicos', icon: '📄' },
               { value: '100%', label: 'Prático & Aplicável', icon: '🔧' },
             ].map((stat, i) => (
               <div
                 key={i}
                 className="rounded-xl border p-4"
-                style={{ backgroundColor: 'rgba(15,23,42,0.6)', borderColor: 'rgba(56,189,248,0.15)' }}
+                style={{ backgroundColor: 'rgba(15,23,42,0.6)', borderColor: `${ACCENT_BORDER}` }}
               >
                 <span className="text-2xl mb-1 block">{stat.icon}</span>
-                <span className="text-2xl font-black block" style={{ color: '#38bdf8' }}>{stat.value}</span>
+                <span className="text-2xl font-black block" style={{ color: ACCENT_LIGHT }}>{stat.value}</span>
                 <span className="text-xs font-medium" style={{ color: '#64748b' }}>{stat.label}</span>
               </div>
             ))}
@@ -1797,7 +1611,7 @@ export default function TreinamentoHVAC() {
             <Link
               to="/contato"
               className="inline-flex items-center justify-center gap-3 font-bold px-10 py-5 rounded-xl transition-all duration-300 text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1"
-              style={{ background: 'linear-gradient(135deg, #0ea5e9, #3b82f6)', color: '#ffffff' }}
+              style={{ background: `linear-gradient(135deg, ${ACCENT}, #14b8a6)`, color: '#ffffff' }}
             >
               <Rocket className="w-5 h-5" aria-hidden="true" />
               Quero me Inscrever Agora
@@ -1815,76 +1629,18 @@ export default function TreinamentoHVAC() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════════
-          7. FAQ — Perguntas Frequentes
-      ════════════════════════════════════════════════════════════════════ */}
-      <section className="py-20 px-6 md:px-12 bg-slate-50" aria-label="Perguntas Frequentes">
-        <div className="max-w-3xl mx-auto">
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12">
-            <span className="inline-block bg-sky-50 border border-sky-200 text-sky-600 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full mb-4">
-              ❓ Dúvidas Comuns
-            </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900">
-              Perguntas Frequentes
-            </h2>
-          </motion.div>
-
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="space-y-3">
-            {[
-              {
-                q: 'Qual a diferença deste treinamento para cursos "teóricos" de HVAC?',
-                a: 'Nosso treinamento é 100% baseado na metodologia de campo da Simon Climatização. Cada aula inclui videoaula técnica, podcast de reflexão, slides com infográficos e material de pesquisa em PDF. Você aprende a executar, não apenas a entender.',
-              },
-              {
-                q: 'Preciso ter experiência prévia em HVAC?',
-                a: 'O Módulo 01 cobre os fundamentos termodinâmicos desde o ciclo de refrigeração básico. Profissionais iniciantes podem acompanhar sem problemas. Para quem já atua na área, os módulos avançados (5, 6 e 7) cobrem aplicações comerciais, vácuo profundo e comissionamento digital.',
-              },
-              {
-                q: 'O conteúdo fica disponível para sempre?',
-                a: 'Sim. Após a inscrição, você tem acesso vitalício a todos os 7 módulos, 22 aulas, vídeos, podcasts, slides e materiais de pesquisa. Incluindo futuras atualizações de conteúdo.',
-              },
-              {
-                q: 'Como funciona o suporte durante o treinamento?',
-                a: 'Você terá acesso ao nosso canal exclusivo no WhatsApp para tirar dúvidas técnicas diretamente com a equipe Simon Climatização. Dúvidas sobre instalações reais são prioridade.',
-              },
-              {
-                q: 'Recebo certificado ao concluir?',
-                a: 'Sim. Ao completar todos os módulos e atividades, você recebe o Certificado de Conclusão do Treinamento de Instalação HVAC — Padrão Simon Climatização, reconhecido no mercado de climatização.',
-              },
-              {
-                q: 'Posso acessar as aulas pelo celular?',
-                a: 'Absolutamente. A plataforma é 100% responsiva. Vídeos, slides e materiais funcionam perfeitamente em smartphones e tablets. Ideal para consultar no próprio canteiro de obra.',
-              },
-            ].map((faq, i) => (
-              <details
-                key={i}
-                className="group rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
-              >
-                <summary className="flex items-center justify-between cursor-pointer px-6 py-5 text-left font-semibold text-slate-800 text-sm md:text-base select-none list-none">
-                  <span>{faq.q}</span>
-                  <ChevronDown className="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-200 flex-shrink-0 ml-4" />
-                </summary>
-                <div className="px-6 pb-5 text-sm text-slate-600 leading-relaxed">
-                  {faq.a}
-                </div>
-              </details>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════════════
-          8. MICRO-CTA FINAL — Rodapé de fechamento
+          7. MICRO-CTA FINAL — Rodapé
       ════════════════════════════════════════════════════════════════════ */}
       <section className="py-12 px-6 text-center" style={{ backgroundColor: '#0f172a' }}>
         <p className="text-sm mb-4" style={{ color: '#64748b' }}>
           Ainda tem dúvidas? Fale diretamente com nossa equipe técnica.
         </p>
         <a
-          href="https://wa.me/5511942163150?text=Olá! Tenho interesse no Treinamento de Instalação HVAC."
+          href="https://wa.me/5511942163150?text=Olá! Tenho interesse no Treinamento de Manutenção HVAC."
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-lg border transition-all duration-200 hover:bg-emerald-500/10"
-          style={{ borderColor: 'rgba(16,185,129,0.3)', color: '#10b981' }}
+          style={{ borderColor: ACCENT_BORDER, color: ACCENT }}
         >
           💬 Falar no WhatsApp
         </a>

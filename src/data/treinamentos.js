@@ -585,5 +585,15 @@ export const cursoTVRProCO380VCatalogo = {
   aulas: []
 };
 
+export const cursoManutencaoCompleto = {
+  id: "manutencao-hvac-completo",
+  titulo: "Treinamento Avançado de Manutenção HVAC",
+  descricao: "Metodologia de gestão de ativos da Simon Climatização. Domine manutenção preventiva e preditiva, diagnóstico avançado, contratos PMOC e receita recorrente.",
+  imagemDestaque: "/images/home-manutencao-01.jpeg",
+  isNovo: true,
+  rotaCustomizada: "/academia/treinamento-manutencao-hvac",
+  aulas: []
+};
+
 // EXPORTANDO A LISTA DE CURSOS
-export const todosCursos = [cursoTVRProCO380VCatalogo, cursoVRF, cursoTVRPro, cursoInstalacaoCompleto];
+export const todosCursos = [cursoTVRProCO380VCatalogo, cursoManutencaoCompleto, cursoVRF, cursoTVRPro, cursoInstalacaoCompleto];

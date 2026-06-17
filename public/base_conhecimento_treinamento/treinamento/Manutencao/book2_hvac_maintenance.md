@@ -337,7 +337,7 @@ Provide a comprehensive technical guide on HVAC refrigerant leak detection, loca
 
 6. LEAK RATE CALCULATIONS AND REPORTING: Annualized leak rate calculations, EPA reporting thresholds (>50 lbs commercial / >25 lbs industrial for >125% annual leak rate), record-keeping requirements, and client notification procedures.
 
-Include decision frameworks for repair vs. replace scenarios based on leak rate severity and system age.
+Include decision frameworks for repair vs. replace scenarios based on leak rate severity and system age. 
 ```
 
 ---

@@ -596,4 +596,4 @@ export const cursoManutencaoCompleto = {
 };
 
 // EXPORTANDO A LISTA DE CURSOS
-export const todosCursos = [cursoTVRProCO380VCatalogo, cursoManutencaoCompleto, cursoVRF, cursoTVRPro, cursoInstalacaoCompleto];
+export const todosCursos = [cursoInstalacaoCompleto, cursoManutencaoCompleto, cursoTVRProCO380VCatalogo, cursoVRF, cursoTVRPro];

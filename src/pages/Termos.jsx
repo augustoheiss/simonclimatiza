@@ -14,6 +14,8 @@ import {
   Database,
   Cookie,
   Lock,
+  GraduationCap,
+  AlertTriangle,
 } from 'lucide-react';
 
 // ─── Animation Variants ────────────────────────────────────────────────────────
@@ -253,6 +255,27 @@ export default function Termos() {
                 dos serviços ofertados, promessas comerciais, ou pela gestão e armazenamento dos dados
                 trocados diretamente com o profissional após o redirecionamento.
               </p>
+            </LegalSection>
+
+            {/* 1.4 Termos da Academia HVAC, Treinamentos e Isenção Prática */}
+            <LegalSection icon={GraduationCap} number="1.4" title="Academia HVAC & Treinamentos Técnicos Online">
+              <p>
+                Os cursos, vídeo-aulas, manuais e materiais didáticos disponibilizados na seção <strong className="text-slate-800">Academia Simon Climatiza</strong> possuem caráter <strong className="text-slate-800">estritamente educacional, pedagógico e informativo</strong>:
+              </p>
+              <ul className="space-y-2 mt-3 list-disc list-inside">
+                <li>
+                  <strong className="text-slate-800">Evolução Tecnológica e Desatualização de Manuais:</strong> A engenharia de climatização (sistemas VRF/TVR, compressores inverter, gases refrigerantes e normas ABNT/ASHRAE) evolui constantemente. Os materiais didáticos refletem o estado da técnica na data de sua produção. O técnico ou aluno tem o dever indelegável de sempre consultar o manual técnico oficial atualizado do fabricante do equipamento antes de qualquer diagnóstico ou intervenção física.
+                </li>
+                <li>
+                  <strong className="text-slate-800">Isenção Total por Acidentes e Danos em Campo:</strong> A Simon Climatiza, seus instrutores e o desenvolvedor da plataforma web ficam expressamente isentos de qualquer responsabilidade civil, criminal ou indenizatória por acidentes de trabalho, choques elétricos, queimaduras químicas, vazamento de fluidos refrigerantes, queima de placas eletrônicas ou danos patrimoniais decorrentes da execução prática das técnicas demonstradas nos vídeos.
+                </li>
+                <li>
+                  <strong className="text-slate-800">Segurança do Trabalho & Normas Regulamentadoras (NRs):</strong> O aluno é o único responsável pelo cumprimento das normas de segurança obrigatórias (como NR-10 para eletricidade e NR-35 para trabalho em altura), pelo uso correto de Equipamentos de Proteção Individual (EPIs) e por possuir habilitação técnica legal (CFT/CREA).
+                </li>
+                <li>
+                  <strong className="text-slate-800">Natureza dos Certificados:</strong> Os certificados emitidos pela Academia atestam a participação e aproveitamento do curso online, não equivalendo a registro de engenharia ou Anotação de Responsabilidade Técnica (ART).
+                </li>
+              </ul>
             </LegalSection>
 
             {/* ── Divider ── */}

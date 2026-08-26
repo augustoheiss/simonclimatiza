@@ -97,7 +97,7 @@ export default function ScarcityCtaSection() {
             </span>
             <span className="flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-sky-500" />
-              Sem custo de avaliação preliminar
+              Avaliação Técnica Especializada
             </span>
             <span className="flex items-center gap-1.5">
               <Lock className="w-4 h-4 text-sky-500" />

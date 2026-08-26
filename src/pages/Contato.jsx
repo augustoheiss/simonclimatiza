@@ -225,7 +225,7 @@ Aguardo o retorno. Obrigado!`;
             <div className="flex flex-col gap-2.5">
               {[
                 { icon: Zap, label: 'Resposta em menos de 2 horas úteis' },
-                { icon: ShieldCheck, label: 'Diagnóstico técnico sem custo inicial' },
+                { icon: ShieldCheck, label: 'Diagnóstico técnico especializado com ART' },
                 { icon: CheckCircle2, label: 'Orçamento detalhado e transparente' },
               ].map(({ icon: Icon, label }) => (
                 <div key={label} className="flex items-center gap-3 text-sm text-slate-700">

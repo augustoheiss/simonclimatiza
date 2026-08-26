@@ -509,7 +509,7 @@ export default function Servicos() {
                   id="servicos-hero-cta"
                   className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white font-bold px-8 py-4 rounded-xl transition-all duration-200 text-base shadow-lg shadow-sky-500/30 hover:shadow-xl hover:shadow-sky-600/35 hover:-translate-y-0.5"
                 >
-                  Solicitar Diagnóstico Gratuito
+                  Solicitar Diagnóstico Técnico
                   <ArrowRight className="w-5 h-5" aria-hidden="true" />
                 </Link>
               </motion.div>
@@ -681,14 +681,14 @@ export default function Servicos() {
               </h2>
 
               <p className="text-sky-100/80 text-lg leading-relaxed mb-10 max-w-2xl mx-auto">
-                Não tem certeza de qual serviço precisa? Fale com nossos engenheiros. Fazemos um diagnóstico gratuito e indicamos a solução técnica mais adequada para o seu cenário. Não deixe o bem-estar, a saúde e a produtividade da sua equipe para depois. Engenharia de precisão para ambientes que exigem o melhor.
+                Não tem certeza de qual serviço precisa? Fale com nossos engenheiros. Realizamos uma avaliação técnica precisa e indicamos a solução de engenharia mais adequada para o seu cenário. Não deixe o bem-estar, a saúde e a produtividade da sua equipe para depois. Engenharia de precisão para ambientes que exigem o melhor.
               </p>
 
               {/* Trust row */}
               <div className="flex flex-wrap justify-center gap-4 mb-10">
                 {[
-                  { icon: <CheckCircle2 className="w-4 h-4" aria-hidden="true" />, text: 'Diagnóstico gratuito' },
-                  { icon: <CheckCircle2 className="w-4 h-4" aria-hidden="true" />, text: 'Sem compromisso' },
+                  { icon: <CheckCircle2 className="w-4 h-4" aria-hidden="true" />, text: 'Engenheiro Habilitado' },
+                  { icon: <CheckCircle2 className="w-4 h-4" aria-hidden="true" />, text: 'Atendimento Corporativo B2B' },
                   { icon: <CheckCircle2 className="w-4 h-4" aria-hidden="true" />, text: 'Resposta em 24h' },
                 ].map(({ icon, text }, i) => (
                   <div key={i} className="inline-flex items-center gap-2 text-sky-300 text-sm font-medium">

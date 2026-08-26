@@ -12,62 +12,21 @@ import Certificados from './pages/Certificados';
 import Validar from './pages/Validar';
 import Termos from './pages/Termos';
 import ProtecaoAcademia from './components/ProtecaoAcademia';
+import Navbar from './components/Navbar';
+import FloatingWhatsApp from './components/FloatingWhatsApp';
 
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-white flex flex-col font-sans">
+      <div className="min-h-screen bg-white flex flex-col font-sans selection:bg-sky-500 selection:text-white">
 
-        {/* Menu de Navegação Global */}
-        <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-sky-100 shadow-sm shadow-sky-900/5">
-          <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
+        {/* Global Responsive Navbar */}
+        <Navbar />
 
-            {/* Logo */}
-            <Link to="/" className="flex items-center">
-              <img
-                src="/images/logo-simon.jpg"
-                alt="Logo Simon Climatização"
-                className="h-14 w-auto mix-blend-multiply"
-              />
-            </Link>
+        {/* Floating WhatsApp Action Button */}
+        <FloatingWhatsApp />
 
-            {/* Links de navegação */}
-            <div className="flex gap-8">
-              <Link
-                to="/"
-                className="text-slate-600 hover:text-sky-500 font-medium transition-colors uppercase tracking-wider text-sm"
-              >
-                Início
-              </Link>
-              <Link
-                to="/servicos"
-                className="text-slate-600 hover:text-sky-500 font-medium transition-colors uppercase tracking-wider text-sm"
-              >
-                Serviços
-              </Link>
-              <Link
-                to="/academia"
-                className="text-slate-600 hover:text-sky-500 font-medium transition-colors uppercase tracking-wider text-sm"
-              >
-                Academia
-              </Link>
-              <Link
-                to="/certificados"
-                className="text-slate-600 hover:text-sky-500 font-medium transition-colors uppercase tracking-wider text-sm"
-              >
-                Certificados
-              </Link>
-              <Link
-                to="/contato"
-                className="inline-flex items-center gap-1.5 bg-sky-500 hover:bg-sky-600 text-white font-semibold px-5 py-2 rounded-lg transition-all duration-200 text-sm shadow-md shadow-sky-500/20"
-              >
-                Contato
-              </Link>
-            </div>
-          </div>
-        </nav>
-
-        {/* Páginas */}
+        {/* Pages Content */}
         <main className="flex-grow flex flex-col">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -84,15 +43,51 @@ export default function App() {
           </Routes>
         </main>
 
-        {/* Rodapé Global */}
-        <footer className="bg-sky-50 border-t border-sky-100 p-6 text-center text-slate-400 text-sm">
-          <p>&copy; {new Date().getFullYear()} Simon Climatiza. Engenharia Térmica de Alta Performance.</p>
-          <Link
-            to="/termos"
-            className="inline-block mt-2 text-xs text-slate-400 hover:text-sky-500 transition-colors duration-200 underline underline-offset-2 decoration-slate-300 hover:decoration-sky-400"
-          >
-            Termos de Uso e Privacidade
-          </Link>
+        {/* Global Footer */}
+        <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 py-12 px-6">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-sm">
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-2 mb-3">
+                <img
+                  src="/images/logo-simon.jpg"
+                  alt="Logo Simon Climatização"
+                  className="h-10 w-auto bg-white p-1 rounded"
+                />
+                <span className="text-white font-bold text-lg">Simon Climatização</span>
+              </div>
+              <p className="text-slate-400 max-w-sm text-xs leading-relaxed mb-4">
+                Engenharia térmica de precisão, PMOC digital com ART, manutenção de sistemas VRF/VRV, Chillers e Câmaras Frias para edifícios corporativos e indústrias.
+              </p>
+              <div className="text-xs text-sky-400 font-semibold">
+                Responsável Técnico Habilitado &bull; CREA / CFT Ativo
+              </div>
+            </div>
+
+            <div>
+              <h4 className="text-white font-bold mb-3 uppercase tracking-wider text-xs">Navegação</h4>
+              <ul className="space-y-2 text-xs">
+                <li><Link to="/" className="hover:text-sky-400 transition-colors">Início</Link></li>
+                <li><Link to="/servicos" className="hover:text-sky-400 transition-colors">Serviços de Engenharia</Link></li>
+                <li><Link to="/academia" className="hover:text-sky-400 transition-colors">Academia Simon HVAC</Link></li>
+                <li><Link to="/certificados" className="hover:text-sky-400 transition-colors">Emissão de Certificados</Link></li>
+                <li><Link to="/validar" className="hover:text-sky-400 transition-colors">Validação de Autenticidade</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white font-bold mb-3 uppercase tracking-wider text-xs">Contato &amp; Legal</h4>
+              <ul className="space-y-2 text-xs">
+                <li><Link to="/contato" className="hover:text-sky-400 transition-colors">Solicitar Diagnóstico</Link></li>
+                <li><Link to="/termos" className="hover:text-sky-400 transition-colors">Termos de Uso &amp; LGPD</Link></li>
+                <li className="pt-2 text-slate-500">São Paulo &bull; Atendimento Brasil B2B</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="max-w-6xl mx-auto pt-6 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-3">
+            <p>&copy; {new Date().getFullYear()} Simon Climatização. Todos os direitos reservados.</p>
+            <p>Engenharia Térmica de Alta Performance.</p>
+          </div>
         </footer>
 
       </div>

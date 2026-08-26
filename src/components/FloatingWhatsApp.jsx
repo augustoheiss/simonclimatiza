@@ -5,7 +5,7 @@ import { MessageCircle, X, CheckCircle2 } from 'lucide-react';
 export default function FloatingWhatsApp() {
   const [tooltipVisible, setTooltipVisible] = useState(true);
 
-  const whatsappNumber = '5511999999999';
+  const whatsappNumber = '5511942163150';
   const defaultMessage = encodeURIComponent(
     'Olá! Estava navegando no site da Simon Climatiza e gostaria de tirar uma dúvida técnica sobre serviços de engenharia e PMOC.'
   );

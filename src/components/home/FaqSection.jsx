@@ -112,7 +112,7 @@ export default function FaqSection() {
         <div className="mt-10 text-center">
           <p className="text-sm text-slate-500 mb-3">Possui uma dúvida técnica específica sobre o seu maquinário?</p>
           <a
-            href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20gostaria%20de%20tirar%20uma%20d%C3%BAvida%20t%C3%A9cnica%20com%20o%20Engenheiro."
+            href="https://wa.me/5511942163150?text=Ol%C3%A1%2C%20gostaria%20de%20tirar%20uma%20d%C3%BAvida%20t%C3%A9cnica%20com%20o%20Engenheiro."
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sky-600 hover:text-sky-700 font-bold text-sm underline underline-offset-4 decoration-sky-300 hover:decoration-sky-500 transition-all"

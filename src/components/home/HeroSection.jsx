@@ -42,7 +42,7 @@ function HeroLeadForm() {
     const msg = encodeURIComponent(
       `Olá Engenharia Simon! Me chamo ${formData.name}.\nTenho interesse em: ${formData.need || 'Diagnóstico Técnico'}.\nE-mail: ${formData.email}\nWhatsApp: ${formData.whatsapp}`
     );
-    window.open(`https://wa.me/5511999999999?text=${msg}`, '_blank');
+    window.open(`https://wa.me/5511942163150?text=${msg}`, '_blank');
     setSubmitted(true);
   };
 

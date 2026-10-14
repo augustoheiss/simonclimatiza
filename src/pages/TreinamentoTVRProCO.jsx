@@ -28,7 +28,14 @@ import {
   Table2,
   Info,
   Layers,
+  Coffee,
+  Award,
 } from 'lucide-react';
+import ConversaView from '../components/conversa/ConversaView';
+import ConversaErrorBoundary from '../components/conversa/ConversaErrorBoundary';
+import { temConversa, resolverAbaInicial } from '../data/conversas/manifesto';
+import useProgress from '../hooks/useProgress';
+import { useConversasCurso } from '../hooks/useConversaProgress';
 
 // ─── Animation Variants ─────────────────────────────────────────────────────
 const fadeUp = {
@@ -200,15 +207,20 @@ function LessonReaderView({ topico, onBack }) {
   const partInfo = findPartForTopic(topico.id);
   const pc = partInfo ? PART_COLORS[partInfo.parteIndex % PART_COLORS.length] : PART_COLORS[0];
   const ls = LEVEL_STYLES[topico.nivel] || LEVEL_STYLES.basico;
+  const hasConversa = temConversa('tvr-pro-co-380v', topico.id);
   const hasContent = topico.conteudo_html && topico.conteudo_html.trim() !== '';
   const hasTables = topico.tabelas_html && topico.tabelas_html.trim() !== '';
   const hasInfobox = topico.infobox_campo && topico.infobox_campo.trim() !== '';
   const hasVideo = !!getYouTubeEmbedUrl(topico.link_video);
   const hasPodcast = !!getYouTubeEmbedUrl(topico.link_podcast);
   const hasSlides = topico.total_slides && topico.total_slides > 0;
+  const { toggleAula, isAulaConcluida } = useProgress();
+  const concluida = isAulaConcluida('tvr-pro-co-380v', topico.id);
 
   // Active tab for content sections
-  const [activeTab, setActiveTab] = useState('conteudo');
+  const [activeTab, setActiveTab] = useState(() =>
+    resolverAbaInicial('tvr-pro-co-380v', topico, 'conteudo')
+  );
   // Slide carousel state
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -222,12 +234,8 @@ function LessonReaderView({ topico, onBack }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  // Reset slide index when switching topics
-  useEffect(() => {
-    setCurrentSlide(0);
-  }, [topico.id]);
-
   const tabs = [
+    { id: 'conversa', label: 'Papo de Balcão', icon: <Coffee className="w-4 h-4" />, show: hasConversa },
     { id: 'conteudo', label: 'Conteúdo Técnico', icon: <BookOpen className="w-4 h-4" />, show: hasContent },
     { id: 'tabelas', label: 'Tabelas & Parâmetros', icon: <Table2 className="w-4 h-4" />, show: hasTables },
     { id: 'infobox', label: 'Infobox de Campo', icon: <Info className="w-4 h-4" />, show: hasInfobox },
@@ -264,11 +272,26 @@ function LessonReaderView({ topico, onBack }) {
 
           <div className="h-5 w-px bg-slate-700 flex-shrink-0" aria-hidden="true" />
 
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="text-xs font-bold uppercase tracking-widest flex-shrink-0" style={{ color: pc.accent }}>
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <span className="text-xs font-bold uppercase tracking-widest truncate" style={{ color: pc.accent }}>
               {partInfo?.parte.titulo.replace(/^PARTE \d+ — /, 'Parte ' + partInfo.parte.id + ' · ') || 'Tópico'}
             </span>
           </div>
+
+          <button
+            type="button"
+            onClick={() => toggleAula('tvr-pro-co-380v', topico.id)}
+            className={`inline-flex items-center gap-2 text-xs font-bold px-3.5 py-2 rounded-lg border transition-all cursor-pointer flex-shrink-0 ${
+              concluida
+                ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-300'
+                : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:border-emerald-400/40 hover:text-emerald-300'
+            }`}
+          >
+            <CheckCircle2 className="w-4 h-4" />
+            <span className="hidden sm:inline">
+              {concluida ? 'Tópico Concluído' : 'Marcar Concluído'}
+            </span>
+          </button>
         </div>
       </div>
 
@@ -340,11 +363,11 @@ function LessonReaderView({ topico, onBack }) {
       </section>
 
       {/* ── Content Area ───────────────────────────────────────────────── */}
-      {(hasContent || hasTables || hasInfobox || hasVideo || hasPodcast || hasSlides) ? (
+      {(hasConversa || hasContent || hasTables || hasInfobox || hasVideo || hasPodcast || hasSlides) ? (
         <section className="py-12 md:py-16 px-6 md:px-12 bg-white">
           <div className="max-w-4xl mx-auto">
 
-            {/* Tab Switcher — 6 Tabs */}
+            {/* Tab Switcher — 7 Tabs */}
             {tabs.length > 1 && (
               <div className="flex flex-wrap gap-2 mb-10 pb-4 border-b border-slate-200">
                 {tabs.map((tab) => (
@@ -362,6 +385,29 @@ function LessonReaderView({ topico, onBack }) {
                   </button>
                 ))}
               </div>
+            )}
+
+            {/* TAB: Papo de Balcão */}
+            {activeTab === 'conversa' && hasConversa && (
+              <motion.div
+                key="tab-conversa"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="rounded-2xl p-4 sm:p-6 bg-slate-950"
+              >
+                <ConversaErrorBoundary
+                  cursoId="tvr-pro-co-380v"
+                  aulaId={topico.id}
+                  irParaAba={setActiveTab}
+                >
+                  <ConversaView
+                    cursoId="tvr-pro-co-380v"
+                    aulaId={topico.id}
+                    irParaAba={setActiveTab}
+                  />
+                </ConversaErrorBoundary>
+              </motion.div>
             )}
 
             {/* TAB: Conteúdo Técnico */}
@@ -817,6 +863,8 @@ export default function TreinamentoTVRProCO() {
   const gradeSectionRef = useRef(null);
   const [openParte, setOpenParte] = useState(null);
   const [activeTopic, setActiveTopic] = useState(null);
+  const { isAulaConcluida, getProgressoCurso } = useProgress();
+  const conversasCurso = useConversasCurso('tvr-pro-co-380v');
 
   const scrollToGrade = () => {
     gradeSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -840,6 +888,7 @@ export default function TreinamentoTVRProCO() {
 
   // Count totals
   const totalTopicos = cursoTVRProCO380V.partes.reduce((sum, p) => sum + p.topicos.length, 0);
+  const progresso = getProgressoCurso('tvr-pro-co-380v', totalTopicos);
 
   return (
     <div className="w-full bg-white text-slate-900">
@@ -849,7 +898,7 @@ export default function TreinamentoTVRProCO() {
              LESSON READER MODE
           ════════════════════════════════════════════════════════════ */
           <LessonReaderView
-            key={`lesson-${activeTopic.id}`}
+            key={`lesson-${activeTopic.id}-${activeTopic.defaultTab || ''}`}
             topico={activeTopic}
             onBack={closeTopic}
           />
@@ -1127,7 +1176,7 @@ export default function TreinamentoTVRProCO() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-bold tracking-widest uppercase mb-5" style={{ backgroundColor: 'rgba(239,68,68,0.15)', borderColor: 'rgba(248,113,113,0.3)', color: '#f87171' }}>
               <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
@@ -1142,6 +1191,31 @@ export default function TreinamentoTVRProCO() {
               Clique em cada parte para explorar os tópicos. Clique em um tópico para acessar o conteúdo completo da aula.
             </p>
           </motion.div>
+
+          {/* Barra de Progresso do Curso */}
+          <div className="mb-8 rounded-2xl border p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{ backgroundColor: 'rgba(30,41,59,0.65)', borderColor: 'rgba(248,113,113,0.28)' }}>
+            <div className="flex-1">
+              <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider mb-2">
+                <span className="text-red-400">Seu Progresso no Service Manual</span>
+                <span className="text-slate-200">{progresso.concluidas} / {progresso.total} tópicos ({progresso.porcentagem}%)</span>
+              </div>
+              <div className="h-2.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-red-500 to-amber-400 transition-all duration-500"
+                  style={{ width: `${progresso.porcentagem}%` }}
+                />
+              </div>
+            </div>
+            {progresso.concluido && (
+              <Link
+                to="/academia/certificado/tvr-pro-co-380v"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg flex-shrink-0"
+              >
+                <Award className="w-4 h-4" />
+                Emitir Certificado
+              </Link>
+            )}
+          </div>
 
           {/* Accordion Parts */}
           <div className="space-y-4">
@@ -1194,6 +1268,9 @@ export default function TreinamentoTVRProCO() {
                       {parte.topicos.map((topico) => {
                         const ls = LEVEL_STYLES[topico.nivel] || LEVEL_STYLES.basico;
                         const hasLessonContent = topico.conteudo_html && topico.conteudo_html.trim() !== '';
+                        const topicoConcluido = isAulaConcluida('tvr-pro-co-380v', topico.id);
+                        const possuiPapo = temConversa('tvr-pro-co-380v', topico.id);
+                        const papoConcluido = !!conversasCurso[topico.id]?.concluida;
 
                         return (
                           <button
@@ -1204,11 +1281,11 @@ export default function TreinamentoTVRProCO() {
                                 ? 'hover:border-white/30 hover:bg-white/5'
                                 : 'hover:border-slate-600'
                             }`}
-                            style={{ backgroundColor: 'rgba(15,23,42,0.7)', borderColor: 'rgba(51,65,85,0.4)' }}
+                            style={{ backgroundColor: 'rgba(15,23,42,0.7)', borderColor: topicoConcluido ? 'rgba(16,185,129,0.4)' : 'rgba(51,65,85,0.4)' }}
                           >
                             {/* Topic Header */}
                             <div className="flex items-start gap-3 mb-3">
-                              <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: pc.accent }} aria-hidden="true" />
+                              <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: topicoConcluido ? '#10b981' : pc.accent }} aria-hidden="true" />
                               <div className="flex-1">
                                 <div className="flex flex-wrap items-center gap-2 mb-1">
                                   <span className="text-xs font-bold uppercase tracking-widest" style={{ color: pc.accent }}>
@@ -1221,6 +1298,22 @@ export default function TreinamentoTVRProCO() {
                                     <Clock className="w-3 h-3" />
                                     {topico.tempo_estimado}
                                   </span>
+                                  {possuiPapo && (
+                                    <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+                                      papoConcluido
+                                        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40'
+                                        : 'bg-amber-500/20 text-amber-300 border-amber-400/40'
+                                    }`}>
+                                      <Coffee className="w-3 h-3" />
+                                      {papoConcluido ? 'Papo Concluído' : 'Papo de Balcão'}
+                                    </span>
+                                  )}
+                                  {topicoConcluido && (
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-400/30">
+                                      <CheckCircle2 className="w-3 h-3" />
+                                      Concluído
+                                    </span>
+                                  )}
                                 </div>
                                 <h4 className="text-sm md:text-base font-semibold mt-0.5 group-hover:text-white transition-colors" style={{ color: '#e2e8f0' }}>
                                   {topico.titulo}

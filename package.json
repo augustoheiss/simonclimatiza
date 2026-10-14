@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "validar:conversas": "node scripts/validar-conversas.mjs",
+    "criar:conversa": "node scripts/gerar-esqueleto-conversa.mjs"
   },
   "dependencies": {
     "adm-zip": "^0.5.17",

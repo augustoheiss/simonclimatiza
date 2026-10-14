@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -14,9 +14,13 @@ import {
   Images,
   CheckCircle2,
   Circle,
+  Coffee,
 } from 'lucide-react';
 import { todosCursos } from '../data/treinamentos';
 import useProgress from '../hooks/useProgress';
+import ConversaView from '../components/conversa/ConversaView';
+import ConversaErrorBoundary from '../components/conversa/ConversaErrorBoundary';
+import { temConversa, resolverAbaInicial } from '../data/conversas/manifesto';
 
 // ── Helpers ──
 
@@ -36,9 +40,10 @@ function getYoutubeEmbedUrl(url) {
 
 // ── Tab definitions ──
 const TABS = [
-  { key: 'slides',  label: 'Slides e Material', Icon: Images },
-  { key: 'video',   label: 'Aula em Vídeo',     Icon: PlayCircle },
-  { key: 'podcast', label: 'Ouvir Podcast',      Icon: Headphones },
+  { key: 'conversa', label: 'Papo de Balcão',    Icon: Coffee },
+  { key: 'slides',   label: 'Slides e Material', Icon: Images },
+  { key: 'video',    label: 'Aula em Vídeo',     Icon: PlayCircle },
+  { key: 'podcast',  label: 'Ouvir Podcast',     Icon: Headphones },
 ];
 
 export default function AcademiaPlayer() {
@@ -50,19 +55,17 @@ export default function AcademiaPlayer() {
   const [activeAula, setActiveAula] = useState(cursoAtual?.aulas[0] ?? null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('slides');
+  const [activeTab, setActiveTab] = useState(() =>
+    cursoAtual && cursoAtual.aulas[0]
+      ? resolverAbaInicial(cursoAtual.id, cursoAtual.aulas[0], 'slides')
+      : 'slides'
+  );
 
   // Progress tracking
   const { toggleAula, isAulaConcluida, getProgressoCurso } = useProgress();
   const progressoAtual = cursoAtual
     ? getProgressoCurso(cursoAtual.id, cursoAtual.aulas.length)
     : null;
-
-  // Reset tab & slide index when the active lesson changes
-  useEffect(() => {
-    setActiveTab('slides');
-    setCurrentSlideIndex(0);
-  }, [activeAula]);
 
   function handleLogout() {
     localStorage.removeItem('simon_academia_auth');
@@ -97,9 +100,15 @@ export default function AcademiaPlayer() {
 
   const slides = activeAula?.slides ?? [];
   const totalSlides = slides.length;
+  const availableTabs = TABS.filter((tab) => {
+    if (tab.key === 'conversa') return temConversa(cursoAtual.id, activeAula?.id);
+    return true;
+  });
 
   function handleAulaChange(aula) {
     setActiveAula(aula);
+    setActiveTab(resolverAbaInicial(cursoAtual.id, aula, 'slides'));
+    setCurrentSlideIndex(0);
     setSidebarOpen(false);
   }
 
@@ -284,7 +293,7 @@ export default function AcademiaPlayer() {
               role="tablist"
               aria-label="Tipo de conteúdo da aula"
             >
-              {TABS.map(({ key, label, Icon }) => {
+              {availableTabs.map(({ key, label, Icon }) => {
                 const isActive = activeTab === key;
                 return (
                   <button
@@ -318,6 +327,21 @@ export default function AcademiaPlayer() {
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.22, ease: 'easeOut' }}
               >
+
+                {/* ── PAPO DE BALCÃO TAB ── */}
+                {activeTab === 'conversa' && activeAula && (
+                  <ConversaErrorBoundary
+                    cursoId={cursoAtual.id}
+                    aulaId={activeAula.id}
+                    irParaAba={setActiveTab}
+                  >
+                    <ConversaView
+                      cursoId={cursoAtual.id}
+                      aulaId={activeAula.id}
+                      irParaAba={setActiveTab}
+                    />
+                  </ConversaErrorBoundary>
+                )}
 
                 {/* ── SLIDES TAB ── */}
                 {activeTab === 'slides' && (

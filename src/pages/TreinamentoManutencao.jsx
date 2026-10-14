@@ -33,7 +33,15 @@ import {
   Table2,
   Info,
   Layers,
+  Coffee,
 } from 'lucide-react';
+import ConversaView from '../components/conversa/ConversaView';
+import ConversaErrorBoundary from '../components/conversa/ConversaErrorBoundary';
+import { temConversa, resolverAbaInicial } from '../data/conversas/manifesto';
+import useProgress from '../hooks/useProgress';
+import { useConversasCurso } from '../hooks/useConversaProgress';
+import ProtecaoAcademia from '../components/ProtecaoAcademia';
+import '../styles/academia-prose.css';
 
 // ─── Animation Variants ─────────────────────────────────────────────────────
 const fadeUp = {
@@ -92,8 +100,9 @@ function SafeHTML({ html, className = '' }) {
   );
 }
 
-// ─── 7-Tab Definitions ──────────────────────────────────────────────────────
+// ─── 7-Tab Definitions (+ Papo de Balcão) ───────────────────────────────────
 const LESSON_TABS = [
+  { id: 'conversa', label: 'Papo de Balcão', icon: Coffee },
   { id: 'conteudo', label: 'Conteúdo Técnico', icon: BookOpen },
   { id: 'tabelas', label: 'Tabelas & Parâmetros', icon: Table2 },
   { id: 'infobox', label: 'Info de Campo', icon: Info },
@@ -137,19 +146,22 @@ const ACCENT_BORDER = 'rgba(52,211,153,0.3)';
 // LESSON READER VIEW
 // ═══════════════════════════════════════════════════════════════════════════════
 function LessonReaderView({ aula, onBack }) {
-  const [activeTab, setActiveTab] = useState(aula.defaultTab || 'conteudo');
+  const [activeTab, setActiveTab] = useState(() =>
+    resolverAbaInicial('manutencao-hvac', aula, 'conteudo')
+  );
   const [fonteIndex, setFonteIndex] = useState(0);
+  const { toggleAula, isAulaConcluida } = useProgress();
+  const concluida = isAulaConcluida('manutencao-hvac', aula.id);
 
   useEffect(() => {
-    setActiveTab(aula.defaultTab || 'conteudo');
-    setFonteIndex(0);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [aula.id, aula.defaultTab]);
+  }, [aula]);
 
   const fontes = aula.fontes_imagens || [];
 
   // Determine which tabs are available
   const availableTabs = LESSON_TABS.filter(tab => {
+    if (tab.id === 'conversa') return temConversa('manutencao-hvac', aula.id);
     if (tab.id === 'conteudo') return !!aula.conteudo_html;
     if (tab.id === 'tabelas') return !!aula.tabelas_html;
     if (tab.id === 'infobox') return !!aula.infobox_campo;
@@ -160,12 +172,9 @@ function LessonReaderView({ aula, onBack }) {
     return true;
   });
 
-  useEffect(() => {
-    if (!availableTabs.find(t => t.id === activeTab)) {
-      const fallback = availableTabs[0]?.id || 'conteudo';
-      setActiveTab(fallback);
-    }
-  }, [aula.id]);
+  const resolvedTab = availableTabs.find((t) => t.id === activeTab)
+    ? activeTab
+    : availableTabs[0]?.id || 'conteudo';
 
   return (
     <motion.div
@@ -177,540 +186,6 @@ function LessonReaderView({ aula, onBack }) {
       className="w-full min-h-screen"
       style={{ backgroundColor: '#0f172a' }}
     >
-      <style dangerouslySetInnerHTML={{ __html: `
-        .prose-manut h2 {
-          font-size: 1.75rem;
-          font-weight: 700;
-          color: #0f172a;
-          margin-top: 2rem;
-          margin-bottom: 1rem;
-          line-height: 1.25;
-        }
-        .prose-manut h3 {
-          font-size: 1.35rem;
-          font-weight: 700;
-          color: #1e293b;
-          margin-top: 1.75rem;
-          margin-bottom: 0.75rem;
-          line-height: 1.3;
-        }
-        .prose-manut h4 {
-          font-size: 1.15rem;
-          font-weight: 600;
-          color: #334155;
-          margin-top: 1.5rem;
-          margin-bottom: 0.75rem;
-        }
-        .prose-manut p {
-          margin-top: 0;
-          margin-bottom: 1.25rem;
-          line-height: 1.75;
-          color: #334155;
-        }
-        .prose-manut ul {
-          list-style-type: disc;
-          margin-top: 0;
-          margin-bottom: 1.25rem;
-          padding-left: 1.5rem;
-        }
-        .prose-manut ol {
-          list-style-type: decimal;
-          margin-top: 0;
-          margin-bottom: 1.25rem;
-          padding-left: 1.5rem;
-        }
-        .prose-manut li {
-          margin-bottom: 0.5rem;
-          line-height: 1.75;
-          color: #334155;
-        }
-        .prose-manut strong {
-          font-weight: 700;
-          color: #0f172a;
-        }
-        .prose-manut code {
-          font-family: monospace;
-          background-color: rgba(16, 185, 129, 0.06);
-          padding: 0.2rem 0.4rem;
-          border-radius: 0.25rem;
-          font-size: 0.875rem;
-          color: #065f46;
-        }
-        .prose-manut pre {
-          background-color: #f8fafc;
-          border: 1px solid #e2e8f0;
-          padding: 1rem;
-          border-radius: 0.5rem;
-          overflow-x: auto;
-          margin-bottom: 1.25rem;
-        }
-        .prose-manut a {
-          color: #10b981;
-          text-decoration: underline;
-          font-weight: 500;
-        }
-        .prose-manut a:hover {
-          color: #059669;
-        }
-        .prose-manut table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 1.5rem;
-          margin-bottom: 1.5rem;
-          border-radius: 12px;
-          overflow: hidden;
-          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-        }
-        .prose-manut th {
-          background-color: rgba(16, 185, 129, 0.07) !important;
-          font-weight: 700 !important;
-          text-align: left;
-          padding: 0.75rem 1rem;
-          border-bottom: 2px solid #6ee7b7;
-          color: #0f172a !important;
-          font-size: 0.875rem;
-        }
-        .prose-manut td {
-          padding: 0.75rem 1rem;
-          border-bottom: 1px solid #e2e8f0;
-          color: #334155 !important;
-          font-size: 0.875rem;
-        }
-        .prose-manut table.tab-custom th {
-          background-color: rgba(16, 185, 129, 0.07) !important;
-          color: #0f172a !important;
-          font-weight: 700 !important;
-        }
-        .prose-manut table.tab-custom td {
-          color: #334155 !important;
-        }
-        .prose-manut tr:hover {
-          background-color: rgba(16, 185, 129, 0.04);
-        }
-        .prose-manut .infobox-warning {
-          background-color: #fef2f2 !important;
-          border: 1px solid #fecaca !important;
-          border-radius: 16px !important;
-          padding: 1.5rem !important;
-          margin-bottom: 1.5rem !important;
-        }
-        .prose-manut .infobox-warning h3 {
-          color: #991b1b !important;
-          margin-top: 0 !important;
-          margin-bottom: 0.5rem !important;
-        }
-        .prose-manut .infobox-warning p {
-          color: #7f1d1d !important;
-          margin-bottom: 0 !important;
-        }
-        .prose-manut .infobox-tip {
-          background-color: #ecfdf5 !important;
-          border: 1px solid #a7f3d0 !important;
-          border-radius: 16px !important;
-          padding: 1.5rem !important;
-          margin-bottom: 1.5rem !important;
-        }
-        .prose-manut .infobox-tip h3 {
-          color: #065f46 !important;
-          margin-top: 0 !important;
-          margin-bottom: 0.5rem !important;
-        }
-        .prose-manut .infobox-tip p {
-          color: #064e3b !important;
-          margin-bottom: 0 !important;
-        }
-        .prose-manut .infobox-tip ul {
-          margin-bottom: 0 !important;
-        }
-        .prose-manut .infobox-tip li {
-          color: #064e3b !important;
-        }
-        .prose-manut .infobox-dor {
-          background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%) !important;
-          border: 1px solid #fbbf24 !important;
-          border-left: 5px solid #f59e0b !important;
-          border-radius: 16px !important;
-          padding: 1.5rem 1.5rem 1.5rem 1.75rem !important;
-          margin-top: 1.5rem !important;
-          margin-bottom: 2rem !important;
-          box-shadow: 0 2px 8px 0 rgba(245, 158, 11, 0.08) !important;
-        }
-        .prose-manut .infobox-dor h4 {
-          color: #92400e !important;
-          margin-top: 0 !important;
-          margin-bottom: 0.75rem !important;
-          font-size: 1rem !important;
-          font-weight: 700 !important;
-        }
-        .prose-manut .infobox-dor p {
-          color: #78350f !important;
-          margin-bottom: 0.5rem !important;
-          font-size: 0.9375rem !important;
-        }
-        .prose-manut .infobox-dor p:last-child {
-          margin-bottom: 0 !important;
-        }
-        .prose-manut .infobox-dor em {
-          font-style: italic;
-          color: #92400e !important;
-        }
-        .prose-manut .infobox-dor strong {
-          color: #78350f !important;
-        }
-        .prose-manut .formula {
-          background-color: #f0fdf4 !important;
-          border: 1px solid #a7f3d0 !important;
-          border-left: 4px solid #10b981 !important;
-          border-radius: 12px !important;
-          padding: 1rem 1.25rem !important;
-          margin: 1rem 0 1.5rem 0 !important;
-          font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace !important;
-          font-size: 1rem !important;
-          color: #065f46 !important;
-          letter-spacing: 0.01em !important;
-          text-align: center !important;
-        }
-        .prose-manut .formula strong {
-          color: #065f46 !important;
-        }
-        .prose-manut hr {
-          border: none !important;
-          border-top: 2px solid #d1fae5 !important;
-          margin: 3rem 0 !important;
-        }
-
-        /* ── Dark containers text readability overrides ── */
-        /* 1. Base overrides for standard elements inside dark containers to be light gray */
-        .prose-custom [class*="bg-slate-"] p,
-        .prose-custom [class*="bg-slate-"] li,
-        .prose-custom [class*="bg-slate-"] span,
-        .prose-custom [class*="bg-slate-"] strong,
-        .prose-custom [class*="bg-slate-"] td,
-        .prose-custom [class*="bg-slate-"] th,
-        .prose-custom [class*="bg-slate-"] h4,
-        .prose-custom [class*="bg-slate-"] h5,
-        .prose-custom [class*="bg-slate-"] em,
-        .prose-custom [class*="bg-slate-"] label,
-        .prose-custom [class*="bg-slate-"] div,
-        .prose-custom [class*="bg-slate-"].font-mono,
-        .prose-custom .diagram-container p,
-        .prose-custom .diagram-container li,
-        .prose-custom .diagram-container span,
-        .prose-custom .diagram-container strong,
-        .prose-custom .diagram-container td,
-        .prose-custom .diagram-container th,
-        .prose-custom .diagram-container h4,
-        .prose-custom .diagram-container h5,
-        .prose-custom .diagram-container em,
-        .prose-custom .diagram-container label,
-        .prose-custom .diagram-container div,
-        .prose-custom .diagram-container.font-mono,
-        .prose-custom .font-mono:not(pre):not(code),
-        .prose-custom [class*="bg-slate-"]:not(pre):not(code),
-        
-        .prose-manut [class*="bg-slate-"] p,
-        .prose-manut [class*="bg-slate-"] li,
-        .prose-manut [class*="bg-slate-"] span,
-        .prose-manut [class*="bg-slate-"] strong,
-        .prose-manut [class*="bg-slate-"] td,
-        .prose-manut [class*="bg-slate-"] th,
-        .prose-manut [class*="bg-slate-"] h4,
-        .prose-manut [class*="bg-slate-"] h5,
-        .prose-manut [class*="bg-slate-"] em,
-        .prose-manut [class*="bg-slate-"] label,
-        .prose-manut [class*="bg-slate-"] div,
-        .prose-manut [class*="bg-slate-"].font-mono,
-        .prose-manut .diagram-container p,
-        .prose-manut .diagram-container li,
-        .prose-manut .diagram-container span,
-        .prose-manut .diagram-container strong,
-        .prose-manut .diagram-container td,
-        .prose-manut .diagram-container th,
-        .prose-manut .diagram-container h4,
-        .prose-manut .diagram-container h5,
-        .prose-manut .diagram-container em,
-        .prose-manut .diagram-container label,
-        .prose-manut .diagram-container div,
-        .prose-manut .diagram-container.font-mono,
-        .prose-manut .font-mono:not(pre):not(code),
-        .prose-manut [class*="bg-slate-"]:not(pre):not(code) {
-          color: #cbd5e1 !important;
-        }
-
-        /* 2. Specific semantic highlight color overrides with higher specificity and defined LATER */
-        /* Emerald / Green (Ideals, healthy status) */
-        .prose-custom .text-emerald-400, .prose-manut .text-emerald-400,
-        .prose-custom p.text-emerald-400, .prose-manut p.text-emerald-400,
-        .prose-custom span.text-emerald-400, .prose-manut span.text-emerald-400,
-        .prose-custom strong.text-emerald-400, .prose-manut strong.text-emerald-400,
-        .prose-custom li.text-emerald-400, .prose-manut li.text-emerald-400,
-        .prose-custom div.text-emerald-400, .prose-manut div.text-emerald-400,
-        .prose-custom h4.text-emerald-400, .prose-manut h4.text-emerald-400,
-        .prose-custom h5.text-emerald-400, .prose-manut h5.text-emerald-400 { color: #34d399 !important; }
-
-        .prose-custom .text-emerald-300, .prose-manut .text-emerald-300,
-        .prose-custom p.text-emerald-300, .prose-manut p.text-emerald-300,
-        .prose-custom span.text-emerald-300, .prose-manut span.text-emerald-300,
-        .prose-custom strong.text-emerald-300, .prose-manut strong.text-emerald-300,
-        .prose-custom li.text-emerald-300, .prose-manut li.text-emerald-300,
-        .prose-custom div.text-emerald-300, .prose-manut div.text-emerald-300,
-        .prose-custom h4.text-emerald-300, .prose-manut h4.text-emerald-300,
-        .prose-custom h5.text-emerald-300, .prose-manut h5.text-emerald-300 { color: #6ee7b7 !important; }
-
-        .prose-custom .text-emerald-200, .prose-manut .text-emerald-200,
-        .prose-custom p.text-emerald-200, .prose-manut p.text-emerald-200,
-        .prose-custom span.text-emerald-200, .prose-manut span.text-emerald-200,
-        .prose-custom strong.text-emerald-200, .prose-manut strong.text-emerald-200,
-        .prose-custom li.text-emerald-200, .prose-manut li.text-emerald-200,
-        .prose-custom div.text-emerald-200, .prose-manut div.text-emerald-200 { color: #a7f3d0 !important; }
-
-        .prose-custom .text-green-400, .prose-manut .text-green-400,
-        .prose-custom p.text-green-400, .prose-manut p.text-green-400,
-        .prose-custom span.text-green-400, .prose-manut span.text-green-400,
-        .prose-custom strong.text-green-400, .prose-manut strong.text-green-400,
-        .prose-custom li.text-green-400, .prose-manut li.text-green-400,
-        .prose-custom div.text-green-400, .prose-manut div.text-green-400 { color: #4ade80 !important; }
-
-        .prose-custom .text-green-300, .prose-manut .text-green-300,
-        .prose-custom p.text-green-300, .prose-manut p.text-green-300,
-        .prose-custom span.text-green-300, .prose-manut span.text-green-300,
-        .prose-custom strong.text-green-300, .prose-manut strong.text-green-300,
-        .prose-custom li.text-green-300, .prose-manut li.text-green-300,
-        .prose-custom div.text-green-300, .prose-manut div.text-green-300 { color: #86efac !important; }
-
-        /* Rose / Red (Critical issues, physical risks) */
-        .prose-custom .text-rose-400, .prose-manut .text-rose-400,
-        .prose-custom p.text-rose-400, .prose-manut p.text-rose-400,
-        .prose-custom span.text-rose-400, .prose-manut span.text-rose-400,
-        .prose-custom strong.text-rose-400, .prose-manut strong.text-rose-400,
-        .prose-custom li.text-rose-400, .prose-manut li.text-rose-400,
-        .prose-custom div.text-rose-400, .prose-manut div.text-rose-400,
-        .prose-custom h4.text-rose-400, .prose-manut h4.text-rose-400,
-        .prose-custom h5.text-rose-400, .prose-manut h5.text-rose-400 { color: #f87171 !important; }
-
-        .prose-custom .text-rose-300, .prose-manut .text-rose-300,
-        .prose-custom p.text-rose-300, .prose-manut p.text-rose-300,
-        .prose-custom span.text-rose-300, .prose-manut span.text-rose-300,
-        .prose-custom strong.text-rose-300, .prose-manut strong.text-rose-300,
-        .prose-custom li.text-rose-300, .prose-manut li.text-rose-300,
-        .prose-custom div.text-rose-300, .prose-manut div.text-rose-300,
-        .prose-custom h4.text-rose-300, .prose-manut h4.text-rose-300,
-        .prose-custom h5.text-rose-300, .prose-manut h5.text-rose-300 { color: #fca5a5 !important; }
-
-        .prose-custom .text-rose-200, .prose-manut .text-rose-200,
-        .prose-custom p.text-rose-200, .prose-manut p.text-rose-200,
-        .prose-custom span.text-rose-200, .prose-manut span.text-rose-200,
-        .prose-custom strong.text-rose-200, .prose-manut strong.text-rose-200,
-        .prose-custom li.text-rose-200, .prose-manut li.text-rose-200,
-        .prose-custom div.text-rose-200, .prose-manut div.text-rose-200 { color: #fecaca !important; }
-
-        .prose-custom .text-red-400, .prose-manut .text-red-400,
-        .prose-custom p.text-red-400, .prose-manut p.text-red-400,
-        .prose-custom span.text-red-400, .prose-manut span.text-red-400,
-        .prose-custom strong.text-red-400, .prose-manut strong.text-red-400,
-        .prose-custom li.text-red-400, .prose-manut li.text-red-400,
-        .prose-custom div.text-red-400, .prose-manut div.text-red-400 { color: #f87171 !important; }
-
-        .prose-custom .text-red-300, .prose-manut .text-red-300,
-        .prose-custom p.text-red-300, .prose-manut p.text-red-300,
-        .prose-custom span.text-red-300, .prose-manut span.text-red-300,
-        .prose-custom strong.text-red-300, .prose-manut strong.text-red-300,
-        .prose-custom li.text-red-300, .prose-manut li.text-red-300,
-        .prose-custom div.text-red-300, .prose-manut div.text-red-300 { color: #fca5a5 !important; }
-
-        /* Orange / Amber (Mild warnings, intermediate stages) */
-        .prose-custom .text-orange-400, .prose-manut .text-orange-400,
-        .prose-custom p.text-orange-400, .prose-manut p.text-orange-400,
-        .prose-custom span.text-orange-400, .prose-manut span.text-orange-400,
-        .prose-custom strong.text-orange-400, .prose-manut strong.text-orange-400,
-        .prose-custom li.text-orange-400, .prose-manut li.text-orange-400,
-        .prose-custom div.text-orange-400, .prose-manut div.text-orange-400,
-        .prose-custom h4.text-orange-400, .prose-manut h4.text-orange-400,
-        .prose-custom h5.text-orange-400, .prose-manut h5.text-orange-400 { color: #fb923c !important; }
-
-        .prose-custom .text-orange-300, .prose-manut .text-orange-300,
-        .prose-custom p.text-orange-300, .prose-manut p.text-orange-300,
-        .prose-custom span.text-orange-300, .prose-manut span.text-orange-300,
-        .prose-custom strong.text-orange-300, .prose-manut strong.text-orange-300,
-        .prose-custom li.text-orange-300, .prose-manut li.text-orange-300,
-        .prose-custom div.text-orange-300, .prose-manut div.text-orange-300,
-        .prose-custom h4.text-orange-300, .prose-manut h4.text-orange-300,
-        .prose-custom h5.text-orange-300, .prose-manut h5.text-orange-300 { color: #fdba74 !important; }
-
-        .prose-custom .text-orange-200, .prose-manut .text-orange-200,
-        .prose-custom p.text-orange-200, .prose-manut p.text-orange-200,
-        .prose-custom span.text-orange-200, .prose-manut span.text-orange-200,
-        .prose-custom strong.text-orange-200, .prose-manut strong.text-orange-200,
-        .prose-custom li.text-orange-200, .prose-manut li.text-orange-200,
-        .prose-custom div.text-orange-200, .prose-manut div.text-orange-200 { color: #fed7aa !important; }
-
-        .prose-custom .text-amber-400, .prose-manut .text-amber-400,
-        .prose-custom p.text-amber-400, .prose-manut p.text-amber-400,
-        .prose-custom span.text-amber-400, .prose-manut span.text-amber-400,
-        .prose-custom strong.text-amber-400, .prose-manut strong.text-amber-400,
-        .prose-custom li.text-amber-400, .prose-manut li.text-amber-400,
-        .prose-custom div.text-amber-400, .prose-manut div.text-amber-400,
-        .prose-custom h4.text-amber-400, .prose-manut h4.text-amber-400,
-        .prose-custom h5.text-amber-400, .prose-manut h5.text-amber-400 { color: #fbbf24 !important; }
-
-        .prose-custom .text-amber-300, .prose-manut .text-amber-300,
-        .prose-custom p.text-amber-300, .prose-manut p.text-amber-300,
-        .prose-custom span.text-amber-300, .prose-manut span.text-amber-300,
-        .prose-custom strong.text-amber-300, .prose-manut strong.text-amber-300,
-        .prose-custom li.text-amber-300, .prose-manut li.text-amber-300,
-        .prose-custom div.text-amber-300, .prose-manut div.text-amber-300,
-        .prose-custom h4.text-amber-300, .prose-manut h4.text-amber-300,
-        .prose-custom h5.text-amber-300, .prose-manut h5.text-amber-300 { color: #fcd34d !important; }
-
-        .prose-custom .text-amber-200, .prose-manut .text-amber-200,
-        .prose-custom p.text-amber-200, .prose-manut p.text-amber-200,
-        .prose-custom span.text-amber-200, .prose-manut span.text-amber-200,
-        .prose-custom strong.text-amber-200, .prose-manut strong.text-amber-200,
-        .prose-custom li.text-amber-200, .prose-manut li.text-amber-200,
-        .prose-custom div.text-amber-200, .prose-manut div.text-amber-200 { color: #fef08a !important; }
-
-        /* Cyan / Sky / Blue (Labels, information, interactive tabs) */
-        .prose-custom .text-cyan-400, .prose-manut .text-cyan-400,
-        .prose-custom p.text-cyan-400, .prose-manut p.text-cyan-400,
-        .prose-custom span.text-cyan-400, .prose-manut span.text-cyan-400,
-        .prose-custom strong.text-cyan-400, .prose-manut strong.text-cyan-400,
-        .prose-custom li.text-cyan-400, .prose-manut li.text-cyan-400,
-        .prose-custom div.text-cyan-400, .prose-manut div.text-cyan-400,
-        .prose-custom h4.text-cyan-400, .prose-manut h4.text-cyan-400,
-        .prose-custom h5.text-cyan-400, .prose-manut h5.text-cyan-400 { color: #22d3ee !important; }
-
-        .prose-custom .text-cyan-300, .prose-manut .text-cyan-300,
-        .prose-custom p.text-cyan-300, .prose-manut p.text-cyan-300,
-        .prose-custom span.text-cyan-300, .prose-manut span.text-cyan-300,
-        .prose-custom strong.text-cyan-300, .prose-manut strong.text-cyan-300,
-        .prose-custom li.text-cyan-300, .prose-manut li.text-cyan-300,
-        .prose-custom div.text-cyan-300, .prose-manut div.text-cyan-300,
-        .prose-custom h4.text-cyan-300, .prose-manut h4.text-cyan-300,
-        .prose-custom h5.text-cyan-300, .prose-manut h5.text-cyan-300 { color: #67e8f9 !important; }
-
-        .prose-custom .text-cyan-200, .prose-manut .text-cyan-200,
-        .prose-custom p.text-cyan-200, .prose-manut p.text-cyan-200,
-        .prose-custom span.text-cyan-200, .prose-manut span.text-cyan-200,
-        .prose-custom strong.text-cyan-200, .prose-manut strong.text-cyan-200,
-        .prose-custom li.text-cyan-200, .prose-manut li.text-cyan-200,
-        .prose-custom div.text-cyan-200, .prose-manut div.text-cyan-200 { color: #a5f3fc !important; }
-
-        .prose-custom .text-sky-400, .prose-manut .text-sky-400,
-        .prose-custom p.text-sky-400, .prose-manut p.text-sky-400,
-        .prose-custom span.text-sky-400, .prose-manut span.text-sky-400,
-        .prose-custom strong.text-sky-400, .prose-manut strong.text-sky-400,
-        .prose-custom li.text-sky-400, .prose-manut li.text-sky-400,
-        .prose-custom div.text-sky-400, .prose-manut div.text-sky-400 { color: #38bdf8 !important; }
-
-        .prose-custom .text-sky-300, .prose-manut .text-sky-300,
-        .prose-custom p.text-sky-300, .prose-manut p.text-sky-300,
-        .prose-custom span.text-sky-300, .prose-manut span.text-sky-300,
-        .prose-custom strong.text-sky-300, .prose-manut strong.text-sky-300,
-        .prose-custom li.text-sky-300, .prose-manut li.text-sky-300,
-        .prose-custom div.text-sky-300, .prose-manut div.text-sky-300 { color: #7dd3fc !important; }
-
-        .prose-custom .text-sky-200, .prose-manut .text-sky-200,
-        .prose-custom p.text-sky-200, .prose-manut p.text-sky-200,
-        .prose-custom span.text-sky-200, .prose-manut span.text-sky-200,
-        .prose-custom strong.text-sky-200, .prose-manut strong.text-sky-200,
-        .prose-custom li.text-sky-200, .prose-manut li.text-sky-200,
-        .prose-custom div.text-sky-200, .prose-manut div.text-sky-200 { color: #bae6fd !important; }
-
-        .prose-custom .text-blue-400, .prose-manut .text-blue-400,
-        .prose-custom p.text-blue-400, .prose-manut p.text-blue-400,
-        .prose-custom span.text-blue-400, .prose-manut span.text-blue-400,
-        .prose-custom strong.text-blue-400, .prose-manut strong.text-blue-400,
-        .prose-custom li.text-blue-400, .prose-manut li.text-blue-400,
-        .prose-custom div.text-blue-400, .prose-manut div.text-blue-400 { color: #60a5fa !important; }
-
-        .prose-custom .text-blue-300, .prose-manut .text-blue-300,
-        .prose-custom p.text-blue-300, .prose-manut p.text-blue-300,
-        .prose-custom span.text-blue-300, .prose-manut span.text-blue-300,
-        .prose-custom strong.text-blue-300, .prose-manut strong.text-blue-300,
-        .prose-custom li.text-blue-300, .prose-manut li.text-blue-300,
-        .prose-custom div.text-blue-300, .prose-manut div.text-blue-300 { color: #93c5fd !important; }
-
-        /* Violet */
-        .prose-custom .text-violet-400, .prose-manut .text-violet-400,
-        .prose-custom p.text-violet-400, .prose-manut p.text-violet-400,
-        .prose-custom span.text-violet-400, .prose-manut span.text-violet-400,
-        .prose-custom strong.text-violet-400, .prose-manut strong.text-violet-400,
-        .prose-custom li.text-violet-400, .prose-manut li.text-violet-400,
-        .prose-custom div.text-violet-400, .prose-manut div.text-violet-400 { color: #a78bfa !important; }
-
-        /* Yellow */
-        .prose-custom .text-yellow-400, .prose-manut .text-yellow-400,
-        .prose-custom p.text-yellow-400, .prose-manut p.text-yellow-400,
-        .prose-custom span.text-yellow-400, .prose-manut span.text-yellow-400,
-        .prose-custom strong.text-yellow-400, .prose-manut strong.text-yellow-400,
-        .prose-custom li.text-yellow-400, .prose-manut li.text-yellow-400,
-        .prose-custom div.text-yellow-400, .prose-manut div.text-yellow-400 { color: #facc15 !important; }
-
-        .prose-custom .text-yellow-300, .prose-manut .text-yellow-300,
-        .prose-custom p.text-yellow-300, .prose-manut p.text-yellow-300,
-        .prose-custom span.text-yellow-300, .prose-manut span.text-yellow-300,
-        .prose-custom strong.text-yellow-300, .prose-manut strong.text-yellow-300,
-        .prose-custom li.text-yellow-300, .prose-manut li.text-yellow-300,
-        .prose-custom div.text-yellow-300, .prose-manut div.text-yellow-300 { color: #fde047 !important; }
-
-        /* White (Forced white labels or highlights) */
-        .prose-custom .text-white, .prose-manut .text-white,
-        .prose-custom p.text-white, .prose-manut p.text-white,
-        .prose-custom span.text-white, .prose-manut span.text-white,
-        .prose-custom strong.text-white, .prose-manut strong.text-white,
-        .prose-custom li.text-white, .prose-manut li.text-white,
-        .prose-custom div.text-white, .prose-manut div.text-white,
-        .prose-custom h4.text-white, .prose-manut h4.text-white,
-        .prose-custom h5.text-white, .prose-manut h5.text-white { color: #ffffff !important; }
-
-        /* Standard neutral text levels */
-        .prose-custom .text-slate-100, .prose-manut .text-slate-100,
-        .prose-custom p.text-slate-100, .prose-manut p.text-slate-100,
-        .prose-custom span.text-slate-100, .prose-manut span.text-slate-100,
-        .prose-custom strong.text-slate-100, .prose-manut strong.text-slate-100,
-        .prose-custom li.text-slate-100, .prose-manut li.text-slate-100,
-        .prose-custom div.text-slate-100, .prose-manut div.text-slate-100 { color: #f1f5f9 !important; }
-
-        .prose-custom .text-slate-200, .prose-manut .text-slate-200,
-        .prose-custom p.text-slate-200, .prose-manut p.text-slate-200,
-        .prose-custom span.text-slate-200, .prose-manut span.text-slate-200,
-        .prose-custom strong.text-slate-200, .prose-manut strong.text-slate-200,
-        .prose-custom li.text-slate-200, .prose-manut li.text-slate-200,
-        .prose-custom div.text-slate-200, .prose-manut div.text-slate-200 { color: #e2e8f0 !important; }
-
-        .prose-custom .text-slate-300, .prose-manut .text-slate-300,
-        .prose-custom p.text-slate-300, .prose-manut p.text-slate-300,
-        .prose-custom span.text-slate-300, .prose-manut span.text-slate-300,
-        .prose-custom strong.text-slate-300, .prose-manut strong.text-slate-300,
-        .prose-custom li.text-slate-300, .prose-manut li.text-slate-300,
-        .prose-custom div.text-slate-300, .prose-manut div.text-slate-300 { color: #cbd5e1 !important; }
-
-        .prose-custom .text-slate-400, .prose-manut .text-slate-400,
-        .prose-custom p.text-slate-400, .prose-manut p.text-slate-400,
-        .prose-custom span.text-slate-400, .prose-manut span.text-slate-400,
-        .prose-custom strong.text-slate-400, .prose-manut strong.text-slate-400,
-        .prose-custom li.text-slate-400, .prose-manut li.text-slate-400,
-        .prose-custom div.text-slate-400, .prose-manut div.text-slate-400 { color: #94a3b8 !important; }
-
-        .prose-custom .text-gray-200, .prose-manut .text-gray-200,
-        .prose-custom p.text-gray-200, .prose-manut p.text-gray-200,
-        .prose-custom span.text-gray-200, .prose-manut span.text-gray-200,
-        .prose-custom strong.text-gray-200, .prose-manut strong.text-gray-200,
-        .prose-custom li.text-gray-200, .prose-manut li.text-gray-200,
-        .prose-custom div.text-gray-200, .prose-manut div.text-gray-200 { color: #e5e7eb !important; }
-
-        .prose-custom .text-gray-300, .prose-manut .text-gray-300,
-        .prose-custom p.text-gray-300, .prose-manut p.text-gray-300,
-        .prose-custom span.text-gray-300, .prose-manut span.text-gray-300,
-        .prose-custom strong.text-gray-300, .prose-manut strong.text-gray-300,
-        .prose-custom li.text-gray-300, .prose-manut li.text-gray-300,
-        .prose-custom div.text-gray-300, .prose-manut div.text-gray-300 { color: #d1d5db !important; }
-
-        .prose-manut table tr:hover td {
-          color: inherit;
-        }
-      ` }} />
-
       {/* ── Top Bar ── */}
       <div className="sticky top-0 z-50 border-b" style={{ backgroundColor: 'rgba(15,23,42,0.95)', backdropFilter: 'blur(12px)', borderColor: 'rgba(51,65,85,0.5)' }}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-4">
@@ -720,7 +195,8 @@ function LessonReaderView({ aula, onBack }) {
             style={{ borderColor: ACCENT_BORDER, color: ACCENT_LIGHT }}
           >
             <ArrowLeft className="w-4 h-4" />
-            Voltar para a Grade
+            <span className="hidden sm:inline">Voltar para a Grade</span>
+            <span className="sm:hidden">Voltar</span>
           </button>
           <div className="min-w-0 flex-1">
             <span className="text-xs font-bold uppercase tracking-widest block mb-0.5" style={{ color: ACCENT }}>
@@ -730,6 +206,22 @@ function LessonReaderView({ aula, onBack }) {
               {aula.titulo}
             </h1>
           </div>
+          {aula.id !== 'apresentacao' && (
+            <button
+              type="button"
+              onClick={() => toggleAula('manutencao-hvac', aula.id)}
+              className={`inline-flex items-center gap-2 text-xs font-bold px-3.5 py-2 rounded-lg border transition-all cursor-pointer flex-shrink-0 ${
+                concluida
+                  ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-300'
+                  : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:border-emerald-400/40 hover:text-emerald-300'
+              }`}
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              <span className="hidden sm:inline">
+                {concluida ? 'Aula Concluída' : 'Marcar Concluída'}
+              </span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -739,7 +231,7 @@ function LessonReaderView({ aula, onBack }) {
           <div className="flex gap-1 py-2" role="tablist">
             {availableTabs.map((tab) => {
               const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
+              const isActive = resolvedTab === tab.id;
               return (
                 <button
                   key={tab.id}
@@ -764,14 +256,29 @@ function LessonReaderView({ aula, onBack }) {
       <div className="max-w-6xl mx-auto px-6 py-8">
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeTab}
+            key={resolvedTab}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
+            {/* ─── PAPO DE BALCÃO ─── */}
+            {resolvedTab === 'conversa' && (
+              <ConversaErrorBoundary
+                cursoId="manutencao-hvac"
+                aulaId={aula.id}
+                irParaAba={setActiveTab}
+              >
+                <ConversaView
+                  cursoId="manutencao-hvac"
+                  aulaId={aula.id}
+                  irParaAba={setActiveTab}
+                />
+              </ConversaErrorBoundary>
+            )}
+
             {/* ─── CONTEÚDO TÉCNICO ─── */}
-            {activeTab === 'conteudo' && aula.conteudo_html && (
+            {resolvedTab === 'conteudo' && aula.conteudo_html && (
               <div className="rounded-2xl border p-8 md:p-12 shadow-sm" style={{ backgroundColor: '#f0fdf4', borderColor: '#a7f3d0', boxShadow: '0 1px 3px 0 rgba(16,185,129,0.06), 0 0 0 1px rgba(16,185,129,0.03)' }}>
                 <SafeHTML
                   html={aula.conteudo_html}
@@ -781,7 +288,7 @@ function LessonReaderView({ aula, onBack }) {
             )}
 
             {/* ─── TABELAS & PARÂMETROS ─── */}
-            {activeTab === 'tabelas' && aula.tabelas_html && (
+            {resolvedTab === 'tabelas' && aula.tabelas_html && (
               <div className="rounded-2xl border p-8 md:p-12 overflow-x-auto shadow-sm" style={{ backgroundColor: '#f0fdf4', borderColor: '#a7f3d0', boxShadow: '0 1px 3px 0 rgba(16,185,129,0.06), 0 0 0 1px rgba(16,185,129,0.03)' }}>
                 <SafeHTML
                   html={aula.tabelas_html}
@@ -791,7 +298,7 @@ function LessonReaderView({ aula, onBack }) {
             )}
 
             {/* ─── INFO DE CAMPO ─── */}
-            {activeTab === 'infobox' && aula.infobox_campo && (
+            {resolvedTab === 'infobox' && aula.infobox_campo && (
               <div className="rounded-2xl border p-8 md:p-12 shadow-sm" style={{ backgroundColor: '#f0fdf4', borderColor: '#a7f3d0', boxShadow: '0 1px 3px 0 rgba(16,185,129,0.06), 0 0 0 1px rgba(16,185,129,0.03)' }}>
                 <SafeHTML
                   html={aula.infobox_campo}
@@ -801,7 +308,7 @@ function LessonReaderView({ aula, onBack }) {
             )}
 
             {/* ─── FONTES & PESQUISA ─── */}
-            {activeTab === 'fontes' && fontes.length > 0 && (
+            {resolvedTab === 'fontes' && fontes.length > 0 && (
               <div className="rounded-2xl border p-6" style={{ backgroundColor: 'rgba(30,41,59,0.5)', borderColor: 'rgba(51,65,85,0.4)' }}>
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#f59e0b' }}>
@@ -852,10 +359,10 @@ function LessonReaderView({ aula, onBack }) {
             )}
 
             {/* ─── Fallback: Tab has no content yet ─── */}
-            {((activeTab === 'conteudo' && !aula.conteudo_html) ||
-              (activeTab === 'tabelas' && !aula.tabelas_html) ||
-              (activeTab === 'infobox' && !aula.infobox_campo) ||
-              (activeTab === 'fontes' && fontes.length === 0)) && (
+            {((resolvedTab === 'conteudo' && !aula.conteudo_html) ||
+              (resolvedTab === 'tabelas' && !aula.tabelas_html) ||
+              (resolvedTab === 'infobox' && !aula.infobox_campo) ||
+              (resolvedTab === 'fontes' && fontes.length === 0)) && (
               <div className="rounded-2xl border p-12 text-center shadow-sm" style={{ backgroundColor: '#f0fdf4', borderColor: '#a7f3d0', boxShadow: '0 1px 3px 0 rgba(16,185,129,0.06), 0 0 0 1px rgba(16,185,129,0.03)' }}>
                 <div className="w-16 h-16 mx-auto mb-4 bg-emerald-50 rounded-2xl flex items-center justify-center">
                   <BookOpen className="w-8 h-8 text-emerald-400" />
@@ -880,6 +387,13 @@ export default function TreinamentoManutencao() {
   const gradeSectionRef = useRef(null);
   const [openModulo, setOpenModulo] = useState(null);
   const [activeTopic, setActiveTopic] = useState(null);
+  const { isAulaConcluida, getProgressoCurso } = useProgress();
+  const conversasCurso = useConversasCurso('manutencao-hvac');
+
+  // Count total lessons
+  const totalAulas = cursoManutencaoHVAC.modulos.reduce((acc, m) => acc + m.aulas.length, 0);
+  const totalPDFs = cursoManutencaoHVAC.modulos.reduce((acc, m) => acc + m.aulas.reduce((a2, aula) => a2 + (aula.fontes_imagens?.length || 0), 0), 0);
+  const progresso = getProgressoCurso('manutencao-hvac', totalAulas);
 
   const scrollToGrade = () => {
     gradeSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -897,14 +411,20 @@ export default function TreinamentoManutencao() {
     setActiveTopic(null);
   };
 
-  // ─── If a lesson is active, render the LessonReaderView ───
+  // ─── If a lesson is active, render the LessonReaderView (Freemium Gate: apresentacao + m01-01 abertas) ───
   if (activeTopic) {
-    return <LessonReaderView aula={activeTopic} onBack={closeLesson} />;
+    const aulaDegustacao = activeTopic.id === 'apresentacao' || activeTopic.id === 'm01-01';
+    const reader = (
+      <LessonReaderView
+        key={`${activeTopic.id}-${activeTopic.defaultTab || ''}`}
+        aula={activeTopic}
+        onBack={closeLesson}
+      />
+    );
+    return aulaDegustacao ? reader : (
+      <ProtecaoAcademia onVoltar={closeLesson}>{reader}</ProtecaoAcademia>
+    );
   }
-
-  // Count total lessons
-  const totalAulas = cursoManutencaoHVAC.modulos.reduce((acc, m) => acc + m.aulas.length, 0);
-  const totalPDFs = cursoManutencaoHVAC.modulos.reduce((acc, m) => acc + m.aulas.reduce((a2, aula) => a2 + (aula.fontes_imagens?.length || 0), 0), 0);
 
   // ─── Dashboard ───
   return (
@@ -1441,7 +961,7 @@ export default function TreinamentoManutencao() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-bold tracking-widest uppercase mb-5" style={{ backgroundColor: ACCENT_BG, borderColor: ACCENT_BORDER, color: ACCENT_LIGHT }}>
               <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
@@ -1456,6 +976,31 @@ export default function TreinamentoManutencao() {
               Clique em cada módulo para explorar as aulas. Clique em uma aula para abrir o <strong style={{ color: '#e2e8f0' }}>Leitor Interativo</strong> com conteúdo técnico completo e material de pesquisa.
             </p>
           </motion.div>
+
+          {/* Barra de Progresso do Curso */}
+          <div className="mb-8 rounded-2xl border p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{ backgroundColor: 'rgba(30,41,59,0.65)', borderColor: ACCENT_BORDER }}>
+            <div className="flex-1">
+              <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider mb-2">
+                <span style={{ color: ACCENT_LIGHT }}>Seu Progresso no Treinamento</span>
+                <span className="text-slate-200">{progresso.concluidas} / {progresso.total} aulas ({progresso.porcentagem}%)</span>
+              </div>
+              <div className="h-2.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500"
+                  style={{ width: `${progresso.porcentagem}%` }}
+                />
+              </div>
+            </div>
+            {progresso.concluido && (
+              <Link
+                to="/academia/certificado/manutencao-hvac-completo"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg flex-shrink-0"
+              >
+                <Award className="w-4 h-4" />
+                Emitir Certificado
+              </Link>
+            )}
+          </div>
 
           {/* Accordion Modules */}
           <div className="space-y-4">
@@ -1505,31 +1050,61 @@ export default function TreinamentoManutencao() {
                   {/* Expanded Lessons */}
                   {isOpen && (
                     <div className="px-6 pb-6 space-y-3">
-                      {modulo.aulas.map((aula) => (
-                        <button
-                          key={aula.id}
-                          onClick={() => openLesson(aula)}
-                          className="w-full text-left rounded-xl border p-5 hover:bg-white/5 transition-all duration-200 cursor-pointer group"
-                          style={{ backgroundColor: 'rgba(15,23,42,0.7)', borderColor: 'rgba(51,65,85,0.4)' }}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: mc.accent }} aria-hidden="true" />
-                            <div className="flex-1 min-w-0">
-                              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: mc.accent }}>
-                                {aula.modulo}
-                              </span>
-                              <h4 className="text-sm md:text-base font-semibold mt-0.5 truncate" style={{ color: '#e2e8f0' }}>
-                                {aula.titulo}
-                              </h4>
+                      {modulo.aulas.map((aula) => {
+                        const aulaConcluida = isAulaConcluida('manutencao-hvac', aula.id);
+                        const possuiPapo = temConversa('manutencao-hvac', aula.id);
+                        const papoConcluido = !!conversasCurso[aula.id]?.concluida;
+                        const isDegustacao = aula.id === 'm01-01';
+
+                        return (
+                          <button
+                            key={aula.id}
+                            onClick={() => openLesson(aula)}
+                            className="w-full text-left rounded-xl border p-5 hover:bg-white/5 transition-all duration-200 cursor-pointer group"
+                            style={{ backgroundColor: 'rgba(15,23,42,0.7)', borderColor: aulaConcluida ? 'rgba(16,185,129,0.4)' : 'rgba(51,65,85,0.4)' }}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: aulaConcluida ? '#10b981' : mc.accent }} aria-hidden="true" />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <span className="text-xs font-bold uppercase tracking-widest" style={{ color: mc.accent }}>
+                                    {aula.modulo}
+                                  </span>
+                                  {isDegustacao && (
+                                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                                      🔓 Aula Degustação
+                                    </span>
+                                  )}
+                                  {possuiPapo && (
+                                    <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+                                      papoConcluido
+                                        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40'
+                                        : 'bg-amber-500/20 text-amber-300 border-amber-400/40'
+                                    }`}>
+                                      <Coffee className="w-3 h-3" />
+                                      {papoConcluido ? 'Papo Concluído' : 'Papo de Balcão'}
+                                    </span>
+                                  )}
+                                  {aulaConcluida && (
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-400/30">
+                                      <CheckCircle2 className="w-3 h-3" />
+                                      Concluída
+                                    </span>
+                                  )}
+                                </div>
+                                <h4 className="text-sm md:text-base font-semibold mt-1 truncate" style={{ color: '#e2e8f0' }}>
+                                  {aula.titulo}
+                                </h4>
+                              </div>
+                              <div className="flex items-center gap-2 flex-shrink-0">
+                                {aula.conteudo_html && <BookOpen className="w-3.5 h-3.5 text-emerald-500" title="Conteúdo Técnico" />}
+                                {aula.fontes_imagens?.length > 0 && <FileText className="w-3.5 h-3.5 text-amber-500" title="PDF Disponível" />}
+                                <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors ml-1" />
+                              </div>
                             </div>
-                            <div className="flex items-center gap-2 flex-shrink-0">
-                              {aula.conteudo_html && <BookOpen className="w-3.5 h-3.5 text-emerald-500" title="Conteúdo Técnico" />}
-                              {aula.fontes_imagens?.length > 0 && <FileText className="w-3.5 h-3.5 text-amber-500" title="PDF Disponível" />}
-                              <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors ml-1" />
-                            </div>
-                          </div>
-                        </button>
-                      ))}
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </motion.div>

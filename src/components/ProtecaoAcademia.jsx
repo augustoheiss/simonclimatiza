@@ -4,7 +4,7 @@ import { Lock, ShieldCheck, AlertCircle, KeyRound } from 'lucide-react';
 const CHAVE_STORAGE = 'simon_academia_auth';
 const SENHA_MESTRE = 'SIMON-VIP';
 
-export default function ProtecaoAcademia({ children }) {
+export default function ProtecaoAcademia({ children, onVoltar }) {
   const [isAutenticado, setIsAutenticado] = useState(
     () => localStorage.getItem(CHAVE_STORAGE) === 'true'
   );
@@ -138,6 +138,16 @@ export default function ProtecaoAcademia({ children }) {
           >
             Acessar
           </button>
+
+          {typeof onVoltar === 'function' && (
+            <button
+              type="button"
+              onClick={onVoltar}
+              className="w-full mt-3 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 text-xs font-semibold transition-colors cursor-pointer"
+            >
+              Voltar para a Grade do Curso
+            </button>
+          )}
         </form>
 
         {/* Footer hint */}

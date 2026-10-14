@@ -44,7 +44,8 @@ function hoje() {
 /* ── default hours per course ── */
 const CARGA_MAP = {};
 todosCursos.forEach((c) => {
-  CARGA_MAP[c.id] = `${c.aulas.length * 5}h`;
+  const total = c.totalAulas || c.aulas.length;
+  CARGA_MAP[c.id] = c.cargaHorariaPadrao || `${total * 5}h`;
 });
 
 export default function Certificados() {
@@ -94,9 +95,12 @@ export default function Certificados() {
   // Progress tracking — reactive gate for certificate emission
   // Custom courses bypass progress tracking (no EAD lessons)
   const { getProgressoCurso } = useProgress();
+  const totalAulasCurso = cursoAtual
+    ? cursoAtual.totalAulas || cursoAtual.aulas.length
+    : 0;
   const progressoCurso = isCustomCourse
     ? { percentual: 100, completo: true, concluidas: 0, total: 0 }
-    : getProgressoCurso(cursoId, cursoAtual?.aulas.length ?? 0);
+    : getProgressoCurso(cursoId, totalAulasCurso);
   const cursoCompleto = progressoCurso.completo;
 
   /* ── Lazy-loaded PDF generation (blindado) ── */

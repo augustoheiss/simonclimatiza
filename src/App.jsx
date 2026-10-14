@@ -1,19 +1,33 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
-import Servicos from './pages/Servicos';
-import Contato from './pages/Contato';
-import AcademiaCatalogo from './pages/AcademiaCatalogo';
-import AcademiaPlayer from './pages/AcademiaPlayer';
-import TreinamentoHVAC from './pages/TreinamentoHVAC';
-import TreinamentoTVRProCO from './pages/TreinamentoTVRProCO';
-import TreinamentoManutencao from './pages/TreinamentoManutencao';
-import Certificados from './pages/Certificados';
-import Validar from './pages/Validar';
-import Termos from './pages/Termos';
 import ProtecaoAcademia from './components/ProtecaoAcademia';
 import Navbar from './components/Navbar';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
+
+const Servicos = lazy(() => import('./pages/Servicos'));
+const Contato = lazy(() => import('./pages/Contato'));
+const AcademiaCatalogo = lazy(() => import('./pages/AcademiaCatalogo'));
+const AcademiaPlayer = lazy(() => import('./pages/AcademiaPlayer'));
+const TreinamentoHVAC = lazy(() => import('./pages/TreinamentoHVAC'));
+const TreinamentoTVRProCO = lazy(() => import('./pages/TreinamentoTVRProCO'));
+const TreinamentoManutencao = lazy(() => import('./pages/TreinamentoManutencao'));
+const Certificados = lazy(() => import('./pages/Certificados'));
+const Validar = lazy(() => import('./pages/Validar'));
+const Termos = lazy(() => import('./pages/Termos'));
+
+function RouteLoader() {
+  return (
+    <div className="flex-grow flex items-center justify-center min-h-[60vh] bg-slate-950 text-slate-300">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 rounded-full border-2 border-sky-400 border-t-transparent animate-spin" />
+        <span className="text-xs font-bold uppercase tracking-widest text-slate-400">
+          Carregando módulo...
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export default function App() {
   return (
@@ -28,19 +42,22 @@ export default function App() {
 
         {/* Pages Content */}
         <main className="flex-grow flex flex-col">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/servicos" element={<Servicos />} />
-            <Route path="/contato" element={<Contato />} />
-            <Route path="/academia" element={<ProtecaoAcademia><AcademiaCatalogo /></ProtecaoAcademia>} />
-            <Route path="/academia/treinamento-hvac" element={<TreinamentoHVAC />} />
-            <Route path="/academia/treinamento-manutencao-hvac" element={<TreinamentoManutencao />} />
-            <Route path="/academia/treinamento-tvr-pro-co" element={<ProtecaoAcademia><TreinamentoTVRProCO /></ProtecaoAcademia>} />
-            <Route path="/academia/:id" element={<ProtecaoAcademia><AcademiaPlayer /></ProtecaoAcademia>} />
-            <Route path="/certificados" element={<ProtecaoAcademia><Certificados /></ProtecaoAcademia>} />
-            <Route path="/validar" element={<Validar />} />
-            <Route path="/termos" element={<Termos />} />
-          </Routes>
+          <Suspense fallback={<RouteLoader />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/servicos" element={<Servicos />} />
+              <Route path="/contato" element={<Contato />} />
+              <Route path="/academia" element={<ProtecaoAcademia><AcademiaCatalogo /></ProtecaoAcademia>} />
+              <Route path="/academia/treinamento-hvac" element={<TreinamentoHVAC />} />
+              <Route path="/academia/treinamento-manutencao-hvac" element={<TreinamentoManutencao />} />
+              <Route path="/academia/treinamento-tvr-pro-co" element={<ProtecaoAcademia><TreinamentoTVRProCO /></ProtecaoAcademia>} />
+              <Route path="/academia/certificado/:cursoId" element={<ProtecaoAcademia><Certificados /></ProtecaoAcademia>} />
+              <Route path="/academia/:id" element={<ProtecaoAcademia><AcademiaPlayer /></ProtecaoAcademia>} />
+              <Route path="/certificados" element={<ProtecaoAcademia><Certificados /></ProtecaoAcademia>} />
+              <Route path="/validar" element={<Validar />} />
+              <Route path="/termos" element={<Termos />} />
+            </Routes>
+          </Suspense>
         </main>
 
         {/* Global Footer */}

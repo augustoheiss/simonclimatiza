@@ -1,0 +1,676 @@
+/* src/styles/academia-prose.css
+ * Folha de estilos modular unificada para as apostilas da Academia Simon
+ * (.prose-custom em Instalação HVAC e .prose-manut em Manutenção HVAC).
+ */
+
+/* ── Base Typography & Tables: .prose-custom (Instalação HVAC) ────────────── */
+.prose-custom h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.25;
+}
+.prose-custom h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+.prose-custom h4 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #334155;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.prose-custom p {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  line-height: 1.75;
+  color: #334155;
+}
+.prose-custom ul {
+  list-style-type: disc;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+.prose-custom ol {
+  list-style-type: decimal;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+.prose-custom li {
+  margin-bottom: 0.5rem;
+  line-height: 1.75;
+  color: #334155;
+}
+.prose-custom strong {
+  font-weight: 700;
+  color: #0f172a;
+}
+.prose-custom code {
+  font-family: monospace;
+  background-color: rgba(220, 38, 38, 0.06);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  color: #991b1b;
+}
+.prose-custom pre {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1.25rem;
+}
+.prose-custom a {
+  color: #dc2626;
+  text-decoration: underline;
+  font-weight: 500;
+}
+.prose-custom a:hover {
+  color: #b91c1c;
+}
+.prose-custom table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+.prose-custom th {
+  background-color: rgba(220, 38, 38, 0.07);
+  font-weight: 700;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid #fca5a5;
+  color: #0f172a;
+  font-size: 0.875rem;
+}
+.prose-custom td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 0.875rem;
+}
+.prose-custom tr:hover {
+  background-color: rgba(220, 38, 38, 0.04);
+}
+.prose-custom .infobox-warning {
+  background-color: #fef2f2 !important;
+  border: 1px solid #fecaca !important;
+  border-radius: 16px !important;
+  padding: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+.prose-custom .infobox-warning h3 {
+  color: #991b1b !important;
+  margin-top: 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+.prose-custom .infobox-warning p {
+  color: #7f1d1d !important;
+  margin-bottom: 0 !important;
+}
+.prose-custom .infobox-tip {
+  background-color: #f0f9ff !important;
+  border: 1px solid #bae6fd !important;
+  border-radius: 16px !important;
+  padding: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+.prose-custom .infobox-tip h3 {
+  color: #075985 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+.prose-custom .infobox-tip p {
+  color: #0c4a6e !important;
+  margin-bottom: 0 !important;
+}
+.prose-custom .infobox-tip ul {
+  margin-bottom: 0 !important;
+}
+.prose-custom .infobox-tip li {
+  color: #0c4a6e !important;
+}
+
+/* ── Base Typography & Tables: .prose-manut (Manutenção HVAC) ─────────────── */
+.prose-manut h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.25;
+}
+.prose-manut h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+.prose-manut h4 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #334155;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.prose-manut p {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  line-height: 1.75;
+  color: #334155;
+}
+.prose-manut ul {
+  list-style-type: disc;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+.prose-manut ol {
+  list-style-type: decimal;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+.prose-manut li {
+  margin-bottom: 0.5rem;
+  line-height: 1.75;
+  color: #334155;
+}
+.prose-manut strong {
+  font-weight: 700;
+  color: #0f172a;
+}
+.prose-manut code {
+  font-family: monospace;
+  background-color: rgba(16, 185, 129, 0.06);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  color: #065f46;
+}
+.prose-manut pre {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1.25rem;
+}
+.prose-manut a {
+  color: #10b981;
+  text-decoration: underline;
+  font-weight: 500;
+}
+.prose-manut a:hover {
+  color: #059669;
+}
+.prose-manut table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+.prose-manut th {
+  background-color: rgba(16, 185, 129, 0.07) !important;
+  font-weight: 700 !important;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid #6ee7b7;
+  color: #0f172a !important;
+  font-size: 0.875rem;
+}
+.prose-manut td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155 !important;
+  font-size: 0.875rem;
+}
+.prose-manut table.tab-custom th {
+  background-color: rgba(16, 185, 129, 0.07) !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+.prose-manut table.tab-custom td {
+  color: #334155 !important;
+}
+.prose-manut tr:hover {
+  background-color: rgba(16, 185, 129, 0.04);
+}
+.prose-manut .infobox-warning {
+  background-color: #fef2f2 !important;
+  border: 1px solid #fecaca !important;
+  border-radius: 16px !important;
+  padding: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+.prose-manut .infobox-warning h3 {
+  color: #991b1b !important;
+  margin-top: 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+.prose-manut .infobox-warning p {
+  color: #7f1d1d !important;
+  margin-bottom: 0 !important;
+}
+.prose-manut .infobox-tip {
+  background-color: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+  border-radius: 16px !important;
+  padding: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+.prose-manut .infobox-tip h3 {
+  color: #065f46 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+.prose-manut .infobox-tip p {
+  color: #064e3b !important;
+  margin-bottom: 0 !important;
+}
+.prose-manut .infobox-tip ul {
+  margin-bottom: 0 !important;
+}
+.prose-manut .infobox-tip li {
+  color: #064e3b !important;
+}
+.prose-manut .infobox-dor {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%) !important;
+  border: 1px solid #fbbf24 !important;
+  border-left: 5px solid #f59e0b !important;
+  border-radius: 16px !important;
+  padding: 1.5rem 1.5rem 1.5rem 1.75rem !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 2px 8px 0 rgba(245, 158, 11, 0.08) !important;
+}
+.prose-manut .infobox-dor h4 {
+  color: #92400e !important;
+  margin-top: 0 !important;
+  margin-bottom: 0.75rem !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+}
+.prose-manut .infobox-dor p {
+  color: #78350f !important;
+  margin-bottom: 0.5rem !important;
+  font-size: 0.9375rem !important;
+}
+.prose-manut .infobox-dor p:last-child {
+  margin-bottom: 0 !important;
+}
+.prose-manut .infobox-dor em {
+  font-style: italic;
+  color: #92400e !important;
+}
+.prose-manut .infobox-dor strong {
+  color: #78350f !important;
+}
+.prose-manut .formula {
+  background-color: #f0fdf4 !important;
+  border: 1px solid #a7f3d0 !important;
+  border-left: 4px solid #10b981 !important;
+  border-radius: 12px !important;
+  padding: 1rem 1.25rem !important;
+  margin: 1rem 0 1.5rem 0 !important;
+  font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace !important;
+  font-size: 1rem !important;
+  color: #065f46 !important;
+  letter-spacing: 0.01em !important;
+  text-align: center !important;
+}
+.prose-manut .formula strong {
+  color: #065f46 !important;
+}
+.prose-manut hr {
+  border: none !important;
+  border-top: 2px solid #d1fae5 !important;
+  margin: 3rem 0 !important;
+}
+
+/* ── Dark containers text readability overrides (Shared) ──────────────────── */
+.prose-custom [class*="bg-slate-"] p,
+.prose-custom [class*="bg-slate-"] li,
+.prose-custom [class*="bg-slate-"] span,
+.prose-custom [class*="bg-slate-"] strong,
+.prose-custom [class*="bg-slate-"] td,
+.prose-custom [class*="bg-slate-"] th,
+.prose-custom [class*="bg-slate-"] h4,
+.prose-custom [class*="bg-slate-"] h5,
+.prose-custom [class*="bg-slate-"] em,
+.prose-custom [class*="bg-slate-"] label,
+.prose-custom [class*="bg-slate-"] div,
+.prose-custom [class*="bg-slate-"].font-mono,
+.prose-custom .diagram-container p,
+.prose-custom .diagram-container li,
+.prose-custom .diagram-container span,
+.prose-custom .diagram-container strong,
+.prose-custom .diagram-container td,
+.prose-custom .diagram-container th,
+.prose-custom .diagram-container h4,
+.prose-custom .diagram-container h5,
+.prose-custom .diagram-container em,
+.prose-custom .diagram-container label,
+.prose-custom .diagram-container div,
+.prose-custom .diagram-container.font-mono,
+.prose-custom .font-mono:not(pre):not(code),
+.prose-custom [class*="bg-slate-"]:not(pre):not(code),
+.prose-manut [class*="bg-slate-"] p,
+.prose-manut [class*="bg-slate-"] li,
+.prose-manut [class*="bg-slate-"] span,
+.prose-manut [class*="bg-slate-"] strong,
+.prose-manut [class*="bg-slate-"] td,
+.prose-manut [class*="bg-slate-"] th,
+.prose-manut [class*="bg-slate-"] h4,
+.prose-manut [class*="bg-slate-"] h5,
+.prose-manut [class*="bg-slate-"] em,
+.prose-manut [class*="bg-slate-"] label,
+.prose-manut [class*="bg-slate-"] div,
+.prose-manut [class*="bg-slate-"].font-mono,
+.prose-manut .diagram-container p,
+.prose-manut .diagram-container li,
+.prose-manut .diagram-container span,
+.prose-manut .diagram-container strong,
+.prose-manut .diagram-container td,
+.prose-manut .diagram-container th,
+.prose-manut .diagram-container h4,
+.prose-manut .diagram-container h5,
+.prose-manut .diagram-container em,
+.prose-manut .diagram-container label,
+.prose-manut .diagram-container div,
+.prose-manut .diagram-container.font-mono,
+.prose-manut .font-mono:not(pre):not(code),
+.prose-manut [class*="bg-slate-"]:not(pre):not(code) {
+  color: #cbd5e1 !important;
+}
+
+/* Emerald / Green */
+.prose-custom .text-emerald-400, .prose-manut .text-emerald-400,
+.prose-custom p.text-emerald-400, .prose-manut p.text-emerald-400,
+.prose-custom span.text-emerald-400, .prose-manut span.text-emerald-400,
+.prose-custom strong.text-emerald-400, .prose-manut strong.text-emerald-400,
+.prose-custom li.text-emerald-400, .prose-manut li.text-emerald-400,
+.prose-custom div.text-emerald-400, .prose-manut div.text-emerald-400,
+.prose-custom h4.text-emerald-400, .prose-manut h4.text-emerald-400,
+.prose-custom h5.text-emerald-400, .prose-manut h5.text-emerald-400 { color: #34d399 !important; }
+
+.prose-custom .text-emerald-300, .prose-manut .text-emerald-300,
+.prose-custom p.text-emerald-300, .prose-manut p.text-emerald-300,
+.prose-custom span.text-emerald-300, .prose-manut span.text-emerald-300,
+.prose-custom strong.text-emerald-300, .prose-manut strong.text-emerald-300,
+.prose-custom li.text-emerald-300, .prose-manut li.text-emerald-300,
+.prose-custom div.text-emerald-300, .prose-manut div.text-emerald-300,
+.prose-custom h4.text-emerald-300, .prose-manut h4.text-emerald-300,
+.prose-custom h5.text-emerald-300, .prose-manut h5.text-emerald-300 { color: #6ee7b7 !important; }
+
+.prose-custom .text-emerald-200, .prose-manut .text-emerald-200,
+.prose-custom p.text-emerald-200, .prose-manut p.text-emerald-200,
+.prose-custom span.text-emerald-200, .prose-manut span.text-emerald-200,
+.prose-custom strong.text-emerald-200, .prose-manut strong.text-emerald-200,
+.prose-custom li.text-emerald-200, .prose-manut li.text-emerald-200,
+.prose-custom div.text-emerald-200, .prose-manut div.text-emerald-200 { color: #a7f3d0 !important; }
+
+.prose-custom .text-green-400, .prose-manut .text-green-400,
+.prose-custom p.text-green-400, .prose-manut p.text-green-400,
+.prose-custom span.text-green-400, .prose-manut span.text-green-400,
+.prose-custom strong.text-green-400, .prose-manut strong.text-green-400,
+.prose-custom li.text-green-400, .prose-manut li.text-green-400,
+.prose-custom div.text-green-400, .prose-manut div.text-green-400 { color: #4ade80 !important; }
+
+.prose-custom .text-green-300, .prose-manut .text-green-300,
+.prose-custom p.text-green-300, .prose-manut p.text-green-300,
+.prose-custom span.text-green-300, .prose-manut span.text-green-300,
+.prose-custom strong.text-green-300, .prose-manut strong.text-green-300,
+.prose-custom li.text-green-300, .prose-manut li.text-green-300,
+.prose-custom div.text-green-300, .prose-manut div.text-green-300 { color: #86efac !important; }
+
+/* Rose / Red */
+.prose-custom .text-rose-400, .prose-manut .text-rose-400,
+.prose-custom p.text-rose-400, .prose-manut p.text-rose-400,
+.prose-custom span.text-rose-400, .prose-manut span.text-rose-400,
+.prose-custom strong.text-rose-400, .prose-manut strong.text-rose-400,
+.prose-custom li.text-rose-400, .prose-manut li.text-rose-400,
+.prose-custom div.text-rose-400, .prose-manut div.text-rose-400,
+.prose-custom h4.text-rose-400, .prose-manut h4.text-rose-400,
+.prose-custom h5.text-rose-400, .prose-manut h5.text-rose-400 { color: #f87171 !important; }
+
+.prose-custom .text-rose-300, .prose-manut .text-rose-300,
+.prose-custom p.text-rose-300, .prose-manut p.text-rose-300,
+.prose-custom span.text-rose-300, .prose-manut span.text-rose-300,
+.prose-custom strong.text-rose-300, .prose-manut strong.text-rose-300,
+.prose-custom li.text-rose-300, .prose-manut li.text-rose-300,
+.prose-custom div.text-rose-300, .prose-manut div.text-rose-300,
+.prose-custom h4.text-rose-300, .prose-manut h4.text-rose-300,
+.prose-custom h5.text-rose-300, .prose-manut h5.text-rose-300 { color: #fca5a5 !important; }
+
+.prose-custom .text-rose-200, .prose-manut .text-rose-200,
+.prose-custom p.text-rose-200, .prose-manut p.text-rose-200,
+.prose-custom span.text-rose-200, .prose-manut span.text-rose-200,
+.prose-custom strong.text-rose-200, .prose-manut strong.text-rose-200,
+.prose-custom li.text-rose-200, .prose-manut li.text-rose-200,
+.prose-custom div.text-rose-200, .prose-manut div.text-rose-200 { color: #fecaca !important; }
+
+.prose-custom .text-red-400, .prose-manut .text-red-400,
+.prose-custom p.text-red-400, .prose-manut p.text-red-400,
+.prose-custom span.text-red-400, .prose-manut span.text-red-400,
+.prose-custom strong.text-red-400, .prose-manut strong.text-red-400,
+.prose-custom li.text-red-400, .prose-manut li.text-red-400,
+.prose-custom div.text-red-400, .prose-manut div.text-red-400 { color: #f87171 !important; }
+
+.prose-custom .text-red-300, .prose-manut .text-red-300,
+.prose-custom p.text-red-300, .prose-manut p.text-red-300,
+.prose-custom span.text-red-300, .prose-manut span.text-red-300,
+.prose-custom strong.text-red-300, .prose-manut strong.text-red-300,
+.prose-custom li.text-red-300, .prose-manut li.text-red-300,
+.prose-custom div.text-red-300, .prose-manut div.text-red-300 { color: #fca5a5 !important; }
+
+/* Orange / Amber */
+.prose-custom .text-orange-400, .prose-manut .text-orange-400,
+.prose-custom p.text-orange-400, .prose-manut p.text-orange-400,
+.prose-custom span.text-orange-400, .prose-manut span.text-orange-400,
+.prose-custom strong.text-orange-400, .prose-manut strong.text-orange-400,
+.prose-custom li.text-orange-400, .prose-manut li.text-orange-400,
+.prose-custom div.text-orange-400, .prose-manut div.text-orange-400,
+.prose-custom h4.text-orange-400, .prose-manut h4.text-orange-400,
+.prose-custom h5.text-orange-400, .prose-manut h5.text-orange-400 { color: #fb923c !important; }
+
+.prose-custom .text-orange-300, .prose-manut .text-orange-300,
+.prose-custom p.text-orange-300, .prose-manut p.text-orange-300,
+.prose-custom span.text-orange-300, .prose-manut span.text-orange-300,
+.prose-custom strong.text-orange-300, .prose-manut strong.text-orange-300,
+.prose-custom li.text-orange-300, .prose-manut li.text-orange-300,
+.prose-custom div.text-orange-300, .prose-manut div.text-orange-300,
+.prose-custom h4.text-orange-300, .prose-manut h4.text-orange-300,
+.prose-custom h5.text-orange-300, .prose-manut h5.text-orange-300 { color: #fdba74 !important; }
+
+.prose-custom .text-orange-200, .prose-manut .text-orange-200,
+.prose-custom p.text-orange-200, .prose-manut p.text-orange-200,
+.prose-custom span.text-orange-200, .prose-manut span.text-orange-200,
+.prose-custom strong.text-orange-200, .prose-manut strong.text-orange-200,
+.prose-custom li.text-orange-200, .prose-manut li.text-orange-200,
+.prose-custom div.text-orange-200, .prose-manut div.text-orange-200 { color: #fed7aa !important; }
+
+.prose-custom .text-amber-400, .prose-manut .text-amber-400,
+.prose-custom p.text-amber-400, .prose-manut p.text-amber-400,
+.prose-custom span.text-amber-400, .prose-manut span.text-amber-400,
+.prose-custom strong.text-amber-400, .prose-manut strong.text-amber-400,
+.prose-custom li.text-amber-400, .prose-manut li.text-amber-400,
+.prose-custom div.text-amber-400, .prose-manut div.text-amber-400,
+.prose-custom h4.text-amber-400, .prose-manut h4.text-amber-400,
+.prose-custom h5.text-amber-400, .prose-manut h5.text-amber-400 { color: #fbbf24 !important; }
+
+.prose-custom .text-amber-300, .prose-manut .text-amber-300,
+.prose-custom p.text-amber-300, .prose-manut p.text-amber-300,
+.prose-custom span.text-amber-300, .prose-manut span.text-amber-300,
+.prose-custom strong.text-amber-300, .prose-manut strong.text-amber-300,
+.prose-custom li.text-amber-300, .prose-manut li.text-amber-300,
+.prose-custom div.text-amber-300, .prose-manut div.text-amber-300,
+.prose-custom h4.text-amber-300, .prose-manut h4.text-amber-300,
+.prose-custom h5.text-amber-300, .prose-manut h5.text-amber-300 { color: #fcd34d !important; }
+
+.prose-custom .text-amber-200, .prose-manut .text-amber-200,
+.prose-custom p.text-amber-200, .prose-manut p.text-amber-200,
+.prose-custom span.text-amber-200, .prose-manut span.text-amber-200,
+.prose-custom strong.text-amber-200, .prose-manut strong.text-amber-200,
+.prose-custom li.text-amber-200, .prose-manut li.text-amber-200,
+.prose-custom div.text-amber-200, .prose-manut div.text-amber-200 { color: #fef08a !important; }
+
+/* Cyan / Sky / Blue */
+.prose-custom .text-cyan-400, .prose-manut .text-cyan-400,
+.prose-custom p.text-cyan-400, .prose-manut p.text-cyan-400,
+.prose-custom span.text-cyan-400, .prose-manut span.text-cyan-400,
+.prose-custom strong.text-cyan-400, .prose-manut strong.text-cyan-400,
+.prose-custom li.text-cyan-400, .prose-manut li.text-cyan-400,
+.prose-custom div.text-cyan-400, .prose-manut div.text-cyan-400,
+.prose-custom h4.text-cyan-400, .prose-manut h4.text-cyan-400,
+.prose-custom h5.text-cyan-400, .prose-manut h5.text-cyan-400 { color: #22d3ee !important; }
+
+.prose-custom .text-cyan-300, .prose-manut .text-cyan-300,
+.prose-custom p.text-cyan-300, .prose-manut p.text-cyan-300,
+.prose-custom span.text-cyan-300, .prose-manut span.text-cyan-300,
+.prose-custom strong.text-cyan-300, .prose-manut strong.text-cyan-300,
+.prose-custom li.text-cyan-300, .prose-manut li.text-cyan-300,
+.prose-custom div.text-cyan-300, .prose-manut div.text-cyan-300,
+.prose-custom h4.text-cyan-300, .prose-manut h4.text-cyan-300,
+.prose-custom h5.text-cyan-300, .prose-manut h5.text-cyan-300 { color: #67e8f9 !important; }
+
+.prose-custom .text-cyan-200, .prose-manut .text-cyan-200,
+.prose-custom p.text-cyan-200, .prose-manut p.text-cyan-200,
+.prose-custom span.text-cyan-200, .prose-manut span.text-cyan-200,
+.prose-custom strong.text-cyan-200, .prose-manut strong.text-cyan-200,
+.prose-custom li.text-cyan-200, .prose-manut li.text-cyan-200,
+.prose-custom div.text-cyan-200, .prose-manut div.text-cyan-200 { color: #a5f3fc !important; }
+
+.prose-custom .text-sky-400, .prose-manut .text-sky-400,
+.prose-custom p.text-sky-400, .prose-manut p.text-sky-400,
+.prose-custom span.text-sky-400, .prose-manut span.text-sky-400,
+.prose-custom strong.text-sky-400, .prose-manut strong.text-sky-400,
+.prose-custom li.text-sky-400, .prose-manut li.text-sky-400,
+.prose-custom div.text-sky-400, .prose-manut div.text-sky-400 { color: #38bdf8 !important; }
+
+.prose-custom .text-sky-300, .prose-manut .text-sky-300,
+.prose-custom p.text-sky-300, .prose-manut p.text-sky-300,
+.prose-custom span.text-sky-300, .prose-manut span.text-sky-300,
+.prose-custom strong.text-sky-300, .prose-manut strong.text-sky-300,
+.prose-custom li.text-sky-300, .prose-manut li.text-sky-300,
+.prose-custom div.text-sky-300, .prose-manut div.text-sky-300 { color: #7dd3fc !important; }
+
+.prose-custom .text-sky-200, .prose-manut .text-sky-200,
+.prose-custom p.text-sky-200, .prose-manut p.text-sky-200,
+.prose-custom span.text-sky-200, .prose-manut span.text-sky-200,
+.prose-custom strong.text-sky-200, .prose-manut strong.text-sky-200,
+.prose-custom li.text-sky-200, .prose-manut li.text-sky-200,
+.prose-custom div.text-sky-200, .prose-manut div.text-sky-200 { color: #bae6fd !important; }
+
+.prose-custom .text-blue-400, .prose-manut .text-blue-400,
+.prose-custom p.text-blue-400, .prose-manut p.text-blue-400,
+.prose-custom span.text-blue-400, .prose-manut span.text-blue-400,
+.prose-custom strong.text-blue-400, .prose-manut strong.text-blue-400,
+.prose-custom li.text-blue-400, .prose-manut li.text-blue-400,
+.prose-custom div.text-blue-400, .prose-manut div.text-blue-400 { color: #60a5fa !important; }
+
+.prose-custom .text-blue-300, .prose-manut .text-blue-300,
+.prose-custom p.text-blue-300, .prose-manut p.text-blue-300,
+.prose-custom span.text-blue-300, .prose-manut span.text-blue-300,
+.prose-custom strong.text-blue-300, .prose-manut strong.text-blue-300,
+.prose-custom li.text-blue-300, .prose-manut li.text-blue-300,
+.prose-custom div.text-blue-300, .prose-manut div.text-blue-300 { color: #93c5fd !important; }
+
+/* Violet */
+.prose-custom .text-violet-400, .prose-manut .text-violet-400,
+.prose-custom p.text-violet-400, .prose-manut p.text-violet-400,
+.prose-custom span.text-violet-400, .prose-manut span.text-violet-400,
+.prose-custom strong.text-violet-400, .prose-manut strong.text-violet-400,
+.prose-custom li.text-violet-400, .prose-manut li.text-violet-400,
+.prose-custom div.text-violet-400, .prose-manut div.text-violet-400 { color: #a78bfa !important; }
+
+/* Yellow */
+.prose-custom .text-yellow-400, .prose-manut .text-yellow-400,
+.prose-custom p.text-yellow-400, .prose-manut p.text-yellow-400,
+.prose-custom span.text-yellow-400, .prose-manut span.text-yellow-400,
+.prose-custom strong.text-yellow-400, .prose-manut strong.text-yellow-400,
+.prose-custom li.text-yellow-400, .prose-manut li.text-yellow-400,
+.prose-custom div.text-yellow-400, .prose-manut div.text-yellow-400 { color: #facc15 !important; }
+
+.prose-custom .text-yellow-300, .prose-manut .text-yellow-300,
+.prose-custom p.text-yellow-300, .prose-manut p.text-yellow-300,
+.prose-custom span.text-yellow-300, .prose-manut span.text-yellow-300,
+.prose-custom strong.text-yellow-300, .prose-manut strong.text-yellow-300,
+.prose-custom li.text-yellow-300, .prose-manut li.text-yellow-300,
+.prose-custom div.text-yellow-300, .prose-manut div.text-yellow-300 { color: #fde047 !important; }
+
+/* White */
+.prose-custom .text-white, .prose-manut .text-white,
+.prose-custom p.text-white, .prose-manut p.text-white,
+.prose-custom span.text-white, .prose-manut span.text-white,
+.prose-custom strong.text-white, .prose-manut strong.text-white,
+.prose-custom li.text-white, .prose-manut li.text-white,
+.prose-custom div.text-white, .prose-manut div.text-white,
+.prose-custom h4.text-white, .prose-manut h4.text-white,
+.prose-custom h5.text-white, .prose-manut h5.text-white { color: #ffffff !important; }
+
+/* Standard neutral text levels */
+.prose-custom .text-slate-100, .prose-manut .text-slate-100,
+.prose-custom p.text-slate-100, .prose-manut p.text-slate-100,
+.prose-custom span.text-slate-100, .prose-manut span.text-slate-100,
+.prose-custom strong.text-slate-100, .prose-manut strong.text-slate-100,
+.prose-custom li.text-slate-100, .prose-manut li.text-slate-100,
+.prose-custom div.text-slate-100, .prose-manut div.text-slate-100 { color: #f1f5f9 !important; }
+
+.prose-custom .text-slate-200, .prose-manut .text-slate-200,
+.prose-custom p.text-slate-200, .prose-manut p.text-slate-200,
+.prose-custom span.text-slate-200, .prose-manut span.text-slate-200,
+.prose-custom strong.text-slate-200, .prose-manut strong.text-slate-200,
+.prose-custom li.text-slate-200, .prose-manut li.text-slate-200,
+.prose-custom div.text-slate-200, .prose-manut div.text-slate-200 { color: #e2e8f0 !important; }
+
+.prose-custom .text-slate-300, .prose-manut .text-slate-300,
+.prose-custom p.text-slate-300, .prose-manut p.text-slate-300,
+.prose-custom span.text-slate-300, .prose-manut span.text-slate-300,
+.prose-custom strong.text-slate-300, .prose-manut strong.text-slate-300,
+.prose-custom li.text-slate-300, .prose-manut li.text-slate-300,
+.prose-custom div.text-slate-300, .prose-manut div.text-slate-300 { color: #cbd5e1 !important; }
+
+.prose-custom .text-slate-400, .prose-manut .text-slate-400,
+.prose-custom p.text-slate-400, .prose-manut p.text-slate-400,
+.prose-custom span.text-slate-400, .prose-manut span.text-slate-400,
+.prose-custom strong.text-slate-400, .prose-manut strong.text-slate-400,
+.prose-custom li.text-slate-400, .prose-manut li.text-slate-400,
+.prose-custom div.text-slate-400, .prose-manut div.text-slate-400 { color: #94a3b8 !important; }
+
+.prose-custom .text-gray-200, .prose-manut .text-gray-200,
+.prose-custom p.text-gray-200, .prose-manut p.text-gray-200,
+.prose-custom span.text-gray-200, .prose-manut span.text-gray-200,
+.prose-custom strong.text-gray-200, .prose-manut strong.text-gray-200,
+.prose-custom li.text-gray-200, .prose-manut li.text-gray-200,
+.prose-custom div.text-gray-200, .prose-manut div.text-gray-200 { color: #e5e7eb !important; }
+
+.prose-custom .text-gray-300, .prose-manut .text-gray-300,
+.prose-custom p.text-gray-300, .prose-manut p.text-gray-300,
+.prose-custom span.text-gray-300, .prose-manut span.text-gray-300,
+.prose-custom strong.text-gray-300, .prose-manut strong.text-gray-300,
+.prose-custom li.text-gray-300, .prose-manut li.text-gray-300,
+.prose-custom div.text-gray-300, .prose-manut div.text-gray-300 { color: #d1d5db !important; }
+
+.prose-custom table tr:hover td,
+.prose-manut table tr:hover td {
+  color: inherit;
+}

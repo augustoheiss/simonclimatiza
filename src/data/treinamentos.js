@@ -572,6 +572,8 @@ export const cursoInstalacaoCompleto = {
   imagemDestaque: "/images/industria-contatos-02.jpg",
   isNovo: false,
   rotaCustomizada: "/academia/treinamento-hvac",
+  totalAulas: 20,
+  cargaHorariaPadrao: "40h",
   aulas: []
 };
 
@@ -582,6 +584,8 @@ export const cursoTVRProCO380VCatalogo = {
   imagemDestaque: "/images/home-servicos.jpg",
   isNovo: true,
   rotaCustomizada: "/academia/treinamento-tvr-pro-co",
+  totalAulas: 16,
+  cargaHorariaPadrao: "40h",
   aulas: []
 };
 
@@ -592,6 +596,8 @@ export const cursoManutencaoCompleto = {
   imagemDestaque: "/images/home-manutencao-01.jpeg",
   isNovo: true,
   rotaCustomizada: "/academia/treinamento-manutencao-hvac",
+  totalAulas: 25,
+  cargaHorariaPadrao: "50h",
   aulas: []
 };
 

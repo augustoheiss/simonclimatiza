@@ -1,0 +1,111 @@
+// src/components/conversa/elenco.js
+
+export const ELENCO = {
+  simon: {
+    id: 'simon',
+    nome: 'Simon',
+    papel: 'Veterano de Campo',
+    iniciais: 'SM',
+    avatar: '/images/academia/elenco/simon.webp',
+    descricaoAcessivel: 'Simon, especialista veterano de campo',
+    alinhamento: 'esquerda',
+    cores: {
+      badgeBg: '#0c4a6e',
+      badgeText: '#e0f2fe',
+      badgeBorder: '#0284c7',
+      balaoBg: '#0f172a',
+      balaoBorder: '#1e3a5f',
+      balaoTexto: '#f1f5f9',
+      avatarBg: '#0369a1',
+      avatarTexto: '#ffffff',
+      destaque: '#38bdf8',
+    },
+  },
+  juninho: {
+    id: 'juninho',
+    nome: 'Juninho',
+    papel: 'Aprendiz de Obra',
+    iniciais: 'JN',
+    avatar: '/images/academia/elenco/juninho.webp',
+    descricaoAcessivel: 'Juninho, técnico aprendiz curioso',
+    alinhamento: 'direita',
+    cores: {
+      badgeBg: '#78350f',
+      badgeText: '#fef3c7',
+      badgeBorder: '#d97706',
+      balaoBg: '#1c1917',
+      balaoBorder: '#44403c',
+      balaoTexto: '#f5f5f4',
+      avatarBg: '#b45309',
+      avatarTexto: '#ffffff',
+      destaque: '#fbbf24',
+    },
+  },
+  bia: {
+    id: 'bia',
+    nome: 'Bia',
+    papel: 'Engenheira de Precisão',
+    iniciais: 'BA',
+    avatar: '/images/academia/elenco/bia.webp',
+    descricaoAcessivel: 'Bia, engenheira mecânica e de comissionamento',
+    alinhamento: 'esquerda',
+    cores: {
+      badgeBg: '#064e3b',
+      badgeText: '#d1fae5',
+      badgeBorder: '#059669',
+      balaoBg: '#0f1f1c',
+      balaoBorder: '#115e59',
+      balaoTexto: '#f0fdf4',
+      avatarBg: '#047857',
+      avatarTexto: '#ffffff',
+      destaque: '#34d399',
+    },
+  },
+  narrador: {
+    id: 'narrador',
+    nome: 'Ambientação',
+    papel: 'Cena de Campo',
+    iniciais: '☕',
+    avatar: '/images/academia/elenco/narrador.webp',
+    descricaoAcessivel: 'Narrador da cena',
+    alinhamento: 'centro',
+    cores: {
+      badgeBg: '#334155',
+      badgeText: '#f1f5f9',
+      badgeBorder: '#64748b',
+      balaoBg: '#1e293b',
+      balaoBorder: '#334155',
+      balaoTexto: '#cbd5e1',
+      avatarBg: '#475569',
+      avatarTexto: '#ffffff',
+      destaque: '#94a3b8',
+    },
+  },
+};
+
+export const CENARIOS = {
+  'padaria-manha': {
+    titulo: 'Balcão da Padaria · 07h10',
+    subtitulo: 'Café coado na mesa antes de subir pra obra',
+    emoji: '☕',
+  },
+  'bancada-oficina': {
+    titulo: 'Bancada da Oficina · 07h30',
+    subtitulo: 'Manifold, balança e diagrama elétrico na mesa',
+    emoji: '🔧',
+  },
+  'casa-de-maquinas': {
+    titulo: 'Café no QG Técnico · 07h15',
+    subtitulo: 'Revisão de projeto e manual de serviço antes do atendimento',
+    emoji: '📐',
+  },
+};
+
+export const EMOCOES_LABEL = {
+  ironico: 'tom irônico',
+  serio: 'papo sério',
+  animado: 'animado',
+  alerta: 'alerta de campo',
+  pensativo: 'pensativo',
+  curioso: 'curioso',
+};

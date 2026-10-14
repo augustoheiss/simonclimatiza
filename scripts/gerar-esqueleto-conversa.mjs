@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { cursoInstalacaoHVAC } from '../src/data/cursoInstalacaoHVAC.js';
 import { cursoManutencaoHVAC } from '../src/data/cursoManutencaoHVAC.js';
 import { cursoTVRProCO380V } from '../src/data/cursoTVRProCO380V.js';
+import { cursoVRF, cursoTVRPro } from '../src/data/treinamentos.js';
 import { MANIFESTO_CONVERSAS } from '../src/data/conversas/manifesto.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -19,7 +20,7 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const CONVERSAS_DIR = path.join(ROOT_DIR, 'src', 'data', 'conversas');
 
 const NUMERO_UNIDADE_REGEX =
-  /(?:R\$\s*\d+(?:[.,]\d+)*|\b\d+(?:[.,]\d+)?\s*(?:°C|°F|psig|PSI|PSIA|kPa|MPa|Vcc|V|A|HP|kW|BTU\/lb|BTU\/h|BTU|TR|µm|mícrons|microns|%|mm|cm|m³\/h|m³|CFM|ppm|UFC\/m³|MΩ|kHz|RPM|SCFH)\b)/g;
+  /(?:R\$\s*\d+(?:[.,]\d+)*|\b\d+(?:[.,]\d+)?\s*(?:°C|°F|psig|PSI|PSIA|kPa|MPa|mmHg|Vcc|V|A|HP|kW|BTU\/lb|BTU\/h|BTU|TR|µm|mícrons|microns|%|mm|cm|m³\/h|m³|CFM|ppm|UFC\/m³|MΩ|kΩ|Ω|kHz|RPM|SCFH|FPM|cSt)\b)/g;
 
 function normalizarTexto(str) {
   if (!str) return '';
@@ -45,8 +46,8 @@ function normalizarTexto(str) {
 function indexarCurso(cursoId) {
   const mapa = new Map();
   if (cursoId === 'instalacao-hvac') {
-    if (cursoInstalacaoHVAC.aulaApresentacao) {
-      mapa.set('apresentacao', cursoInstalacaoHVAC.aulaApresentacao);
+    if (cursoInstalacaoHVAC.apresentacao) {
+      mapa.set('apresentacao', cursoInstalacaoHVAC.apresentacao);
     }
     for (const mod of cursoInstalacaoHVAC.modulos || []) {
       for (const aula of mod.aulas || []) {
@@ -54,6 +55,9 @@ function indexarCurso(cursoId) {
       }
     }
   } else if (cursoId === 'manutencao-hvac') {
+    if (cursoManutencaoHVAC.apresentacao) {
+      mapa.set('apresentacao', cursoManutencaoHVAC.apresentacao);
+    }
     for (const mod of cursoManutencaoHVAC.modulos || []) {
       for (const aula of mod.aulas || []) {
         mapa.set(String(aula.id), aula);
@@ -65,12 +69,20 @@ function indexarCurso(cursoId) {
         mapa.set(String(topico.id), topico);
       }
     }
+  } else if (cursoId === 'sistemavrf') {
+    for (const aula of cursoVRF.aulas || []) {
+      mapa.set(String(aula.id), { ...aula, conteudo_html: aula.descricao || '' });
+    }
+  } else if (cursoId === 'tvrpro') {
+    for (const aula of cursoTVRPro.aulas || []) {
+      mapa.set(String(aula.id), { ...aula, conteudo_html: aula.descricao || '' });
+    }
   }
   return mapa;
 }
 
 function extrairAncorasNumericas(aula) {
-  const campos = ['conteudo_html', 'tabelas_html', 'infobox_campo'];
+  const campos = ['conteudo_html', 'tabelas_html', 'infobox_campo', 'descricao'];
   const ancoras = [];
 
   for (const campo of campos) {
@@ -87,7 +99,7 @@ function extrairAncorasNumericas(aula) {
       const matches = frag.match(NUMERO_UNIDADE_REGEX);
       if (matches && matches.length > 0) {
         ancoras.push({
-          campo,
+          campo: campo === 'descricao' ? 'conteudo_html' : campo,
           numeros: [...new Set(matches)],
           trecho: frag.slice(0, 220),
         });
@@ -110,7 +122,7 @@ function parseArgs(argv) {
 }
 
 function listarPendentes() {
-  const cursos = ['instalacao-hvac', 'manutencao-hvac', 'tvr-pro-co-380v'];
+  const cursos = ['instalacao-hvac', 'manutencao-hvac', 'tvr-pro-co-380v', 'sistemavrf', 'tvrpro'];
   console.log('\n📋 Catálogo de Aulas vs. Roteiros "Papo de Balcão":\n');
   for (const cId of cursos) {
     const mapa = indexarCurso(cId);
@@ -152,7 +164,7 @@ function main() {
   const { curso: cursoId, aula: aulaId, force } = args;
   const mapa = indexarCurso(cursoId);
   if (mapa.size === 0) {
-    console.error(`❌ Curso inválido: "${cursoId}". Use instalacao-hvac, manutencao-hvac ou tvr-pro-co-380v.`);
+    console.error(`❌ Curso inválido: "${cursoId}". Use instalacao-hvac, manutencao-hvac, tvr-pro-co-380v, sistemavrf ou tvrpro.`);
     process.exit(1);
   }
 
@@ -222,13 +234,13 @@ export default {
     {
       id: 'escolha-1',
       tipo: 'escolha',
-      quem: 'simon',
       pergunta: 'Antes de abrir o manual: qual a sua leitura inicial desse cenário?',
       opcoes: [
         {
           id: 'a',
           texto: 'Opção A (substituir pela hipótese correta de campo).',
-          resposta: [
+          ideal: true,
+          reacao: [
             {
               quem: 'simon',
               emocao: 'animado',
@@ -239,7 +251,7 @@ export default {
         {
           id: 'b',
           texto: 'Opção B (substituir pelo atalho clássico de amador).',
-          resposta: [
+          reacao: [
             {
               quem: 'bia',
               emocao: 'alerta',

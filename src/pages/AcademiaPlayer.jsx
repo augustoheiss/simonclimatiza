@@ -333,12 +333,24 @@ export default function AcademiaPlayer() {
                   <ConversaErrorBoundary
                     cursoId={cursoAtual.id}
                     aulaId={activeAula.id}
-                    irParaAba={setActiveTab}
+                    irParaAba={(aba) =>
+                      setActiveTab(
+                        aba === 'conteudo' || aba === 'tabelas' || aba === 'infobox'
+                          ? 'slides'
+                          : aba
+                      )
+                    }
                   >
                     <ConversaView
                       cursoId={cursoAtual.id}
                       aulaId={activeAula.id}
-                      irParaAba={setActiveTab}
+                      irParaAba={(aba) =>
+                        setActiveTab(
+                          aba === 'conteudo' || aba === 'tabelas' || aba === 'infobox'
+                            ? 'slides'
+                            : aba
+                        )
+                      }
                     />
                   </ConversaErrorBoundary>
                 )}

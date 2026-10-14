@@ -21,6 +21,7 @@ import BeatEscolha from './beats/BeatEscolha';
 import BeatQuiz from './beats/BeatQuiz';
 import BeatMitoVerdade from './beats/BeatMitoVerdade';
 import BeatCauso from './beats/BeatCauso';
+import BeatFilosofia from './beats/BeatFilosofia';
 import BeatSaideira from './beats/BeatSaideira';
 import BeatCalculadoraCampo from './beats/BeatCalculadoraCampo';
 import BeatInspecaoVisual from './beats/BeatInspecaoVisual';
@@ -589,6 +590,9 @@ function renderBeat({
 
     case 'causo':
       return <BeatCauso beat={beat} />;
+
+    case 'filosofia':
+      return <BeatFilosofia beat={beat} />;
 
     case 'referencia': {
       const abaAlvo = beat.alvo?.aba || 'tabelas';

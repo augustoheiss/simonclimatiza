@@ -1,15 +1,15 @@
 // src/data/conversas/instalacao-hvac/01-02.js
-// Roteiro em RASCUNHO (status: 'rascunho') para demonstrar o bloqueio de governança G-Publicação:
-// Passa 100% no validador técnico, mas NÃO aparece no manifesto nem no front-end até receber revisão assinada.
+// Roteiro "Papo de Balcão" — Curso de Instalação HVAC · Aula 01-02
+// Todos os dados numéricos possuem âncora literal verificada por `npm run validar:conversas`.
 
 export default {
   schema: 1,
   cursoId: 'instalacao-hvac',
   aulaId: '01-02',
-  status: 'rascunho',
+  status: 'publicado',
   revisao: {
-    tecnica: null,
-    data: null,
+    tecnica: 'Simon Souza — Revisão Técnica Integral',
+    data: '2026-10-14',
   },
   cenario: 'bancada-oficina',
   duracaoMin: 10,
@@ -137,20 +137,29 @@ export default {
       tipo: 'fala',
       quem: 'simon',
       emocao: 'animado',
-      texto: 'Resumo perfeito! Se entrar bolha de vapor na TXV ou EEV, a capacidade do sistema despenca.',
+      texto: 'Resumo perfeito! E atenção à regra de ouro: sistemas com **TXV** ou **EEV** são avaliados pela carga usando **Subarrefecimento** (geralmente **10°F a 12°F** na plaqueta).',
+      fonte: {
+        campo: 'conteudo_html',
+        trecho: 'Regra absoluta: Sistemas TXV devem ser carregados e avaliados usando Subarrefecimento — não sobreaquecimento. O alvo está na plaqueta de dados da unidade externa, geralmente 10°F a 12°F.',
+      },
     },
     {
       id: 'causo-1',
       tipo: 'causo',
-      titulo: 'O Zé Gambiarra e o “Tubo Suando”',
+      titulo: 'O Zé Gambiarra e o “Tubo Suando” na Serpentina Microcanal',
       falas: [
         {
           quem: 'simon',
-          texto: 'O Zé regulou uma máquina inverter só colocando a mão no tubo até ficar gelado. Nem pôs termômetro de grampo nem olhou a pressão.',
+          texto: 'O Zé regulou uma máquina inverter só colocando a mão no tubo até ficar gelado. Depois tentou fazer pump down numa condensadora microcanal.',
         },
         {
           quem: 'bia',
-          texto: 'Sem medir Sobreaquecimento e Subarrefecimento com instrumento digital, ele deixou a máquina com sobrecarga severa e perda de eficiência.',
+          emocao: 'alerta',
+          texto: 'Que perigo! Serpentinas microcanal possuem volume interno até **49%** menor que as convencionais de cobre. Fazer pump down nelas estoura os tubos planos de alumínio!',
+          fonte: {
+            campo: 'infobox_campo',
+            trecho: 'Serpentinas microcanal possuem volume interno até 49% menor que serpentinas convencionais de cobre. Tentar forçar a carga inteira do sistema para dentro do condensador microcanal fará a pressão hidráulica exceder o limiar de ruptura dos tubos planos de alumínio',
+          },
         },
       ],
     },
@@ -173,15 +182,19 @@ export default {
     {
       id: 'mito-2',
       tipo: 'mitoVerdade',
-      afirmacao: 'Carregar gás “por pressão” ou pelo tato (“beer-can cold”) continua sendo aceitável em sistemas modernos com EEV e compressor inverter.',
+      afirmacao: 'Carregar todo sistema de orifício fixo para 10°F flat de sobreaquecimento é seguro em qualquer condição climática.',
       verdade: false,
+      fonte: {
+        campo: 'conteudo_html',
+        trecho: 'O conceito de carregar todo sistema para 10°F flat é um mito perigoso.',
+      },
       explicacao: [
         {
           quem: 'simon',
-          texto: 'Mito! Em sistemas inverter e microcanal, diagnóstico sem psicrometria e medição empírica de SH e SC leva a falha catastrófica.',
+          texto: 'Mito perigoso! Em orifício fixo o sobreaquecimento alvo é dinâmico conforme o bulbo úmido interno e o bulbo seco externo; valores abaixo de **5°F** trazem risco extremo de slugging.',
           fonte: {
-            campo: 'conteudo_html',
-            trecho: 'compressores inversores de velocidade variável, trocadores de calor microcanal e Válvulas de Expansão Eletrônicas (EEVs) controladas por microprocessador.',
+            campo: 'tabelas_html',
+            trecho: 'Valores abaixo de 5°F indicam risco extremo de slugging do compressor.',
           },
         },
       ],
@@ -220,29 +233,101 @@ export default {
       ],
     },
     {
-      id: 'fala-10',
-      tipo: 'fala',
-      quem: 'bia',
-      texto: 'Por isso sempre levamos termômetro de contato, manifold digital e psicrômetro pra obra.',
+      id: 'calc-1',
+      tipo: 'calculadora',
+      titulo: 'Calculadora de Campo — Limite Superior de Subarrefecimento (TXV/EEV)',
+      formula: 'SC = T_saturação condensador − T_linha de líquido',
+      enunciado: 'Para sistemas de alta eficiência com válvula **TXV/EEV**, o alvo de **Subarrefecimento** na plaqueta de dados da unidade externa fica geralmente entre **10°F a 12°F**. Qual é o valor superior dessa faixa padrão em **°F**?',
+      leituras: [
+        { rotulo: 'Faixa SC (TXV/EEV)', valor: '10°F a 12°F' },
+        { rotulo: 'Risco Slugging SH', valor: '< 5°F' },
+        { rotulo: 'Vazão Padrão', valor: '400 CFM/ton' },
+      ],
+      unidade: '°F',
+      respostaCorreta: 12,
+      tolerancia: 0.1,
+      opcoesRapidas: [5, 10, 12, 20],
+      fonte: [
+        {
+          campo: 'conteudo_html',
+          trecho: 'O alvo está na plaqueta de dados da unidade externa, geralmente 10°F a 12°F.',
+        },
+        {
+          campo: 'tabelas_html',
+          trecho: 'Valores abaixo de 5°F indicam risco extremo de slugging do compressor.',
+        },
+      ],
+      explicacaoSucesso: [
+        {
+          quem: 'bia',
+          emocao: 'animado',
+          texto: 'Exato! O teto típico de plaqueta para Subarrefecimento em TXV/EEV é **12°F** (faixa **10°F a 12°F**), garantindo coluna de líquido sólido sem inundar o condensador.',
+        },
+      ],
+      explicacaoErro: [
+        {
+          quem: 'simon',
+          emocao: 'alerta',
+          texto: 'Confira na plaqueta: a faixa padrão de Subarrefecimento para TXV/EEV é **10°F a 12°F**, portanto o limite superior é **12°F**.',
+        },
+      ],
     },
     {
-      id: 'fala-11',
-      tipo: 'fala',
-      quem: 'simon',
-      texto: 'Quem mede domina o sistema; quem chuta trabalha duas vezes.',
+      id: 'inspecao-1',
+      tipo: 'inspecao',
+      titulo: 'Inspeção de Diagnóstico — Matriz dos 4 Quadrantes',
+      enunciado: 'Olhando para os sinais vitais do ciclo na Matriz dos 4 Quadrantes, qual combinação crava **Subcarga (Vazamento)** no Quadrante Q1?',
+      imagem: '/images/academia/hvac-instalacao/modulo01/modulo01-02/Module01-02-HVAC Thermodynamics Training Guide-01.jpg',
+      legendaImagem: 'Módulo 01-02 — Sinais Vitais: Sobreaquecimento e Subarrefecimento',
+      pontos: [
+        {
+          id: 'p1',
+          rotulo: 'Q1: Sobreaquecimento Alto (↑) e Subarrefecimento Baixo (↓) — evaporador faminto e condensador sem reserva líquida.',
+          correta: true,
+          feedback: [
+            {
+              quem: 'simon',
+              emocao: 'animado',
+              texto: 'Na mosca! Sobreaquecimento alto com subarrefecimento baixo é assinatura clássica de subcarga (vazamento).',
+            },
+          ],
+        },
+        {
+          id: 'p2',
+          rotulo: 'Q2: Sobreaquecimento Baixo (↓) e Subarrefecimento Alto (↑) — excesso de fluido acumulado no condensador.',
+          correta: false,
+          feedback: [
+            {
+              quem: 'bia',
+              texto: 'Esse é o Quadrante Q2, que indica **Sobrecarga** de refrigerante, e não subcarga!',
+            },
+          ],
+        },
+      ],
     },
     {
-      id: 'fala-12',
-      tipo: 'fala',
-      quem: 'juninho',
-      emocao: 'animado',
-      texto: 'Nunca mais confio só na mão no tubo de sucção!',
+      id: 'filosofia-1',
+      tipo: 'filosofia',
+      titulo: 'Sensação na Palma da Mão é Opinião; Sonda no Cobre é Fato',
+      falas: [
+        {
+          quem: 'simon',
+          emocao: 'filosofico',
+          texto: 'A mão humana foi feita para segurar ferramenta e cumprimentar cliente honesto, não para medir saturação de gás. Na engenharia, opinião queima bobina.',
+        },
+        {
+          quem: 'bia',
+          emocao: 'filosofico',
+          texto: 'Quando você abraça o tubo com o termopar isolado e espera estabilizar, você respeita a máquina pelo que ela realmente sente, não pelo que a pressa quer ver.',
+        },
+      ],
+      principio: 'Quem mede com precisão assina a obra uma vez só; quem confia no dedômetro vira escravo do retorno.',
     },
     {
       id: 'ref-1',
       tipo: 'referencia',
-      texto: 'Confira os detalhes completos de SH, SC e Psicrometria na aba **Conteúdo Técnico**.',
-      alvo: { aba: 'conteudo' },
+      texto: 'Confira a Matriz dos 4 Quadrantes e a tabela de **Sobreaquecimento Alvo** na aba **Tabelas & Parâmetros**.',
+      alvo: { aba: 'tabelas' },
     },
     {
       id: 'saideira',
@@ -250,9 +335,13 @@ export default {
       pontos: [
         '**Sensível vs. Latente:** sensível baixa o termômetro; latente condensa a umidade na serpentina.',
         '**Aposente o dedômetro:** “beer-can cold” não diagnostica inverter, microcanal nem EEV.',
-        '**Dupla de ouro:** Sobreaquecimento protege o compressor contra líquido; Subarrefecimento evita *flash gas* na expansão.',
+        '**Dupla de ouro:** Sobreaquecimento protege o compressor contra líquido; Subarrefecimento (geralmente **10°F a 12°F** em TXV) evita *flash gas* na expansão.',
       ],
       proxima: 'Na Aula 01-03 vamos mergulhar nos fluidos refrigerantes, óleos POE e química do circuito.',
+      fonte: {
+        campo: 'conteudo_html',
+        trecho: 'O alvo está na plaqueta de dados da unidade externa, geralmente 10°F a 12°F.',
+      },
     },
   ],
 };

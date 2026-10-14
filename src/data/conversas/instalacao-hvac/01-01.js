@@ -476,7 +476,31 @@ export default {
       ],
     },
 
-    // ── 7. SAIDEIRA ─────────────────────────────────────────────────────────
+    // ── 7. FILOSOFIA DE BALCÃO ──────────────────────────────────────────────
+    {
+      id: 'filosofia-1',
+      tipo: 'filosofia',
+      titulo: 'O Elevador Invisível e a Humildade da Física',
+      falas: [
+        {
+          quem: 'marta',
+          emocao: 'filosofico',
+          texto: 'Engraçado, né? O cliente paga achando que comprou uma caixa de fazer gelo, mas vocês na verdade são carregadores de calor invisível.',
+        },
+        {
+          quem: 'simon',
+          emocao: 'filosofico',
+          texto: 'É isso, Dona Marta. Amadores fazem coisas ficarem frias; técnicos de elite removem calor usando física de precisão. Quando você escuta o fluido em vez de brigar com a máquina, nunca mais troca peça no chute.',
+          fonte: {
+            campo: 'conteudo_html',
+            trecho: 'Amadores fazem coisas ficarem frias; técnicos de elite removem calor usando física de precisão.',
+          },
+        },
+      ],
+      principio: 'Ninguém fabrica o frio: nosso ofício é transportar calor com respeito absoluto às leis da termodinâmica.',
+    },
+
+    // ── 8. SAIDEIRA ─────────────────────────────────────────────────────────
     {
       id: 'ref-1',
       tipo: 'referencia',

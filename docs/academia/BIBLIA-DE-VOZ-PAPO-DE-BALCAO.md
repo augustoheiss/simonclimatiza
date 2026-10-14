@@ -43,8 +43,27 @@ Inspirado no *Diálogo sobre os Dois Máximos Sistemas do Mundo* de Galileu (Sal
 - **Quem é:** O anti-exemplo folclórico. Nunca aparece falando no chat; só é lembrado nos causos do Simon (*"Igual o Zé que serrou tubo com arco de serra…"*).
 - **Regra ética:** O humor mira **100% na prática errada** (a gambiarra), **nunca** na dignidade de uma pessoa real, região ou grupo.
 
+### 👩‍💼 **Dona Marta** (`quem: 'marta'`) — Guardiã do Balcão & Caixa
+- **Quem é:** Dona da padaria/café onde a equipe se reúne e conselheira afiada de gestão, ética e finanças.
+- **Papel pedagógico:** Entra especialmente em discussões de custo total (TCO), margem bruta vs. markup, responsabilidade civil e sabedoria humana de ofício.
+
 ### ☕ **Narrador** (`quem: 'narrador'`)
 - **Função:** Rubricas curtas de ambientação na abertura (`tipo: 'cena'`) — ex.: *"Segunda, 7h10. Padaria colada na obra. Café coado passando e um split pingando na parede."*
+- **Cenários oficiais (`cenario`):** `'padaria-manha'`, `'bancada-oficina'`, `'casa-de-maquinas'` e `'resenha-pos-obra'` (*"Balcão de Sexta · 18h30 — Fim de expediente, ferramentas guardadas, água com gás e filosofia sincera de ofício"*).
+
+---
+
+## 1.5. 🧭 O Arco de 8 Momentos & Filosofia de Balcão (`tipo: 'filosofia'`)
+
+Cada roteiro articula as **5 dimensões** (*Sincera, Bem-Humorada, Didática, Prática e Filosófica*) em **8 Momentos**:
+1. **Chegada (`cena` + `fala`)** — dor real e sincera de obra.
+2. **Aposta de Balcão (`escolha`)** — palpite preditivo antes da teoria.
+3. **Papo Reto (`fala` + `calculadora`)** — a física e a norma no guardanapo.
+4. **Causo de Obra (`causo` + `inspecao`)** — o preço real do atalho do Zé Gambiarra.
+5. **Mito ou Verdade (`mitoVerdade`)** — desconstrução de crendice de corredor.
+6. **Filosofia de Balcão (`filosofia`)** — sabedoria de ofício: a ética do que fica escondido no forro, a luta contra a entropia e o caráter do profissional quando ninguém está olhando.
+7. **Desafio Prático (`quiz`)** — diagnóstico instrumental com dados reais da aula.
+8. **Saideira (`saideira` + Desafio da Rodada do Módulo)** — 3 regras de ouro + acesso ao Boss Quiz integrador do módulo.
 
 ---
 

@@ -1,6 +1,8 @@
 // src/components/conversa/beats/BeatSaideira.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import TextoConversa from '../TextoConversa';
+import { obterDesafioPorAula } from '../../../data/desafiosModulo';
+import DesafioModuloModal, { lerStatusDesafioModulo } from '../DesafioModuloModal';
 import {
   Coffee,
   CheckCircle2,
@@ -9,11 +11,13 @@ import {
   Info,
   RotateCcw,
   MessageSquareShare,
+  Trophy,
 } from 'lucide-react';
 
 /**
- * BeatSaideira — Fechamento da conversa (Momento 7):
+ * BeatSaideira — Fechamento da conversa (Momento 8):
  * - Resumo de 3 pontos-chave para levar pra obra;
+ * - Convite para o "Desafio da Rodada" (Boss Quiz integrador do Módulo);
  * - Ponte direta para as abas da apostila (Conteúdo, Tabelas, Info de Campo);
  * - Botão de recomeçar o papo e botão opcional de enviar feedback via WhatsApp (LGPD-safe).
  */
@@ -24,6 +28,12 @@ export default function BeatSaideira({
   irParaAba,
   onReiniciar,
 }) {
+  const desafioModulo = obterDesafioPorAula(cursoId, aulaId);
+  const [modalDesafioAberto, setModalDesafioAberto] = useState(false);
+  const [statusDesafio, setStatusDesafio] = useState(() =>
+    desafioModulo ? lerStatusDesafioModulo(cursoId, desafioModulo.moduloId) : null
+  );
+
   const textoWhatsApp = encodeURIComponent(
     `Olá equipe Simon! Acabei de fazer o Papo de Balcão da aula ${cursoId}/${aulaId} e queria mandar meu feedback:`
   );
@@ -70,6 +80,39 @@ export default function BeatSaideira({
             <strong className="text-white">Próxima parada:</strong>{' '}
             <TextoConversa texto={beat.proxima} />
           </span>
+        </div>
+      )}
+
+      {/* Card do Desafio da Rodada (Boss Quiz do Módulo) */}
+      {desafioModulo && (
+        <div className="mb-5 p-4 rounded-xl border border-amber-500/40 bg-gradient-to-r from-amber-950/40 via-slate-900 to-amber-950/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <Trophy className="w-4 h-4 text-amber-400" aria-hidden="true" />
+            </div>
+            <div>
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-400 block">
+                {statusDesafio?.aprovado
+                  ? `Rodada Paga (${statusDesafio.acertos}/${statusDesafio.total} acertos)`
+                  : 'Desafio da Rodada · Certificação do Módulo'}
+              </span>
+              <p className="text-xs sm:text-sm font-bold text-white">
+                {desafioModulo.titulo}
+              </p>
+              <p className="text-[11px] text-slate-300 mt-0.5">
+                Encare {desafioModulo.questoes?.length || 5} situações práticas encadeadas cobrindo este módulo.
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setModalDesafioAberto(true)}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold bg-amber-500 hover:bg-amber-400 text-slate-950 transition-colors cursor-pointer flex-shrink-0 shadow-md"
+          >
+            <Trophy className="w-3.5 h-3.5" aria-hidden="true" />
+            <span>{statusDesafio?.concluido ? 'Rever Desafio do Módulo' : 'Encarar Desafio do Módulo'}</span>
+          </button>
         </div>
       )}
 
@@ -130,6 +173,15 @@ export default function BeatSaideira({
           </a>
         </div>
       </div>
+
+      {desafioModulo && (
+        <DesafioModuloModal
+          desafio={desafioModulo}
+          aberto={modalDesafioAberto}
+          onFechar={() => setModalDesafioAberto(false)}
+          onConcluir={(res) => setStatusDesafio(res)}
+        />
+      )}
     </section>
   );
 }

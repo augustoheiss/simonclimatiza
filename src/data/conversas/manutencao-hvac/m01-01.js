@@ -355,7 +355,42 @@ export default {
       ],
     },
 
-    // ── 7. SAIDEIRA ─────────────────────────────────────────────────────────
+    // ── 7. FILOSOFIA ────────────────────────────────────────────────────────
+    {
+      id: 'filosofia-1',
+      tipo: 'filosofia',
+      titulo: 'A Assinatura Simon: Venda Retorno sobre Investimento, Não Filtro Limpo',
+      principio: 'Quando você traduz milímetros de sujeira e graus de superaquecimento para fluxo de caixa, o contrato deixa de ser despesa e vira proteção de patrimônio.',
+      falas: [
+        {
+          quem: 'simon',
+          emocao: 'serio',
+          texto: 'Grave isso: o cliente não acorda querendo comprar limpeza de serpentina. Ele quer previsibilidade financeira, zero parada e conta de energia controlada.',
+        },
+        {
+          quem: 'marta',
+          emocao: 'confiante',
+          texto: 'E quando você prova que cada **R$ 1,00** adiado gera **R$ 4,00** de prejuízo em CapEx e que o contrato entrega **545%** de ROI, nenhum diretor financeiro assina o corte.',
+          fonte: [
+            {
+              campo: 'infobox_campo',
+              trecho: 'Cada R$ 1,00 que o cliente economiza ou adia em rotinas preventivas de AVAC traduz-se diretamente em uma penalidade de R$ 4,00 em custos de renovação precoce de capital (CapEx).',
+            },
+            {
+              campo: 'infobox_campo',
+              trecho: 'com um ROI histórico de 545%, o investimento no contrato de manutenção preventiva e preditiva possui um Valor Presente Líquido (VPL) altamente positivo',
+            },
+          ],
+        },
+        {
+          quem: 'juninho',
+          emocao: 'empolgado',
+          texto: 'De hoje em diante meu alicate amperímetro e meu termômetro entram na reunião junto com a planilha de Payback!',
+        },
+      ],
+    },
+
+    // ── 8. SAIDEIRA ─────────────────────────────────────────────────────────
     {
       id: 'ref-1',
       tipo: 'referencia',

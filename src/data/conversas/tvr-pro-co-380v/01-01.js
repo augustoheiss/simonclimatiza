@@ -378,7 +378,27 @@ export default {
       ],
     },
 
-    // ── 7. SAIDEIRA ─────────────────────────────────────────────────────────
+    // ── 7. FILOSOFIA DE BALCÃO ──────────────────────────────────────────────
+    {
+      id: 'filo-1',
+      tipo: 'filosofia',
+      titulo: 'O Respeito à Matriz Antes da Promessa',
+      falas: [
+        {
+          quem: 'marta',
+          emocao: 'filosofico',
+          texto: 'No meu café, se eu misturo grãos de safras incompatíveis no mesmo moinho sem olhar a torra, estrago o lote inteiro. No telhado é igual: não se junta máquina no improviso.',
+        },
+        {
+          quem: 'simon',
+          emocao: 'filosofico',
+          texto: 'Assino embaixo, Dona Marta. Engenharia de verdade começa na humildade de abrir a tabela de combinação do fabricante antes de prometer ampliação ao cliente.',
+        },
+      ],
+      principio: 'Princípio de Ofício: Quem respeita a matriz de projeto nunca assina gambiarra no manifold.',
+    },
+
+    // ── 8. SAIDEIRA ─────────────────────────────────────────────────────────
     {
       id: 'ref-1',
       tipo: 'referencia',

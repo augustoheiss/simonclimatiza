@@ -9,6 +9,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { cursoInstalacaoHVAC } from '../src/data/cursoInstalacaoHVAC.js';
 import { cursoManutencaoHVAC } from '../src/data/cursoManutencaoHVAC.js';
 import { cursoTVRProCO380V } from '../src/data/cursoTVRProCO380V.js';
+import { cursoVRF, cursoTVRPro } from '../src/data/treinamentos.js';
 import { ELENCO } from '../src/components/conversa/elenco.js';
 import { MANIFESTO_CONVERSAS } from '../src/data/conversas/manifesto.js';
 
@@ -55,7 +56,7 @@ const PALAVRAS_PROIBIDAS = [
 
 // Regex para detectar números acompanhados de unidades técnicas que exigem ancoragem (`fonte`)
 const NUMERO_UNIDADE_REGEX =
-  /(?:R\$\s*\d+(?:[.,]\d+)*|\b\d+(?:[.,]\d+)?\s*(?:°C|°F|psig|PSI|PSIA|kPa|Vcc|V|A|HP|kW|BTU\/lb|BTU\/h|BTU|TR|µm|mícrons|microns|%|mm|cm|m³\/h|m³|CFM|ppm|UFC\/m³|MΩ|kHz|RPM|SCFH)\b)/g;
+  /(?:R\$\s*\d+(?:[.,]\d+)*|\b\d+(?:[.,]\d+)?\s*(?:°C|°F|psig|PSI|PSIA|kPa|MPa|mmHg|Vcc|V|A|HP|kW|BTU\/lb|BTU\/h|BTU|TR|µm|mícrons|microns|%|mm|cm|m³\/h|m³|CFM|ppm|UFC\/m³|MΩ|kΩ|Ω|kHz|RPM|SCFH|FPM|cSt)\b)/g;
 
 /**
  * Normaliza HTML/entidades e espaços em branco para comparação literal de trechos.
@@ -80,7 +81,7 @@ function normalizarTextoFonte(str) {
 }
 
 /**
- * Constrói índice `{ ["cursoId/aulaId"]: objetoAula }` a partir dos 3 cursos dedicados.
+ * Constrói índice `{ ["cursoId/aulaId"]: objetoAula }` a partir dos 5 cursos da plataforma.
  */
 function construirIndiceCursos() {
   const mapa = new Map();
@@ -110,6 +111,22 @@ function construirIndiceCursos() {
     for (const topico of parte.topicos || []) {
       mapa.set(`tvr-pro-co-380v/${topico.id}`, topico);
     }
+  }
+
+  // 4. Sistema VRF (TVR Ultra)
+  for (const aula of cursoVRF.aulas || []) {
+    mapa.set(`sistemavrf/${aula.id}`, {
+      ...aula,
+      conteudo_html: aula.conteudo_html || aula.descricao || '',
+    });
+  }
+
+  // 5. TVR Pro DC Inverter
+  for (const aula of cursoTVRPro.aulas || []) {
+    mapa.set(`tvrpro/${aula.id}`, {
+      ...aula,
+      conteudo_html: aula.conteudo_html || aula.descricao || '',
+    });
   }
 
   return mapa;
@@ -151,10 +168,21 @@ function extrairNumerosDeMatch(matches) {
 }
 
 async function executarValidacao() {
+  const argv = process.argv.slice(2);
+  let cursoFiltro = null;
+  let ignorarManifesto = false;
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === '--curso') cursoFiltro = argv[++i];
+    else if (argv[i] === '--sem-manifesto') ignorarManifesto = true;
+  }
+
   const erros = [];
   const avisos = [];
   const indiceCursos = construirIndiceCursos();
-  const arquivos = listarArquivosRoteiro(CONVERSAS_DIR);
+  const todosArquivos = listarArquivosRoteiro(CONVERSAS_DIR);
+  const arquivos = cursoFiltro
+    ? todosArquivos.filter((a) => a.cursoPasta === cursoFiltro)
+    : todosArquivos;
   const publicadosEncontrados = new Set();
   const todosArquivosMap = new Set();
 
@@ -454,6 +482,32 @@ async function executarValidacao() {
           break;
         }
 
+        case 'filosofia': {
+          if (beat.titulo) {
+            validarTexto(beat.titulo, `${ctx}.titulo`, beat.fonte);
+          }
+          if (beat.principio) {
+            validarTexto(beat.principio, `${ctx}.principio`, beat.fonte);
+          }
+          if (Array.isArray(beat.falas) && beat.falas.length > 0) {
+            for (let f = 0; f < beat.falas.length; f++) {
+              const falaF = beat.falas[f];
+              if (!ELENCO_KEYS.has(falaF.quem)) {
+                erros.push(`[${relPath} -> ${ctx}.falas[${f}]] Personagem inválido: "${falaF.quem}".`);
+              }
+              validarTexto(falaF.texto, `${ctx}.falas[${f}]`, falaF.fonte || beat.fonte);
+            }
+          } else if (beat.texto) {
+            if (beat.quem && !ELENCO_KEYS.has(beat.quem)) {
+              erros.push(`[${relPath} -> ${ctx}] Personagem inválido: "${beat.quem}".`);
+            }
+            validarTexto(beat.texto, `${ctx}.texto`, beat.fonte);
+          } else {
+            erros.push(`[${relPath} -> ${ctx}] "filosofia" deve possuir "falas" ou "texto".`);
+          }
+          break;
+        }
+
         case 'referencia': {
           validarTexto(beat.texto, `${ctx}.texto`, beat.fonte);
           if (!beat.alvo || !beat.alvo.aba) {
@@ -530,21 +584,23 @@ async function executarValidacao() {
   }
 
   // 7. Consistência bidirecional com `manifesto.js`
-  for (const [chaveManifesto, statusManifesto] of Object.entries(MANIFESTO_CONVERSAS)) {
-    if (!todosArquivosMap.has(chaveManifesto)) {
-      erros.push(`[manifesto.js] Item "${chaveManifesto}" não possui arquivo correspondente em src/data/conversas/.`);
-    } else if (statusManifesto === 'publicado' && !publicadosEncontrados.has(chaveManifesto)) {
-      erros.push(
-        `[manifesto.js] Item "${chaveManifesto}" consta como publicado no manifesto, mas o arquivo não tem status: "publicado".`
-      );
+  if (!ignorarManifesto && !cursoFiltro) {
+    for (const [chaveManifesto, statusManifesto] of Object.entries(MANIFESTO_CONVERSAS)) {
+      if (!todosArquivosMap.has(chaveManifesto)) {
+        erros.push(`[manifesto.js] Item "${chaveManifesto}" não possui arquivo correspondente em src/data/conversas/.`);
+      } else if (statusManifesto === 'publicado' && !publicadosEncontrados.has(chaveManifesto)) {
+        erros.push(
+          `[manifesto.js] Item "${chaveManifesto}" consta como publicado no manifesto, mas o arquivo não tem status: "publicado".`
+        );
+      }
     }
-  }
 
-  for (const chavePub of publicadosEncontrados) {
-    if (MANIFESTO_CONVERSAS[chavePub] !== 'publicado') {
-      erros.push(
-        `[manifesto.js] Arquivo "${chavePub}" tem status: "publicado", mas não está registrado em MANIFESTO_CONVERSAS.`
-      );
+    for (const chavePub of publicadosEncontrados) {
+      if (MANIFESTO_CONVERSAS[chavePub] !== 'publicado') {
+        erros.push(
+          `[manifesto.js] Arquivo "${chavePub}" tem status: "publicado", mas não está registrado em MANIFESTO_CONVERSAS.`
+        );
+      }
     }
   }
 

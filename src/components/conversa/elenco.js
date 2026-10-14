@@ -61,6 +61,26 @@ export const ELENCO = {
       destaque: '#34d399',
     },
   },
+  marta: {
+    id: 'marta',
+    nome: 'Dona Marta',
+    papel: 'Guardiã do Balcão & Caixa',
+    iniciais: 'DM',
+    avatar: '/images/academia/elenco/marta.webp',
+    descricaoAcessivel: 'Dona Marta, dona da padaria e conselheira de negócios e vida',
+    alinhamento: 'esquerda',
+    cores: {
+      badgeBg: '#4c1d95',
+      badgeText: '#ede9fe',
+      badgeBorder: '#8b5cf6',
+      balaoBg: '#1e1b4b',
+      balaoBorder: '#4338ca',
+      balaoTexto: '#f5f3ff',
+      avatarBg: '#6d28d9',
+      avatarTexto: '#ffffff',
+      destaque: '#a78bfa',
+    },
+  },
   narrador: {
     id: 'narrador',
     nome: 'Ambientação',
@@ -99,6 +119,11 @@ export const CENARIOS = {
     subtitulo: 'Revisão de projeto e manual de serviço antes do atendimento',
     emoji: '📐',
   },
+  'resenha-pos-obra': {
+    titulo: 'Balcão de Sexta · 18h30',
+    subtitulo: 'Fim de expediente, ferramentas guardadas, água com gás e filosofia sincera de ofício',
+    emoji: '✨',
+  },
 };
 
 export const EMOCOES_LABEL = {
@@ -108,4 +133,6 @@ export const EMOCOES_LABEL = {
   alerta: 'alerta de campo',
   pensativo: 'pensativo',
   curioso: 'curioso',
+  filosofico: 'sabedoria de ofício',
+  'bem-humorado': 'bom humor',
 };

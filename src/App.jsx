@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
+import ProtecaoAcademia from './components/ProtecaoAcademia';
 import Navbar from './components/Navbar';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
 
@@ -57,13 +58,13 @@ function AppShell() {
             <Route path="/" element={<Home />} />
             <Route path="/servicos" element={<Servicos />} />
             <Route path="/contato" element={<Contato />} />
-            <Route path="/academia" element={<AcademiaCatalogo />} />
-            <Route path="/academia/treinamento-hvac" element={<TreinamentoHVAC />} />
-            <Route path="/academia/treinamento-manutencao-hvac" element={<TreinamentoManutencao />} />
-            <Route path="/academia/treinamento-tvr-pro-co" element={<TreinamentoTVRProCO />} />
-            <Route path="/academia/certificado/:cursoId" element={<Certificados />} />
-            <Route path="/academia/:id" element={<AcademiaPlayer />} />
-            <Route path="/certificados" element={<Certificados />} />
+            <Route path="/academia" element={<ProtecaoAcademia><AcademiaCatalogo /></ProtecaoAcademia>} />
+            <Route path="/academia/treinamento-hvac" element={<ProtecaoAcademia><TreinamentoHVAC /></ProtecaoAcademia>} />
+            <Route path="/academia/treinamento-manutencao-hvac" element={<ProtecaoAcademia><TreinamentoManutencao /></ProtecaoAcademia>} />
+            <Route path="/academia/treinamento-tvr-pro-co" element={<ProtecaoAcademia><TreinamentoTVRProCO /></ProtecaoAcademia>} />
+            <Route path="/academia/certificado/:cursoId" element={<ProtecaoAcademia><Certificados /></ProtecaoAcademia>} />
+            <Route path="/academia/:id" element={<ProtecaoAcademia><AcademiaPlayer /></ProtecaoAcademia>} />
+            <Route path="/certificados" element={<ProtecaoAcademia><Certificados /></ProtecaoAcademia>} />
             <Route path="/validar" element={<Validar />} />
             <Route path="/termos" element={<Termos />} />
           </Routes>

@@ -1,7 +1,6 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
-import ProtecaoAcademia from './components/ProtecaoAcademia';
 import Navbar from './components/Navbar';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
 
@@ -18,49 +17,60 @@ const Termos = lazy(() => import('./pages/Termos'));
 
 function RouteLoader() {
   return (
-    <div className="flex-grow flex items-center justify-center min-h-[60vh] bg-slate-950 text-slate-300">
+    <div className="flex-grow flex items-center justify-center min-h-dvh bg-slate-950 text-slate-300">
       <div className="flex flex-col items-center gap-3">
         <div className="w-8 h-8 rounded-full border-2 border-sky-400 border-t-transparent animate-spin" />
-        <span className="text-xs font-bold uppercase tracking-widest text-slate-400">
-          Carregando módulo...
+        <span className="text-xs font-mono font-bold uppercase tracking-widest text-sky-400">
+          Inicializando CAD Workbench...
         </span>
       </div>
     </div>
   );
 }
 
-export default function App() {
+function AppShell() {
+  const location = useLocation();
+  const path = location.pathname;
+
+  // Rotas que operam em modo Workstation Técnica 100dvh Zero-Scroll (possuem Ribbon e Status Bar próprias)
+  const isCadWorkspaceRoute =
+    path === '/' ||
+    path === '/academia' ||
+    path.startsWith('/academia/treinamento-') ||
+    (path.startsWith('/academia/') && !path.startsWith('/academia/certificado/'));
+
   return (
-    <BrowserRouter>
-      <div className="min-h-screen bg-white flex flex-col font-sans selection:bg-sky-500 selection:text-white">
+    <div
+      className={
+        isCadWorkspaceRoute
+          ? 'h-dvh w-screen overflow-hidden flex flex-col font-sans selection:bg-sky-500 selection:text-white'
+          : 'min-h-screen bg-white flex flex-col font-sans selection:bg-sky-500 selection:text-white'
+      }
+    >
+      {!isCadWorkspaceRoute && <Navbar />}
 
-        {/* Global Responsive Navbar */}
-        <Navbar />
+      <FloatingWhatsApp />
 
-        {/* Floating WhatsApp Action Button */}
-        <FloatingWhatsApp />
+      <main className="flex-grow flex flex-col min-h-0">
+        <Suspense fallback={<RouteLoader />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/servicos" element={<Servicos />} />
+            <Route path="/contato" element={<Contato />} />
+            <Route path="/academia" element={<AcademiaCatalogo />} />
+            <Route path="/academia/treinamento-hvac" element={<TreinamentoHVAC />} />
+            <Route path="/academia/treinamento-manutencao-hvac" element={<TreinamentoManutencao />} />
+            <Route path="/academia/treinamento-tvr-pro-co" element={<TreinamentoTVRProCO />} />
+            <Route path="/academia/certificado/:cursoId" element={<Certificados />} />
+            <Route path="/academia/:id" element={<AcademiaPlayer />} />
+            <Route path="/certificados" element={<Certificados />} />
+            <Route path="/validar" element={<Validar />} />
+            <Route path="/termos" element={<Termos />} />
+          </Routes>
+        </Suspense>
+      </main>
 
-        {/* Pages Content */}
-        <main className="flex-grow flex flex-col">
-          <Suspense fallback={<RouteLoader />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/servicos" element={<Servicos />} />
-              <Route path="/contato" element={<Contato />} />
-              <Route path="/academia" element={<ProtecaoAcademia><AcademiaCatalogo /></ProtecaoAcademia>} />
-              <Route path="/academia/treinamento-hvac" element={<TreinamentoHVAC />} />
-              <Route path="/academia/treinamento-manutencao-hvac" element={<TreinamentoManutencao />} />
-              <Route path="/academia/treinamento-tvr-pro-co" element={<ProtecaoAcademia><TreinamentoTVRProCO /></ProtecaoAcademia>} />
-              <Route path="/academia/certificado/:cursoId" element={<ProtecaoAcademia><Certificados /></ProtecaoAcademia>} />
-              <Route path="/academia/:id" element={<ProtecaoAcademia><AcademiaPlayer /></ProtecaoAcademia>} />
-              <Route path="/certificados" element={<ProtecaoAcademia><Certificados /></ProtecaoAcademia>} />
-              <Route path="/validar" element={<Validar />} />
-              <Route path="/termos" element={<Termos />} />
-            </Routes>
-          </Suspense>
-        </main>
-
-        {/* Global Footer */}
+      {!isCadWorkspaceRoute && (
         <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 py-12 px-6">
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-sm">
             <div className="md:col-span-2">
@@ -83,7 +93,7 @@ export default function App() {
             <div>
               <h4 className="text-white font-bold mb-3 uppercase tracking-wider text-xs">Navegação</h4>
               <ul className="space-y-2 text-xs">
-                <li><Link to="/" className="hover:text-sky-400 transition-colors">Início</Link></li>
+                <li><Link to="/" className="hover:text-sky-400 transition-colors">Início (Command Center)</Link></li>
                 <li><Link to="/servicos" className="hover:text-sky-400 transition-colors">Serviços de Engenharia</Link></li>
                 <li><Link to="/academia" className="hover:text-sky-400 transition-colors">Academia Simon HVAC</Link></li>
                 <li><Link to="/certificados" className="hover:text-sky-400 transition-colors">Emissão de Certificados</Link></li>
@@ -106,8 +116,15 @@ export default function App() {
             <p>Engenharia Térmica de Alta Performance.</p>
           </div>
         </footer>
+      )}
+    </div>
+  );
+}
 
-      </div>
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppShell />
     </BrowserRouter>
   );
 }

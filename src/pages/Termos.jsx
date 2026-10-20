@@ -61,7 +61,7 @@ const WHATSAPP_DISPLAY = '+55 11 94216-3150';
 const WHATSAPP_NUMBER = '5511942163150';
 const DESCRICAO_SERVICO =
   'engenharia térmica, climatização corporativa e industrial, manutenção preditiva (PMOC) e compliance sanitário';
-const DATA_ATUALIZACAO = '12 de abril de 2026';
+const DATA_ATUALIZACAO = '20 de outubro de 2026';
 
 // ─── Section Component ─────────────────────────────────────────────────────────
 function LegalSection({ icon: Icon, number, title, children }) {
@@ -246,14 +246,23 @@ export default function Termos() {
               </p>
             </LegalSection>
 
-            {/* 1.3 Isenção de Responsabilidade Técnica */}
-            <LegalSection icon={ShieldCheck} number="1.3" title="Isenção de Responsabilidade Técnica">
+            {/* 1.3 Isenção de Responsabilidade Técnica, Repositório Público e Indenização */}
+            <LegalSection icon={ShieldCheck} number="1.3" title="Isenção de Responsabilidade Técnica e Repositório Público">
               <p>
-                A infraestrutura web, design e código-fonte deste site foram desenvolvidos de forma
-                terceirizada. O desenvolvedor responsável pela criação da página não possui vínculos
-                societários, não atua no atendimento aos clientes e não se responsabiliza pela prestação
-                dos serviços ofertados, promessas comerciais, ou pela gestão e armazenamento dos dados
-                trocados diretamente com o profissional após o redirecionamento.
+                A infraestrutura web, design e código-fonte front-end deste site foram desenvolvidos de forma
+                terceirizada sob o padrão <strong className="text-slate-800">&ldquo;no estado em que se encontra&rdquo; (AS-IS)</strong>.
+                O desenvolvedor responsável pela criação tecnológica não possui vínculos societários, não atua no
+                atendimento aos clientes e não responde, solidária ou subsidiariamente (LGPD, Art. 42), pela prestação
+                física dos serviços de engenharia térmica, emissão de laudos/ART, promessas comerciais ou pela gestão
+                dos dados trocados diretamente com o profissional após o redirecionamento.
+              </p>
+              <p>
+                Para fins de transparência arquitetural, auditoria e entrega contínua (CI/CD), o código-fonte estático
+                da camada de apresentação pode estar hospedado em repositório público (GitHub), não existindo qualquer
+                banco de dados oculto de clientes sob posse ou custódia do desenvolvedor. O Usuário e o Controlador
+                concordam em manter o desenvolvedor de software indene (<strong className="text-slate-800">Hold Harmless</strong>)
+                contra quaisquer demandas comerciais, trabalhistas, fiscais ou operacionais decorrentes das atividades
+                da <strong className="text-slate-800">{NOME_PROFISSIONAL}</strong>.
               </p>
             </LegalSection>
 
@@ -273,9 +282,21 @@ export default function Termos() {
                   <strong className="text-slate-800">Segurança do Trabalho & Normas Regulamentadoras (NRs):</strong> O aluno é o único responsável pelo cumprimento das normas de segurança obrigatórias (como NR-10 para eletricidade e NR-35 para trabalho em altura), pelo uso correto de Equipamentos de Proteção Individual (EPIs) e por possuir habilitação técnica legal (CFT/CREA).
                 </li>
                 <li>
-                  <strong className="text-slate-800">Natureza dos Certificados:</strong> Os certificados emitidos pela Academia atestam a participação e aproveitamento do curso online, não equivalendo a registro de engenharia ou Anotação de Responsabilidade Técnica (ART).
+                  <strong className="text-slate-800">Natureza dos Certificados e Veracidade Cadastral:</strong> Os certificados emitidos pela Academia (gerados localmente no navegador do aluno) atestam a participação e aproveitamento do curso online livre, não equivalendo a registro de engenharia ou Anotação de Responsabilidade Técnica (ART). O aluno é o único responsável pela veracidade do nome inserido na emissão e pelo compartilhamento voluntário do QR Code/link de validação.
                 </li>
               </ul>
+            </LegalSection>
+
+            {/* 1.5 Reserva de Propriedade Intelectual em Repositório Público */}
+            <LegalSection icon={Scale} number="1.5" title="Propriedade Intelectual e Reserva de Marca em Repositório Público">
+              <p>
+                Embora a estrutura técnica do código-fonte possa estar visível em plataforma pública de versionamento
+                (GitHub), <strong className="text-slate-800">não é concedida qualquer licença de código aberto (open-source) ou autorização de uso</strong> sobre
+                a marca <strong className="text-slate-800">{NOME_PROFISSIONAL}</strong>, logotipos, apostilas técnicas,
+                roteiros da Academia HVAC, assinaturas institucionais, fotografias ou identidade visual. A clonagem,
+                rateio pirata de aulas ou reprodução comercial não autorizada constitui violação de direitos autorais
+                (Lei nº 9.610/1998) e concorrência desleal (Lei nº 9.279/1996).
+              </p>
             </LegalSection>
 
             {/* ── Divider ── */}
@@ -293,33 +314,39 @@ export default function Termos() {
               </div>
               <p className="text-slate-600 text-sm leading-relaxed mb-6 pl-0 md:pl-5">
                 Em conformidade com a <strong className="text-slate-800">Lei Geral de Proteção de Dados
-                (Lei nº 13.709/2018)</strong>, detalhamos como tratamos as suas informações:
+                (Lei nº 13.709/2018)</strong> e o <strong className="text-slate-800">Marco Civil da Internet
+                (Lei nº 12.965/2014)</strong>, detalhamos como tratamos as suas informações:
               </p>
             </motion.div>
 
-            {/* 2.1 Coleta de Dados */}
-            <LegalSection icon={Database} number="2.1" title="Coleta de Dados">
+            {/* 2.1 Coleta de Dados e Processamento Client-Side */}
+            <LegalSection icon={Database} number="2.1" title="Coleta Mínima e Processamento Local (Client-Side)">
               <p>
-                Nós coletamos apenas as informações estritamente necessárias para a prestação do serviço
-                ou atendimento. Quando você clica em nossos botões de contato (WhatsApp ou E-mail), os
-                dados fornecidos voluntariamente por você (como seu nome, número de telefone e conteúdo
-                da mensagem) são recebidos diretamente por{' '}
+                Adotamos o princípio da minimização de dados (LGPD, Art. 6º, III). As calculadoras de engenharia,
+                o progresso de aulas da Academia e a geração de certificados em PDF funcionam{' '}
+                <strong className="text-slate-800">exclusivamente na memória local do seu próprio navegador (Client-Side)</strong>.
+                Quando você clica em nossos botões de contato (WhatsApp ou E-mail), os dados fornecidos voluntariamente
+                por você (como seu nome, número de telefone e conteúdo da mensagem) são recebidos diretamente por{' '}
                 <strong className="text-slate-800">{NOME_PROFISSIONAL}</strong>.
               </p>
               <p>
-                Este site não possui bancos de dados ocultos que capturam suas informações sem o seu
+                Este site não possui bancos de dados ocultos em nuvem que capturam suas informações pessoais sem o seu
                 consentimento.
               </p>
             </LegalSection>
 
-            {/* 2.2 Uso dos Dados */}
-            <LegalSection icon={Eye} number="2.2" title="Uso dos Dados">
-              <p>Os dados fornecidos por você serão utilizados única e exclusivamente para:</p>
+            {/* 2.2 Uso dos Dados e Bases Legais */}
+            <LegalSection icon={Eye} number="2.2" title="Finalidades e Bases Legais do Tratamento (LGPD, Art. 7º)">
+              <p>
+                O tratamento dos dados fornecidos voluntariamente fundamenta-se na execução de procedimentos
+                preliminares e contrato (Art. 7º, V), cumprimento de obrigação legal/regulatória (Art. 7º, II) e
+                legítimo interesse (Art. 7º, IX), sendo utilizados única e exclusivamente para:
+              </p>
               <ul className="space-y-2 mt-3">
                 {[
-                  'Retornar o seu contato e responder a dúvidas;',
-                  'Enviar orçamentos e realizar agendamentos;',
-                  'Prestar o serviço contratado;',
+                  'Retornar o seu contato técnico e responder a dúvidas de engenharia;',
+                  'Enviar orçamentos, propostas de PMOC e agendar vistorias técnicas;',
+                  'Prestar o serviço de climatização ou treinamento contratado;',
                   'Enviar atualizações estritamente relacionadas ao serviço solicitado.',
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5">
@@ -333,29 +360,35 @@ export default function Termos() {
             {/* 2.3 Compartilhamento de Informações */}
             <LegalSection icon={Lock} number="2.3" title="Compartilhamento de Informações">
               <p>
-                Nós não vendemos, alugamos ou compartilhamos seus dados pessoais com terceiros para fins
-                de marketing ou qualquer outra finalidade que não seja o cumprimento do serviço
-                solicitado, exceto se exigido por lei ou determinação judicial.
+                Nós não vendemos, alugamos ou compartilhamos seus dados pessoais com corretores de dados
+                (<em>data brokers</em>) ou terceiros para fins de marketing ou qualquer outra finalidade que não seja
+                o cumprimento do serviço solicitado, exceto se exigido por lei ou determinação judicial.
               </p>
             </LegalSection>
 
-            {/* 2.4 Cookies e Tecnologias de Rastreamento */}
-            <LegalSection icon={Cookie} number="2.4" title="Cookies e Tecnologias de Rastreamento">
+            {/* 2.4 Armazenamento Técnico Local e Cookies */}
+            <LegalSection icon={Cookie} number="2.4" title="Armazenamento Técnico Local (LocalStorage) e Cookies">
               <p>
-                Este site pode utilizar cookies básicos e ferramentas de análise (como o Google Analytics)
-                apenas para entender o volume de acessos e melhorar a sua experiência de navegação.
-                Nenhuma informação pessoal identificável é extraída através desses cookies funcionais.
+                Este site opera sob arquitetura limpa (<em>Zero-Tracking Publicitário</em>) e utiliza apenas recursos
+                de armazenamento local do próprio navegador (<code className="text-xs bg-slate-100 px-1.5 py-0.5 rounded">localStorage</code>)
+                estritamente necessários para salvar o seu progresso nas aulas, notas de bancada e autenticação da
+                estação de estudos da Academia HVAC. Nenhuma informação pessoal identificável é vendida ou extraída por
+                rastreadores publicitários invasivos.
               </p>
             </LegalSection>
 
             {/* 2.5 Seus Direitos */}
-            <LegalSection icon={UserCheck} number="2.5" title="Seus Direitos">
-              <p>Você tem o direito de solicitar a qualquer momento:</p>
+            <LegalSection icon={UserCheck} number="2.5" title="Direitos do Titular dos Dados (LGPD, Arts. 18 e 19)">
+              <p>
+                Você tem o direito de solicitar gratuitamente, a qualquer momento (com prazo legal de resposta de até
+                15 dias conforme Art. 19, II da LGPD):
+              </p>
               <ul className="space-y-2 mt-3">
                 {[
-                  'A confirmação da existência de tratamento dos seus dados;',
+                  'A confirmação da existência de tratamento e acesso aos seus dados;',
                   'A correção de dados incompletos, inexatos ou desatualizados;',
-                  'A exclusão dos seus dados dos nossos contatos comerciais.',
+                  'A anonimização, bloqueio ou exclusão dos seus dados dos nossos contatos comerciais;',
+                  'A limpeza imediata do progresso local limpando os dados do navegador no seu dispositivo.',
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5">
                     <div className="w-1.5 h-1.5 rounded-full bg-sky-500 flex-shrink-0 mt-1.5" aria-hidden="true" />
@@ -365,8 +398,31 @@ export default function Termos() {
               </ul>
             </LegalSection>
 
-            {/* 2.6 Contato do Controlador de Dados */}
-            <LegalSection icon={Mail} number="2.6" title="Contato do Controlador de Dados">
+            {/* 2.6 Proteção dos Dados Públicos do Controlador (Art. 7º, §§ 3º e 4º LGPD) */}
+            <LegalSection icon={AlertTriangle} number="2.6" title="Proteção dos Dados Públicos do Controlador e Vedação a Scraping/Spam (Art. 7º, §§ 3º e 4º)">
+              <p>
+                Os dados empresariais, técnicos e de identificação da <strong className="text-slate-800">{NOME_PROFISSIONAL}</strong>{' '}
+                exibidos publicamente neste website e em seu repositório de código-fonte (incluindo nome comercial,
+                telefones/WhatsApp, endereço de e-mail, imagens e materiais técnicos) foram tornados públicos{' '}
+                <strong className="text-slate-800">única e exclusivamente para a finalidade de permitir o contato comercial de clientes e alunos interessados nos serviços descritos nesta página</strong>,
+                nos termos do Art. 7º, §§ 3º e 4º da LGPD.
+              </p>
+              <p>
+                Fica <strong className="text-slate-800">terminantemente proibida</strong> a coleta automatizada
+                (<em>web scraping</em>, <em>crawling</em> ou mineração de repositório), inclusão não solicitada em
+                listas de disparo em massa (spam, telemarketing robótico ou prospecção fria B2B), comercialização por{' '}
+                <em>data brokers</em>, treinamento não autorizado de modelos de IA ou clonagem de identidade, sob pena
+                de responsabilização civil, administrativa perante a ANPD e penal.
+              </p>
+              <p>
+                <strong className="text-slate-800">Alerta Antifraude de Canal Oficial:</strong> Para sua segurança, a{' '}
+                {NOME_PROFISSIONAL} atende exclusivamente pelos canais listados na seção 2.7 abaixo e nunca solicita
+                senhas, códigos de verificação SMS/WhatsApp ou pagamentos para contas de terceiros desconhecidos.
+              </p>
+            </LegalSection>
+
+            {/* 2.7 Contato do Controlador de Dados */}
+            <LegalSection icon={Mail} number="2.7" title="Contato do Controlador de Dados (DPO) e Foro">
               <p>
                 Para exercer seus direitos ou tirar dúvidas sobre esta política, entre em contato
                 diretamente com o responsável pelo tratamento dos dados:

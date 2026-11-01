@@ -31,14 +31,7 @@ dist-ssr
 master-plan/
 master-plan
 
-# Public & Static Media Assets (Instagram archive, images, videos)
-public/
-Public/
-**/public/
-**/Public/
-public/images/
-public/images/instagram/
-images/
+# Docs
 **/docs/
 **/Docs/
 docs/academia/

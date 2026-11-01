@@ -20,6 +20,9 @@ import {
   TrendingDown,
   Building,
 } from 'lucide-react';
+import SobreSimonSection, {
+  ProvasDeCampoServico,
+} from '../components/servicos/SobreSimonSection';
 
 // ─── Service Data ──────────────────────────────────────────────────────────────
 const servicosData = [
@@ -322,6 +325,14 @@ function DetalheServico({ servico, onVoltar }) {
           </div>
         </motion.div>
 
+        {/* Provas Reais de Campo (@simonclimatiza) para este Serviço */}
+        <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0.62}>
+          <ProvasDeCampoServico
+            serviceId={servico.id}
+            serviceTitle={servico.titulo}
+          />
+        </motion.div>
+
       </div>
 
       {/* Sticky bottom action bar */}
@@ -503,7 +514,13 @@ export default function Servicos() {
                 ))}
               </div>
 
-              <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0.4}>
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                animate="visible"
+                custom={0.4}
+                className="flex flex-wrap items-center gap-4"
+              >
                 <Link
                   to="/contato"
                   id="servicos-hero-cta"
@@ -512,6 +529,13 @@ export default function Servicos() {
                   Solicitar Diagnóstico Técnico
                   <ArrowRight className="w-5 h-5" aria-hidden="true" />
                 </Link>
+                <a
+                  href="#sobre-especialista"
+                  className="inline-flex items-center gap-2 bg-white/90 hover:bg-white text-slate-800 border border-slate-200 hover:border-sky-300 font-bold px-6 py-4 rounded-xl transition-all duration-200 text-sm shadow-md"
+                >
+                  Sobre o Especialista & Bastidores (21 Anos)
+                  <ChevronRight className="w-4 h-4 text-sky-500" aria-hidden="true" />
+                </a>
               </motion.div>
             </motion.div>
           </div>
@@ -630,6 +654,11 @@ export default function Servicos() {
 
           </div>
         </section>
+
+        {/* ════════════════════════════════════════════════════════════════════
+            3.5. SOBRE O ESPECIALISTA & BASTIDORES DE CAMPO (@simonclimatiza)
+        ════════════════════════════════════════════════════════════════════ */}
+        <SobreSimonSection />
 
         {/* ════════════════════════════════════════════════════════════════════
             4. FINAL CONSULTIVE CTA — Dark authority section

@@ -1,4 +1,4 @@
-﻿# Logs
+# Logs
 logs
 *.log
 npm-debug.log*
@@ -30,3 +30,17 @@ dist-ssr
 # Master Plan
 master-plan/
 master-plan
+
+# Public & Static Media Assets (Instagram archive, images, videos)
+public/
+Public/
+**/public/
+**/Public/
+public/images/
+public/images/instagram/
+images/
+**/docs/
+**/Docs/
+docs/academia/
+docs/legal/
+docs/

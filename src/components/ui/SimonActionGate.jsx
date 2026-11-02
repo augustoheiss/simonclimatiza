@@ -6,69 +6,34 @@ import {
   Sparkles,
   Layers,
   ShieldCheck,
-  Zap,
   ArrowRight,
-  SlidersHorizontal
 } from 'lucide-react';
 import certBg from '../../assets/fundo-certificado.png';
 
-const STORAGE_KEY = 'simon_cad_direct_mode';
-const SYNC_EVENT = 'simon-cad-direct-mode-change';
-
-function getStoredDirectMode() {
-  try {
-    return sessionStorage.getItem(STORAGE_KEY) === 'true';
-  } catch {
-    return false;
-  }
-}
-
-function setStoredDirectMode(val) {
-  try {
-    sessionStorage.setItem(STORAGE_KEY, val ? 'true' : 'false');
-    window.dispatchEvent(new CustomEvent(SYNC_EVENT, { detail: val }));
-  } catch {
-    // ignore storage errors
-  }
-}
-
 /**
- * Hook para gerenciar o protocolo Sekundo / AutoCAD Interativo de 2 etapas:
- * 1º Clique -> Inspeciona a funcionalidade da ferramenta/setor/aula e pede confirmação.
- * Confirmação -> Executa a ação na bancada principal sem roll-down.
+ * Hook para gerenciar ações na bancada:
+ * - Botões COM título visível (padrão no Simon Climatiza): abrem direto no 1º clique!
+ * - Botões SOMENTE ÍCONE (`iconOnly: true`, sem título visível): exibem o card de inspeção
+ *   mostrando o que o ícone faz e pedem confirmação antes de executar.
  */
 export function useSimonActionGate() {
   const [pendingAction, setPendingAction] = useState(null);
-  const [directMode, setDirectModeState] = useState(() => getStoredDirectMode());
 
-  useEffect(() => {
-    const handler = (e) => {
-      setDirectModeState(Boolean(e.detail));
-    };
-    window.addEventListener(SYNC_EVENT, handler);
-    return () => window.removeEventListener(SYNC_EVENT, handler);
-  }, []);
-
-  const setDirectMode = useCallback((val) => {
-    setDirectModeState(val);
-    setStoredDirectMode(val);
-  }, []);
-
-  const requestAction = useCallback(
-    (actionSpec) => {
-      if (!actionSpec) return;
-      // Se já estiver ativo na mesma função e allowSame for false, ignora
-      if (actionSpec.isAlreadyActive) {
-        return;
-      }
-      if (directMode && typeof actionSpec.onConfirm === 'function') {
+  const requestAction = useCallback((actionSpec) => {
+    if (!actionSpec) return;
+    if (actionSpec.isAlreadyActive) {
+      return;
+    }
+    // Se o botão já possui título visível (não é apenas um ícone isolado), abre direto!
+    if (!actionSpec.iconOnly) {
+      if (typeof actionSpec.onConfirm === 'function') {
         actionSpec.onConfirm();
-        return;
       }
-      setPendingAction(actionSpec);
-    },
-    [directMode]
-  );
+      return;
+    }
+    // Somente se for um botão apenas de ícone (iconOnly: true), exibe a funcionalidade e pede confirmação
+    setPendingAction(actionSpec);
+  }, []);
 
   const confirmAction = useCallback(() => {
     if (pendingAction && typeof pendingAction.onConfirm === 'function') {
@@ -89,55 +54,22 @@ export function useSimonActionGate() {
     requestAction,
     confirmAction,
     cancelAction,
-    directMode,
-    setDirectMode
+    directMode: true,
+    setDirectMode: () => {},
   };
 }
 
 /**
- * Botão compacto para a barra superior permitindo alternar entre:
- * - Modo AutoCAD Inspecionar & Confirmar (Padrão)
- * - Modo 1-Clique Direto
+ * Mantido como no-op caso seja importado em algum cabeçalho, pois botões com título já abrem direto.
  */
-export function SimonDirectModeToggle({ directMode, setDirectMode, className = '' }) {
-  return (
-    <button
-      type="button"
-      onClick={() => setDirectMode(!directMode)}
-      title={
-        directMode
-          ? 'Modo 1-Clique Ativo. Clique para reativar a Inspeção & Confirmação estilo AutoCAD Sekundo.'
-          : 'Modo AutoCAD Sekundo Ativo: exibe a função de cada botão e pede confirmação antes de abrir.'
-      }
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-all ${
-        directMode
-          ? 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100'
-          : 'bg-sky-50 text-[#0369a1] border-sky-300 hover:bg-sky-100 shadow-xs'
-      } ${className}`}
-    >
-      <SlidersHorizontal className="w-3 h-3 shrink-0" />
-      <span className="hidden sm:inline">
-        {directMode ? 'Modo: 1-Clique' : 'CAD: Inspecionar & Confirmar'}
-      </span>
-      <span
-        className={`w-1.5 h-1.5 rounded-full ${
-          directMode ? 'bg-amber-500' : 'bg-sky-600 animate-pulse'
-        }`}
-      />
-    </button>
-  );
+export function SimonDirectModeToggle() {
+  return null;
 }
 
 /**
- * Modal / Popover de Inspeção de Função e Confirmação (Estilo Sekundo / LogicDefense + Certificado Simon)
+ * Modal / Popover de Inspeção de Função e Confirmação (Exibido apenas para botões que são somente ícone)
  */
-export function SimonActionGate({
-  action,
-  onConfirm,
-  onCancel,
-  directMode = false,
-  onToggleDirectMode
-}) {
+export function SimonActionGate({ action, onConfirm, onCancel }) {
   useEffect(() => {
     if (!action) return;
     const handleKeyDown = (e) => {
@@ -156,22 +88,22 @@ export function SimonActionGate({
   if (!action) return null;
 
   const {
-    code = 'CAD-CMD',
-    category = 'Inspeção de Função Interativa',
+    code = 'CAD-ICO',
+    category = 'Inspeção de Ferramenta (Ícone)',
     title = 'Executar Função na Bancada',
     subtitle = '',
-    description = 'Esta função atualiza a bancada central interativa sem necessidade de rolar a página.',
+    description = 'Esta ferramenta atualiza a bancada central interativa sem necessidade de rolar a página.',
     highlights = [],
     confirmLabel = 'Confirmar e Abrir Função',
     badgeColor = 'sky',
-    meta = null
+    meta = null,
   } = action;
 
   const badgeStyles = {
     sky: 'bg-sky-100 text-[#0369a1] border-sky-300',
     emerald: 'bg-emerald-100 text-emerald-800 border-emerald-300',
     amber: 'bg-amber-100 text-amber-800 border-amber-300',
-    indigo: 'bg-indigo-100 text-indigo-800 border-indigo-300'
+    indigo: 'bg-indigo-100 text-indigo-800 border-indigo-300',
   };
 
   return (
@@ -234,7 +166,7 @@ export function SimonActionGate({
             <div className="p-3.5 rounded-xl bg-sky-50/90 border border-sky-200/90 space-y-2">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-[#0369a1] flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-[#0284c7]" />O que esta função exibe na bancada:
+                  <Sparkles className="w-3.5 h-3.5 text-[#0284c7]" />O que este botão executa:
                 </span>
                 {meta && (
                   <span className="text-[10px] font-mono font-bold text-slate-600 bg-white px-2 py-0.5 rounded border border-sky-200">
@@ -252,7 +184,7 @@ export function SimonActionGate({
               <div className="space-y-1.5">
                 <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 flex items-center gap-1.5">
                   <Layers className="w-3.5 h-3.5 text-[#0284c7]" />
-                  Componentes e dados carregados ao confirmar:
+                  Componentes carregados ao confirmar:
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-0.5">
                   {highlights.map((item, idx) => (
@@ -273,10 +205,10 @@ export function SimonActionGate({
               <div className="flex items-center justify-between gap-2 text-xs font-bold text-[#1a3a5c]">
                 <span className="flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  Deseja confirmar e ativar esta função na tela?
+                  Deseja confirmar e ativar esta função?
                 </span>
                 <span className="text-[10px] font-mono text-slate-400 hidden sm:inline">
-                  [Enter] Confirmar • [Esc] Cancelar
+                  [Enter] Confirmar &bull; [Esc] Cancelar
                 </span>
               </div>
 
@@ -300,24 +232,6 @@ export function SimonActionGate({
               </div>
             </div>
           </div>
-
-          {/* Rodapé opcional para ativar 1-Clique */}
-          {typeof onToggleDirectMode === 'function' && (
-            <div className="px-5 py-2 bg-sky-50/80 border-t border-sky-200/80 flex items-center justify-between text-[11px] text-slate-600">
-              <span>Prefere alternar funções sem janela de confirmação?</span>
-              <button
-                type="button"
-                onClick={() => {
-                  onToggleDirectMode(true);
-                  onConfirm?.();
-                }}
-                className="font-bold text-[#0369a1] hover:text-[#1a3a5c] underline inline-flex items-center gap-1 cursor-pointer"
-              >
-                <Zap className="w-3 h-3 text-amber-500" />
-                Ativar Modo 1-Clique Direto
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </div>

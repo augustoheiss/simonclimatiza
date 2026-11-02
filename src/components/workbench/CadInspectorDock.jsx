@@ -16,6 +16,7 @@ import {
   Flame,
   Wrench,
 } from 'lucide-react';
+import { useSimonActionGate } from '../ui/SimonActionGate.jsx';
 
 function SafeTableHTML({ html }) {
   if (!html) return null;
@@ -42,6 +43,7 @@ export default function CadInspectorDock({
   isLightMode = true,
 }) {
   const { tabelas = [], infoboxes = [], grandezasGerais = [] } = dadosCad || {};
+  const { requestAction } = useSimonActionGate();
   const [indiceTabela, setIndiceTabela] = useState(0);
   const [indiceInfobox, setIndiceInfobox] = useState(0);
   const [expandido, setExpandido] = useState(false);
@@ -143,7 +145,24 @@ export default function CadInspectorDock({
           <div className="flex items-center gap-1">
             <button
               type="button"
-              onClick={() => setExpandido((v) => !v)}
+              onClick={() =>
+                requestAction({
+                  id: `dock-resize-${expandido ? 'compact' : 'expand'}`,
+                  code: 'CAD-DOCK-W',
+                  title: expandido ? 'Reduzir Largura do Dock Inspetor' : 'Expandir Largura do Dock Inspetor',
+                  category: 'CONTROLE DE JANELA CAD (ÍCONE SEM RÓTULO)',
+                  summary: expandido
+                    ? 'Retorna o painel inspetor lateral para a largura padrão (420px), liberando mais área na bancada central.'
+                    : 'Amplia a largura do painel inspetor lateral (620px) para leitura confortável de tabelas largas de engenharia.',
+                  bullets: [
+                    expandido ? 'Largura alvo: 420px (Padrão)' : 'Largura alvo: 620px (Expandido)',
+                    'Mantém a bancada central ativa simultaneamente',
+                  ],
+                  confirmLabel: expandido ? 'Confirmar Redução' : 'Confirmar Expansão',
+                  iconOnly: true,
+                  onConfirm: () => setExpandido((v) => !v),
+                })
+              }
               className={`p-1 rounded cursor-pointer hidden md:inline-flex ${
                 isLightMode
                   ? 'hover:bg-sky-50 text-slate-500 hover:text-[#1a3a5c]'

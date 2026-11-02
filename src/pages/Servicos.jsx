@@ -609,7 +609,7 @@ export default function Servicos() {
               <aside className="lg:col-span-4 border-b lg:border-b-0 lg:border-r-2 border-sky-200 bg-sky-50/50 p-3 sm:p-4 overflow-y-auto flex flex-col gap-2">
                 <div className="text-[10px] font-mono font-black uppercase tracking-widest text-[#0369a1] px-1 mb-0.5 flex items-center justify-between">
                   <span>SELETOR DE ENGENHARIA (6 FUNÇÕES)</span>
-                  <span>CLIQUE P/ CONFIRMAR</span>
+                  <span>ABERTURA DIRETA</span>
                 </div>
 
                 {SERVICOS_CAD.map((srv) => {

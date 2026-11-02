@@ -189,7 +189,7 @@ export function ProvasDeCampoServico({ servicoRef, tituloServico }) {
           Provas Reais de Campo ({SIMON_PROFILE.handle}) — {tituloServico}
         </span>
         <span className="text-[11px] text-slate-500 font-semibold">
-          Clique para inspecionar e confirmar abertura
+          Clique para abrir vídeo ou ficha técnica
         </span>
       </div>
 

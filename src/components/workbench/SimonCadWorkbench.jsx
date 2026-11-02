@@ -1,7 +1,7 @@
 // src/components/workbench/SimonCadWorkbench.jsx
 // Motor Unificado "Simon AutoCAD Workbench" (100dvh Zero-Scroll).
-// Substitui páginas de rolagem infinita por uma Workstation Técnica Interativa onde cada
-// botão abre um módulo, aula, vídeo, slide, tabela, papo de balcão ou bloco prático na tela.
+// Tema Padrão: Cristal Glacial & Prancheta do Certificado (claro, técnico e elegante).
+// Interatividade: Protocolo Sekundo / AutoCAD Interativo (inspeciona cada função F1..F6 / aula e pede confirmação).
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -13,18 +13,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Flame,
-  Wrench,
   Award,
-  CheckCircle2,
-  Coffee,
-  BookOpen,
-  Sparkles,
-  Cpu,
 } from 'lucide-react';
 import { obterCursoNormalizado } from '../../utils/courseAdapter';
 import { parseAulaParaBancadaCad } from '../../utils/cadContentParser';
 import { carregarConversa } from '../../data/conversas';
-import { MANIFESTO_PEDAGOGICO_SIMON } from '../../data/bancada/notasDeBancada';
 import useProgress from '../../hooks/useProgress';
 import { useConversasCurso } from '../../hooks/useConversaProgress';
 import ConversaView from '../conversa/ConversaView';
@@ -33,7 +26,80 @@ import CadTopRibbon from './CadTopRibbon';
 import CadModuleTree from './CadModuleTree';
 import CadBenchView from './CadBenchView';
 import CadInspectorDock from './CadInspectorDock';
+import {
+  SimonActionGate,
+  useSimonActionGate,
+} from '../ui/SimonActionGate';
 import '../../styles/academia-prose.css';
+
+const VIEWPORT_META = {
+  bancada: {
+    code: 'F1 · BANCADA',
+    title: 'Bancada Prática do Professor Simon',
+    description:
+      'Exibe a decomposição prática da aula em blocos interativos, com a fala direta de oficina do Simon, grandezas físicas e ações práticas na ferramenta.',
+    highlights: [
+      'Blocos Técnicos e Sub-camadas Clicáveis',
+      'Fala Sincera e Filosofia de Oficina do Simon',
+      'Grandezas Físicas e Parâmetros de Instrumentação',
+    ],
+  },
+  conversa: {
+    code: 'F2 · BALCÃO',
+    title: 'Simulador Interativo "Papo de Balcão"',
+    description:
+      'Inicia o diálogo técnico simulado entre o Professor Simon e o técnico em campo, com tomada de decisão e verificação de diagnóstico.',
+    highlights: [
+      'Diálogo Realista de Atendimento e Diagnóstico',
+      'Escolhas Técnicas com Feedback Imediato',
+      'Integração com Tabelas e Infobox da Aula',
+    ],
+  },
+  midia: {
+    code: 'F3 · MÍDIA',
+    title: 'Estúdio Multimídia (Videoaula, Podcast, Slides e Pranchas)',
+    description:
+      'Abre a central multimídia da aula com player de vídeo, episódio em áudio/podcast, lâminas de slides, infográfico e pranchas de pesquisa.',
+    highlights: [
+      'Player de Videoaula e Podcast',
+      'Visualizador de Slides Técnicos e Infográfico',
+      'Pranchas de Pesquisa Documental',
+    ],
+  },
+  raiox: {
+    code: 'F4 · RAIO-X',
+    title: 'Raio-X 100% Teoria & Engenharia Detalhada',
+    description:
+      'Exibe 100% do conteúdo técnico, fórmulas termodinâmicas, procedimentos passo a passo e tabelas da apostila organizados em sub-botões sem rolagem longa.',
+    highlights: [
+      'Texto Técnico Integral Sem Cortes',
+      'Navegação por Blocos e Sub-tópicos CAD',
+      'Acesso Rápido às Tabelas de Engenharia',
+    ],
+  },
+  tabelas: {
+    code: 'F5 · DADOS',
+    title: 'Tabelas de Engenharia, Alertas & Checklist Prático',
+    description:
+      'Abre em tela cheia o inspetor de tabelas técnicas da aula, caixas de alerta (perigo, atenção, dica) e o checklist de verificação em campo.',
+    highlights: [
+      'Tabelas de Pressão, Temperatura e Superaquecimento',
+      'Alertas Críticos de Segurança e Boas Práticas',
+      'Checklist Operacional de Campo',
+    ],
+  },
+  briefing: {
+    code: 'F6 · MAPA',
+    title: 'Mapa Geral do Curso, Trilhas Práticas & Certificado',
+    description:
+      'Mostra a visão executiva do treinamento, as camadas práticas do Professor Simon e o acesso à emissão do Certificado Oficial com QR Code.',
+    highlights: [
+      'Visão Geral da Carga Horária e Progresso',
+      'Matriz Clicável das Trilhas Práticas',
+      'Acesso ao Painel de Emissão de Certificado',
+    ],
+  },
+};
 
 export default function SimonCadWorkbench({
   cursoId,
@@ -61,14 +127,23 @@ export default function SimonCadWorkbench({
   const [splitViewAtivo, setSplitViewAtivo] = useState(false);
   const [mobileModulesOpen, setMobileModulesOpen] = useState(false);
 
-  // Tema visual persistido ('dark' = CAD Blueprint | 'light' = Papel Técnico)
+  // Tema visual persistido — Padrão: Claro (Cristal Glacial & Prancheta do Certificado)
   const [isLightMode, setIsLightMode] = useState(() => {
     try {
-      return localStorage.getItem('simon_cad_theme') === 'light';
+      return localStorage.getItem('simon_cad_theme') !== 'dark';
     } catch {
-      return false;
+      return true;
     }
   });
+
+  const {
+    pendingAction,
+    requestAction,
+    confirmAction,
+    cancelAction,
+    directMode,
+    setDirectMode,
+  } = useSimonActionGate();
 
   // Estado para o Estúdio de Mídia [F3]
   const [subAbaMidia, setSubAbaMidia] = useState('slides'); // 'video' | 'podcast' | 'slides' | 'fontes'
@@ -149,14 +224,62 @@ export default function SimonCadWorkbench({
     });
   }, []);
 
-  const handleSelectAula = useCallback((novaAula, viewportOpcional) => {
-    setAulaAtiva(novaAula);
-    if (viewportOpcional) {
-      setViewportAtivo(viewportOpcional);
-    } else if (viewportAtivo === 'briefing') {
-      setViewportAtivo('bancada');
-    }
-  }, [viewportAtivo]);
+  const handleSelectViewportGated = useCallback(
+    (novoViewport) => {
+      const meta = VIEWPORT_META[novoViewport] || {
+        code: novoViewport.toUpperCase(),
+        title: `Ferramenta ${novoViewport}`,
+        description: 'Alterna a visualização ativa na bancada principal.',
+        highlights: [],
+      };
+      requestAction({
+        isAlreadyActive: viewportAtivo === novoViewport,
+        code: meta.code,
+        category: `Ferramenta CAD Workbench · ${curso.nomeCurto}`,
+        title: meta.title,
+        subtitle: aulaAtiva ? `Aula Ativa: ${aulaAtiva.titulo}` : '',
+        description: meta.description,
+        highlights: meta.highlights,
+        confirmLabel: `Ativar ${meta.code}`,
+        badgeColor: 'sky',
+        onConfirm: () => setViewportAtivo(novoViewport),
+      });
+    },
+    [viewportAtivo, requestAction, curso.nomeCurto, aulaAtiva]
+  );
+
+  const handleSelectAula = useCallback(
+    (novaAula, viewportOpcional) => {
+      if (!novaAula) return;
+      requestAction({
+        isAlreadyActive:
+          novaAula.idStr === aulaAtiva?.idStr &&
+          (!viewportOpcional || viewportOpcional === viewportAtivo),
+        code: `AULA ${String(novaAula.id).toUpperCase()}`,
+        category: `${curso.nomeCurto} · Seleção de Aula na Árvore CAD`,
+        title: novaAula.titulo,
+        description:
+          'Carrega esta aula no canvas central com seus blocos práticos, notas de oficina do Professor Simon, multimídia e tabelas.',
+        highlights: [
+          'Bancada Prática (F1) e Raio-X Completo (F4)',
+          novaAula.possuiConversa
+            ? 'Inclui Simulador Interativo Papo de Balcão (F2)'
+            : 'Inclui Slides, Infográfico e Tabelas Técnicas',
+        ],
+        confirmLabel: `Abrir Aula ${String(novaAula.id).toUpperCase()}`,
+        badgeColor: 'emerald',
+        onConfirm: () => {
+          setAulaAtiva(novaAula);
+          if (viewportOpcional) {
+            setViewportAtivo(viewportOpcional);
+          } else if (viewportAtivo === 'briefing') {
+            setViewportAtivo('bancada');
+          }
+        },
+      });
+    },
+    [aulaAtiva, viewportAtivo, requestAction, curso.nomeCurto]
+  );
 
   const handleOpenInspectorTab = useCallback((aba) => {
     setAbaInspector(aba);
@@ -177,15 +300,26 @@ export default function SimonCadWorkbench({
   return (
     <div
       className={`h-dvh w-screen overflow-hidden flex flex-col font-sans ${
-        isLightMode ? 'bg-slate-100 text-slate-900' : 'bg-slate-950 text-slate-100'
+        isLightMode
+          ? 'bg-gradient-to-b from-sky-50/70 via-white to-sky-50/40 text-slate-900'
+          : 'bg-slate-950 text-slate-100'
       }`}
     >
-      {/* ── 1. RIBBON SUPERIOR DE COMANDOS (ESTILO AUTOCAD) ── */}
+      {/* Modal Sekundo / AutoCAD Interativo de Inspeção e Confirmação */}
+      <SimonActionGate
+        action={pendingAction}
+        onConfirm={confirmAction}
+        onCancel={cancelAction}
+        directMode={directMode}
+        onToggleDirectMode={setDirectMode}
+      />
+
+      {/* ── 1. RIBBON SUPERIOR DE COMANDOS (ESTILO AUTOCAD + TEMA CERTIFICADO) ── */}
       <CadTopRibbon
         curso={curso}
         aulaAtiva={aulaAtiva}
         viewportAtivo={viewportAtivo}
-        onSelectViewport={setViewportAtivo}
+        onSelectViewport={handleSelectViewportGated}
         leftTreeOpen={leftTreeOpen}
         onToggleLeftTree={() => setLeftTreeOpen((v) => !v)}
         rightDockOpen={rightDockOpen}
@@ -198,6 +332,8 @@ export default function SimonCadWorkbench({
         aulaConcluida={aulaConcluida}
         onToggleConcluirAula={() => aulaAtiva && toggleAula(curso.id, aulaAtiva.id)}
         onOpenMobileModules={() => setMobileModulesOpen(true)}
+        directMode={directMode}
+        onSetDirectMode={setDirectMode}
       />
 
       {/* ── 2. ÁREA PRINCIPAL DE TRABALHO (LAYER TREE + CANVAS CENTRAL + INSPECTOR DOCK) ── */}
@@ -220,7 +356,7 @@ export default function SimonCadWorkbench({
         {mobileModulesOpen && (
           <div className="fixed inset-0 z-50 md:hidden flex">
             <div
-              className="fixed inset-0 bg-black/70 backdrop-blur-xs"
+              className="fixed inset-0 bg-sky-950/50 backdrop-blur-xs"
               onClick={() => setMobileModulesOpen(false)}
             />
             <div className="relative z-10 w-[88%] max-w-[340px] h-full">
@@ -240,13 +376,17 @@ export default function SimonCadWorkbench({
         {/* ── CANVAS CENTRAL MULTI-VIEWPORT (ZERO SCROLL DE PÁGINA) ── */}
         <main
           className={`flex-1 min-w-0 h-full flex overflow-hidden ${
-            isLightMode ? 'bg-slate-50' : 'bg-[#090f1d]'
+            isLightMode ? 'bg-white' : 'bg-[#090f1d]'
           }`}
         >
           {/* Janela Primária do Canvas */}
           <div
             className={`h-full flex flex-col overflow-hidden ${
-              splitViewAtivo ? 'w-full lg:w-3/5 border-r border-slate-800' : 'w-full'
+              splitViewAtivo
+                ? isLightMode
+                  ? 'w-full lg:w-3/5 border-r-2 border-sky-200'
+                  : 'w-full lg:w-3/5 border-r border-slate-800'
+                : 'w-full'
             }`}
           >
             {/* Barra de Identificação da Aula Ativa dentro do Viewport */}
@@ -254,24 +394,23 @@ export default function SimonCadWorkbench({
               <div
                 className={`flex-shrink-0 px-4 py-2 border-b flex items-center justify-between gap-3 ${
                   isLightMode
-                    ? 'bg-white border-slate-200'
+                    ? 'bg-sky-50/70 border-sky-200'
                     : 'bg-slate-900/70 border-slate-800/80'
                 }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <span
-                    className="text-[10px] font-mono font-black uppercase px-2 py-0.5 rounded flex-shrink-0"
-                    style={{
-                      backgroundColor: `${curso.corPrimaria}25`,
-                      color: curso.corSecundaria,
-                      border: `1px solid ${curso.corPrimaria}50`,
-                    }}
+                    className={`text-[10px] font-mono font-black uppercase px-2 py-0.5 rounded-md flex-shrink-0 border ${
+                      isLightMode
+                        ? 'bg-sky-100 text-[#0369a1] border-sky-300'
+                        : 'bg-sky-500/20 text-sky-300 border-sky-500/40'
+                    }`}
                   >
-                    {aulaAtiva.moduloCodigo || 'AULA'} · {String(aulaAtiva.id).toUpperCase()}
+                    {aulaAtiva.moduloCodigo || 'AULA'} &bull; {String(aulaAtiva.id).toUpperCase()}
                   </span>
                   <h1
-                    className={`text-sm md:text-base font-extrabold truncate ${
-                      isLightMode ? 'text-slate-900' : 'text-white'
+                    className={`text-sm md:text-base font-black truncate ${
+                      isLightMode ? 'text-[#1a3a5c]' : 'text-white'
                     }`}
                   >
                     {aulaAtiva.titulo}
@@ -280,8 +419,12 @@ export default function SimonCadWorkbench({
 
                 {/* Indicadores rápidos de recursos da aula */}
                 <div className="hidden sm:flex items-center gap-1.5 flex-shrink-0">
-                  <span className="text-[10px] font-mono text-slate-400">
-                    {dadosCad.nos.length} Blocos · {dadosCad.tabelas.length} Tabelas
+                  <span
+                    className={`text-[10px] font-mono font-bold ${
+                      isLightMode ? 'text-[#0369a1]' : 'text-slate-400'
+                    }`}
+                  >
+                    {dadosCad.nos.length} Blocos &bull; {dadosCad.tabelas.length} Tabelas
                   </span>
                 </div>
               </div>
@@ -296,7 +439,7 @@ export default function SimonCadWorkbench({
                   dadosCad={dadosCad}
                   corCurso={curso.corPrimaria}
                   isLightMode={isLightMode}
-                  onSelectViewport={setViewportAtivo}
+                  onSelectViewport={handleSelectViewportGated}
                   onOpenInspectorTab={handleOpenInspectorTab}
                   initialLens="pratica"
                 />
@@ -309,7 +452,7 @@ export default function SimonCadWorkbench({
                   dadosCad={dadosCad}
                   corCurso={curso.corPrimaria}
                   isLightMode={isLightMode}
-                  onSelectViewport={setViewportAtivo}
+                  onSelectViewport={handleSelectViewportGated}
                   onOpenInspectorTab={handleOpenInspectorTab}
                   initialLens="detalhado"
                 />
@@ -325,7 +468,12 @@ export default function SimonCadWorkbench({
                       irParaAba={(aba) => {
                         if (aba === 'tabelas' || aba === 'infobox') {
                           handleOpenInspectorTab(aba);
-                        } else if (aba === 'video' || aba === 'slides' || aba === 'podcast' || aba === 'fontes') {
+                        } else if (
+                          aba === 'video' ||
+                          aba === 'slides' ||
+                          aba === 'podcast' ||
+                          aba === 'fontes'
+                        ) {
                           setSubAbaMidia(aba);
                           setViewportAtivo('midia');
                         } else {
@@ -339,7 +487,12 @@ export default function SimonCadWorkbench({
                         irParaAba={(aba) => {
                           if (aba === 'tabelas' || aba === 'infobox') {
                             handleOpenInspectorTab(aba);
-                          } else if (aba === 'video' || aba === 'slides' || aba === 'podcast' || aba === 'fontes') {
+                          } else if (
+                            aba === 'video' ||
+                            aba === 'slides' ||
+                            aba === 'podcast' ||
+                            aba === 'fontes'
+                          ) {
                             setSubAbaMidia(aba);
                             setViewportAtivo('midia');
                           } else {
@@ -358,18 +511,22 @@ export default function SimonCadWorkbench({
                   {/* Sub-barra de botões de mídia */}
                   <div
                     className={`flex-shrink-0 px-4 py-2 border-b flex flex-wrap items-center justify-between gap-2 ${
-                      isLightMode ? 'bg-slate-100 border-slate-300' : 'bg-slate-900 border-slate-800'
+                      isLightMode
+                        ? 'bg-sky-50/90 border-sky-200'
+                        : 'bg-slate-900 border-slate-800'
                     }`}
                   >
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
                       {aulaAtiva.videoUrl && (
                         <button
                           type="button"
                           onClick={() => setSubAbaMidia('video')}
-                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold cursor-pointer ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold cursor-pointer border ${
                             subAbaMidia === 'video'
-                              ? 'bg-sky-500 text-slate-950'
-                              : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                              ? 'bg-[#0369a1] text-white border-[#1a3a5c]'
+                              : isLightMode
+                              ? 'bg-white text-[#1a3a5c] border-sky-200 hover:bg-sky-50'
+                              : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
                           }`}
                         >
                           <Play className="w-3.5 h-3.5" />
@@ -380,10 +537,12 @@ export default function SimonCadWorkbench({
                         <button
                           type="button"
                           onClick={() => setSubAbaMidia('podcast')}
-                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold cursor-pointer ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold cursor-pointer border ${
                             subAbaMidia === 'podcast'
-                              ? 'bg-violet-500 text-white'
-                              : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                              ? 'bg-[#0369a1] text-white border-[#1a3a5c]'
+                              : isLightMode
+                              ? 'bg-white text-[#1a3a5c] border-sky-200 hover:bg-sky-50'
+                              : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
                           }`}
                         >
                           <Headphones className="w-3.5 h-3.5" />
@@ -394,24 +553,28 @@ export default function SimonCadWorkbench({
                         <button
                           type="button"
                           onClick={() => setSubAbaMidia('slides')}
-                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold cursor-pointer ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold cursor-pointer border ${
                             subAbaMidia === 'slides'
-                              ? 'bg-emerald-500 text-slate-950'
-                              : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                              ? 'bg-[#0369a1] text-white border-[#1a3a5c]'
+                              : isLightMode
+                              ? 'bg-white text-[#1a3a5c] border-sky-200 hover:bg-sky-50'
+                              : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
                           }`}
                         >
                           <Layers className="w-3.5 h-3.5" />
-                          <span>Slides & Infográfico ({aulaAtiva.slides.length})</span>
+                          <span>Slides &amp; Infográfico ({aulaAtiva.slides.length})</span>
                         </button>
                       )}
                       {aulaAtiva.fontes?.length > 0 && (
                         <button
                           type="button"
                           onClick={() => setSubAbaMidia('fontes')}
-                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold cursor-pointer ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold cursor-pointer border ${
                             subAbaMidia === 'fontes'
-                              ? 'bg-amber-400 text-slate-950'
-                              : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                              ? 'bg-[#0369a1] text-white border-[#1a3a5c]'
+                              : isLightMode
+                              ? 'bg-white text-[#1a3a5c] border-sky-200 hover:bg-sky-50'
+                              : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
                           }`}
                         >
                           <FileText className="w-3.5 h-3.5" />
@@ -420,18 +583,26 @@ export default function SimonCadWorkbench({
                       )}
                     </div>
 
-                    {/* Paginador rápido de slides ou fontes no topo */}
+                    {/* Paginador rápido de slides no topo */}
                     {subAbaMidia === 'slides' && aulaAtiva.slides?.length > 0 && (
                       <div className="flex items-center gap-1.5">
                         <button
                           type="button"
                           disabled={slideIdx === 0}
                           onClick={() => setSlideIdx((p) => Math.max(0, p - 1))}
-                          className="p-1.5 rounded bg-slate-800 text-sky-400 disabled:opacity-30 cursor-pointer"
+                          className={`p-1.5 rounded border disabled:opacity-30 cursor-pointer ${
+                            isLightMode
+                              ? 'bg-white border-sky-200 text-[#0369a1]'
+                              : 'bg-slate-800 border-slate-700 text-sky-400'
+                          }`}
                         >
                           <ChevronLeft className="w-4 h-4" />
                         </button>
-                        <span className="text-xs font-mono font-bold text-slate-300">
+                        <span
+                          className={`text-xs font-mono font-bold ${
+                            isLightMode ? 'text-[#1a3a5c]' : 'text-slate-300'
+                          }`}
+                        >
                           Slide {slideIdx + 1} / {aulaAtiva.slides.length}
                         </span>
                         <button
@@ -440,7 +611,11 @@ export default function SimonCadWorkbench({
                           onClick={() =>
                             setSlideIdx((p) => Math.min(aulaAtiva.slides.length - 1, p + 1))
                           }
-                          className="p-1.5 rounded bg-slate-800 text-sky-400 disabled:opacity-30 cursor-pointer"
+                          className={`p-1.5 rounded border disabled:opacity-30 cursor-pointer ${
+                            isLightMode
+                              ? 'bg-white border-sky-200 text-[#0369a1]'
+                              : 'bg-slate-800 border-slate-700 text-sky-400'
+                          }`}
                         >
                           <ChevronRight className="w-4 h-4" />
                         </button>
@@ -451,7 +626,7 @@ export default function SimonCadWorkbench({
                   {/* Corpo do Player Multimídia Ajustado ao Viewport */}
                   <div className="flex-1 min-h-0 overflow-y-auto p-4 flex flex-col items-center justify-center">
                     {subAbaMidia === 'video' && aulaAtiva.videoUrl && (
-                      <div className="w-full max-w-4xl aspect-video rounded-2xl overflow-hidden border border-sky-500/30 bg-black shadow-2xl">
+                      <div className="w-full max-w-4xl aspect-video rounded-2xl overflow-hidden border-2 border-sky-300 bg-black shadow-xl">
                         <iframe
                           src={aulaAtiva.videoUrl}
                           title={`Videoaula: ${aulaAtiva.titulo}`}
@@ -463,7 +638,7 @@ export default function SimonCadWorkbench({
                     )}
 
                     {subAbaMidia === 'podcast' && aulaAtiva.podcastUrl && (
-                      <div className="w-full max-w-4xl aspect-video rounded-2xl overflow-hidden border border-violet-500/30 bg-black shadow-2xl">
+                      <div className="w-full max-w-4xl aspect-video rounded-2xl overflow-hidden border-2 border-sky-300 bg-black shadow-xl">
                         <iframe
                           src={aulaAtiva.podcastUrl}
                           title={`Podcast: ${aulaAtiva.titulo}`}
@@ -479,7 +654,7 @@ export default function SimonCadWorkbench({
                         <img
                           src={aulaAtiva.slides[slideIdx]}
                           alt={`Slide ${slideIdx + 1} - ${aulaAtiva.titulo}`}
-                          className="max-h-[calc(100dvh-230px)] w-auto object-contain rounded-xl border border-slate-700 shadow-2xl bg-slate-900"
+                          className="max-h-[calc(100dvh-230px)] w-auto object-contain rounded-xl border-2 border-sky-200 shadow-lg bg-white"
                         />
                         {/* Botões numéricos diretos para cada slide */}
                         <div className="flex flex-wrap items-center justify-center gap-1">
@@ -488,13 +663,16 @@ export default function SimonCadWorkbench({
                               key={i}
                               type="button"
                               onClick={() => setSlideIdx(i)}
-                              className={`px-2 py-0.5 rounded text-[11px] font-mono font-bold transition-all cursor-pointer ${
+                              className={`px-2.5 py-0.5 rounded-md text-[11px] font-mono font-bold transition-all cursor-pointer border ${
                                 i === slideIdx
-                                  ? 'bg-emerald-500 text-slate-950'
-                                  : 'bg-slate-800 text-slate-400 hover:text-white'
+                                  ? 'bg-[#0369a1] text-white border-[#1a3a5c]'
+                                  : isLightMode
+                                  ? 'bg-white text-slate-600 border-sky-200 hover:bg-sky-50'
+                                  : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
                               }`}
                             >
-                              {i === aulaAtiva.slides.length - 1 && aulaAtiva.slides[i].includes('infografico')
+                              {i === aulaAtiva.slides.length - 1 &&
+                              aulaAtiva.slides[i].includes('infografico')
                                 ? 'INFO'
                                 : i + 1}
                             </button>
@@ -508,7 +686,7 @@ export default function SimonCadWorkbench({
                         <img
                           src={aulaAtiva.fontes[fonteIdx]}
                           alt={`Fonte ${fonteIdx + 1} - ${aulaAtiva.titulo}`}
-                          className="max-h-[calc(100dvh-230px)] w-auto object-contain rounded-xl border border-amber-500/30 shadow-2xl bg-white"
+                          className="max-h-[calc(100dvh-230px)] w-auto object-contain rounded-xl border-2 border-sky-200 shadow-lg bg-white"
                         />
                         <div className="flex flex-wrap items-center justify-center gap-1">
                           {aulaAtiva.fontes.map((_, i) => (
@@ -516,10 +694,12 @@ export default function SimonCadWorkbench({
                               key={i}
                               type="button"
                               onClick={() => setFonteIdx(i)}
-                              className={`px-2 py-0.5 rounded text-[11px] font-mono font-bold transition-all cursor-pointer ${
+                              className={`px-2.5 py-0.5 rounded-md text-[11px] font-mono font-bold transition-all cursor-pointer border ${
                                 i === fonteIdx
-                                  ? 'bg-amber-400 text-slate-950'
-                                  : 'bg-slate-800 text-slate-400 hover:text-white'
+                                  ? 'bg-[#0369a1] text-white border-[#1a3a5c]'
+                                  : isLightMode
+                                  ? 'bg-white text-slate-600 border-sky-200 hover:bg-sky-50'
+                                  : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
                               }`}
                             >
                               Pág {i + 1}
@@ -550,31 +730,41 @@ export default function SimonCadWorkbench({
                   <div className="max-w-6xl mx-auto space-y-5">
                     {/* Cabeçalho Executivo do Curso + Filosofia do Professor Simon */}
                     <div
-                      className={`rounded-2xl border p-5 md:p-6 ${
+                      className={`rounded-2xl border-2 p-5 md:p-6 ${
                         isLightMode
-                          ? 'bg-white border-slate-300'
+                          ? 'bg-gradient-to-br from-sky-50 via-white to-sky-50/60 border-sky-200 shadow-sm'
                           : 'bg-gradient-to-br from-slate-900 via-slate-900 to-sky-950/40 border-sky-500/30'
                       }`}
                     >
                       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                         <div className="space-y-2 max-w-3xl">
                           <div className="flex items-center gap-2">
-                            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-black uppercase bg-sky-500/20 text-sky-400 border border-sky-500/30">
-                              {curso.codigoCad} · WORKSTATION ELITE
+                            <span
+                              className={`px-2.5 py-0.5 rounded-md text-[10px] font-mono font-black uppercase border ${
+                                isLightMode
+                                  ? 'bg-sky-100 text-[#0369a1] border-sky-300'
+                                  : 'bg-sky-500/20 text-sky-400 border-sky-500/30'
+                              }`}
+                            >
+                              {curso.codigoCad} &bull; WORKSTATION ELITE
                             </span>
-                            <span className="text-xs font-bold text-emerald-400">
-                              {curso.todasAulas.length} Aulas · {curso.cargaHoraria}
+                            <span
+                              className={`text-xs font-extrabold ${
+                                isLightMode ? 'text-emerald-700' : 'text-emerald-400'
+                              }`}
+                            >
+                              {curso.todasAulas.length} Aulas &bull; {curso.cargaHoraria}
                             </span>
                           </div>
                           <h2
                             className={`text-xl md:text-2xl font-black ${
-                              isLightMode ? 'text-slate-900' : 'text-white'
+                              isLightMode ? 'text-[#1a3a5c]' : 'text-white'
                             }`}
                           >
                             {curso.titulo}
                           </h2>
                           <p
-                            className={`text-xs md:text-sm leading-relaxed ${
+                            className={`text-xs md:text-sm leading-relaxed font-medium ${
                               isLightMode ? 'text-slate-600' : 'text-slate-300'
                             }`}
                           >
@@ -585,11 +775,8 @@ export default function SimonCadWorkbench({
                         <div className="flex flex-col sm:flex-row lg:flex-col gap-2 flex-shrink-0">
                           <button
                             type="button"
-                            onClick={() => {
-                              setAulaAtiva(curso.primeiraAulaPratica);
-                              setViewportAtivo('bancada');
-                            }}
-                            className="px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                            onClick={() => handleSelectAula(curso.primeiraAulaPratica, 'bancada')}
+                            className="px-5 py-3 rounded-xl bg-[#0369a1] hover:bg-[#0284c7] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md cursor-pointer"
                           >
                             <Flame className="w-4 h-4" />
                             <span>Iniciar pela Física + Prática</span>
@@ -597,7 +784,11 @@ export default function SimonCadWorkbench({
 
                           <Link
                             to={`/academia/certificado/${curso.certificadoId}`}
-                            className="px-4 py-2.5 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/40 font-extrabold text-xs text-center flex items-center justify-center gap-2"
+                            className={`px-4 py-2.5 rounded-xl font-extrabold text-xs text-center flex items-center justify-center gap-2 border ${
+                              isLightMode
+                                ? 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-300'
+                                : 'bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border-amber-400/40'
+                            }`}
                           >
                             <Award className="w-4 h-4" />
                             <span>Painel de Certificado ({progresso.porcentagem}%)</span>
@@ -611,9 +802,9 @@ export default function SimonCadWorkbench({
                       {curso.trilhasPraticas.map((trilha) => (
                         <div
                           key={trilha.id}
-                          className={`rounded-2xl border p-4 flex flex-col justify-between ${
+                          className={`rounded-2xl border-2 p-4 flex flex-col justify-between ${
                             isLightMode
-                              ? 'bg-white border-slate-300'
+                              ? 'bg-white border-sky-200 shadow-2xs'
                               : 'bg-slate-900/80 border-slate-800'
                           }`}
                         >
@@ -628,39 +819,52 @@ export default function SimonCadWorkbench({
                               >
                                 {trilha.codigo}
                               </span>
-                              <span className="text-[10px] font-mono text-slate-500">
+                              <span className="text-[10px] font-mono font-bold text-slate-500">
                                 {trilha.aulas.length} aulas
                               </span>
                             </div>
                             <h3
                               className={`text-sm font-extrabold mb-1 ${
-                                isLightMode ? 'text-slate-900' : 'text-white'
+                                isLightMode ? 'text-[#1a3a5c]' : 'text-white'
                               }`}
                             >
                               {trilha.titulo}
                             </h3>
-                            <p className="text-xs text-slate-400 mb-3">{trilha.descricao}</p>
+                            <p
+                              className={`text-xs mb-3 ${
+                                isLightMode ? 'text-slate-600' : 'text-slate-400'
+                              }`}
+                            >
+                              {trilha.descricao}
+                            </p>
                           </div>
 
                           {/* Botões diretos das aulas dessa camada */}
-                          <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-800/60">
+                          <div
+                            className={`flex flex-wrap gap-1.5 pt-2 border-t ${
+                              isLightMode ? 'border-sky-100' : 'border-slate-800/60'
+                            }`}
+                          >
                             {trilha.aulas.map((a) => (
                               <button
                                 key={a.idStr}
                                 type="button"
-                                onClick={() => {
-                                  setAulaAtiva(a);
-                                  setViewportAtivo('bancada');
-                                }}
+                                onClick={() => handleSelectAula(a, 'bancada')}
                                 className={`px-2.5 py-1.5 rounded-lg border text-left text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                                   isAulaConcluida(curso.id, a.id)
-                                    ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                                    ? isLightMode
+                                      ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                                      : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
                                     : isLightMode
-                                    ? 'bg-slate-100 hover:bg-sky-50 border-slate-300 text-slate-800'
+                                    ? 'bg-sky-50/70 hover:bg-sky-100 border-sky-200 text-[#1a3a5c]'
                                     : 'bg-slate-950 hover:bg-sky-950/50 border-slate-800 hover:border-sky-500/40 text-slate-200'
                                 }`}
                               >
-                                <span className="font-mono text-[10px] text-sky-400">
+                                <span
+                                  className={`font-mono text-[10px] font-black ${
+                                    isLightMode ? 'text-[#0369a1]' : 'text-sky-400'
+                                  }`}
+                                >
                                   [{String(a.id).toUpperCase()}]
                                 </span>
                                 <span className="truncate max-w-[170px]">
@@ -712,19 +916,23 @@ export default function SimonCadWorkbench({
 
       {/* ── 3. BARRA INFERIOR DE TELEMETRIA E COMANDO CAD (STATUS BAR) ── */}
       <footer
-        className={`flex-shrink-0 px-3 py-1.5 border-t flex items-center justify-between gap-2 text-[11px] select-none ${
+        className={`flex-shrink-0 px-3 py-1.5 border-t-2 flex items-center justify-between gap-2 text-[11px] select-none ${
           isLightMode
-            ? 'bg-slate-200 border-slate-300 text-slate-700'
+            ? 'bg-gradient-to-r from-sky-50 via-white to-sky-50 border-sky-200 text-slate-600'
             : 'bg-slate-950 border-slate-800 text-slate-400'
         }`}
       >
         <div className="flex items-center gap-3 min-w-0">
-          <span className="inline-flex items-center gap-1.5 font-mono font-bold text-emerald-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span
+            className={`inline-flex items-center gap-1.5 font-mono font-extrabold ${
+              isLightMode ? 'text-[#1a3a5c]' : 'text-emerald-400'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-[#0284c7] animate-pulse" />
             CAD WORKBENCH PRONTO
           </span>
-          <span className="hidden sm:inline text-slate-600">|</span>
-          <span className="hidden sm:inline font-mono truncate">
+          <span className="hidden sm:inline text-sky-300">|</span>
+          <span className="hidden sm:inline font-mono font-semibold truncate">
             COORD: {curso.codigoCad} / {String(aulaAtiva?.id || '').toUpperCase()} / VIEW:{' '}
             {viewportAtivo.toUpperCase()}
           </span>
@@ -735,10 +943,10 @@ export default function SimonCadWorkbench({
           <button
             type="button"
             disabled={!aulaAnterior}
-            onClick={() => aulaAnterior && setAulaAtiva(aulaAnterior)}
-            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded border font-bold transition-all cursor-pointer disabled:opacity-30 ${
+            onClick={() => aulaAnterior && handleSelectAula(aulaAnterior)}
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border font-bold transition-all cursor-pointer disabled:opacity-30 ${
               isLightMode
-                ? 'bg-white border-slate-300 text-slate-700 hover:bg-slate-100'
+                ? 'bg-white border-sky-200 text-[#1a3a5c] hover:bg-sky-50'
                 : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800'
             }`}
           >
@@ -746,15 +954,15 @@ export default function SimonCadWorkbench({
             <span>Aula Ant.</span>
           </button>
 
-          <span className="font-mono text-[10px] px-1.5">
+          <span className="font-mono font-bold text-[10px] px-1.5">
             {indiceAulaAtual + 1} / {curso.todasAulas.length}
           </span>
 
           <button
             type="button"
             disabled={!proximaAula}
-            onClick={() => proximaAula && setAulaAtiva(proximaAula)}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold transition-all cursor-pointer disabled:opacity-30"
+            onClick={() => proximaAula && handleSelectAula(proximaAula)}
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#0369a1] hover:bg-[#0284c7] text-white font-extrabold transition-all cursor-pointer disabled:opacity-30"
           >
             <span>Próx. Aula</span>
             <ChevronRight className="w-3.5 h-3.5" />

@@ -94,20 +94,20 @@ export default function AcademiaAuthoritySection() {
             <div className="relative">
               <div className="absolute inset-0 bg-sky-300/15 blur-[80px] rounded-full pointer-events-none" aria-hidden="true" />
 
-              <div className="relative z-10 bg-white border border-sky-100 rounded-3xl shadow-2xl shadow-sky-900/10 overflow-hidden">
-                {/* Course Header Banner */}
-                <div className="h-48 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center relative overflow-hidden p-6 text-center">
-                  <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e3a5f_1px,transparent_1px),linear-gradient(to_bottom,#1e3a5f_1px,transparent_1px)] bg-[size:2.5rem_2.5rem] opacity-40" />
+              <div className="relative z-10 bg-white border-2 border-sky-200 rounded-3xl shadow-2xl shadow-sky-900/10 overflow-hidden">
+                {/* Course Header Banner — Tema Cristal Glacial do Certificado */}
+                <div className="h-48 bg-gradient-to-br from-sky-100 via-white to-sky-50 border-b-2 border-sky-200 flex items-center justify-center relative overflow-hidden p-6 text-center">
+                  <div className="absolute inset-0 bg-[linear-gradient(to_right,#bae6fd_1px,transparent_1px),linear-gradient(to_bottom,#bae6fd_1px,transparent_1px)] bg-[size:2.5rem_2.5rem] opacity-50" />
                   
                   <div className="relative z-10">
-                    <div className="w-14 h-14 bg-sky-500/20 border border-sky-400/30 rounded-2xl flex items-center justify-center mx-auto mb-2 text-sky-400">
+                    <div className="w-14 h-14 bg-white border-2 border-sky-300 rounded-2xl flex items-center justify-center mx-auto mb-2 text-[#0284c7] shadow-sm">
                       <Zap className="w-7 h-7" />
                     </div>
-                    <span className="text-white/70 text-xs font-bold uppercase tracking-widest block">Treinamento Avançado</span>
-                    <span className="text-white font-extrabold text-lg">Dominando o Sistema VRF</span>
+                    <span className="text-[#0369a1] text-xs font-extrabold uppercase tracking-widest block">Treinamento Avançado</span>
+                    <span className="text-[#1a3a5c] font-black text-lg">Dominando o Sistema VRF</span>
                   </div>
 
-                  <div className="absolute top-4 left-4 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-sky-500 text-white text-[11px] font-extrabold">
+                  <div className="absolute top-4 left-4 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#0369a1] text-white text-[11px] font-extrabold shadow-xs">
                     Bestseller
                   </div>
                 </div>

@@ -1,9 +1,7 @@
 // src/components/workbench/CadBenchView.jsx
 // Viewport Principal da "Bancada Prática & Raio-X CAD" (Zero-Scroll Click-Driven).
-// Cada tópico da aula é um botão técnico estilo AutoCAD. Clicar em um botão abre:
-// [1] Visão Prática, Filosófica e Bem-Humorada do Simon + Diálogos Ancorados da Turma
-// [2] Especificação Técnica 100% Detalhada dividida em Sub-Botões (<h3>/<h4>) sem paredão de texto
-// [3] Desafios Práticos de Bancada, Causos Reais e Filosofia de Oficina
+// Tema: Cristal Glacial & Prancheta do Certificado (claro por padrão, com suporte a modo escuro).
+// Interatividade: Protocolo Sekundo / AutoCAD Interativo (inspeciona cada bloco/lente e pede confirmação).
 
 import React, { useState, useEffect } from 'react';
 import DOMPurify from 'dompurify';
@@ -17,13 +15,10 @@ import {
   ChevronRight,
   ChevronLeft,
   Coffee,
-  AlertTriangle,
   Cpu,
   Target,
-  Layers,
   Table2,
   Info,
-  Play,
 } from 'lucide-react';
 import { ELENCO } from '../conversa/elenco';
 import TextoConversa from '../conversa/TextoConversa';
@@ -35,6 +30,10 @@ import BeatFilosofia from '../conversa/beats/BeatFilosofia';
 import BeatCalculadoraCampo from '../conversa/beats/BeatCalculadoraCampo';
 import BeatInspecaoVisual from '../conversa/beats/BeatInspecaoVisual';
 import BeatSaideira from '../conversa/beats/BeatSaideira';
+import {
+  SimonActionGate,
+  useSimonActionGate,
+} from '../ui/SimonActionGate';
 
 function SafeCadHTML({ html, isLightMode }) {
   if (!html) return null;
@@ -56,8 +55,8 @@ function SafeCadHTML({ html, isLightMode }) {
 export default function CadBenchView({
   aula,
   dadosCad,
-  corCurso = '#0ea5e9',
-  isLightMode = false,
+  corCurso = '#0284c7',
+  isLightMode = true,
   onSelectViewport,
   onOpenInspectorTab,
   initialLens = 'pratica', // 'pratica' | 'detalhado' | 'desafios'
@@ -80,6 +79,15 @@ export default function CadBenchView({
   const [respostasLocais, setRespostasLocais] = useState({});
   const [passosMarcados, setPassosMarcados] = useState({});
 
+  const {
+    pendingAction,
+    requestAction,
+    confirmAction,
+    cancelAction,
+    directMode,
+    setDirectMode,
+  } = useSimonActionGate();
+
   // Reseta índices ao trocar de aula
   useEffect(() => {
     setNoIdx(0);
@@ -97,8 +105,79 @@ export default function CadBenchView({
   const subNoAtivo = subNos[subNoIdx] || subNos[0] || null;
 
   const handleSelectNo = (index) => {
-    setNoIdx(index);
-    setSubNoIdx(0);
+    const alvo = nos[index];
+    if (!alvo) return;
+    requestAction({
+      isAlreadyActive: index === noIdx,
+      code: alvo.codigoCad || `BLC-0${index + 1}`,
+      category: `Bloco Técnico da Aula · ${aula?.titulo || ''}`,
+      title: alvo.titulo,
+      subtitle: alvo.notaSimon?.tag || 'Bancada Prática & Raio-X',
+      description:
+        alvo.notaSimon?.falaSimon ||
+        'Carrega este componente técnico na bancada com sua tradução prática de oficina, parâmetros físicos e especificação detalhada.',
+      highlights: [
+        `Sub-camadas técnicas: ${alvo.subNos?.length || 1}`,
+        alvo.notaSimon?.acaoPratica || 'Checklist de Execução Prática',
+        ...(alvo.grandezas || []).slice(0, 2),
+      ],
+      confirmLabel: `Abrir Bloco ${alvo.codigoCad}`,
+      badgeColor: 'sky',
+      onConfirm: () => {
+        setNoIdx(index);
+        setSubNoIdx(0);
+      },
+    });
+  };
+
+  const handleSelectLente = (novaLente) => {
+    const metaLente = {
+      pratica: {
+        code: 'LENTE 01',
+        title: '1. Prática de Bancada & Papo Sincero do Simon',
+        description:
+          'Exibe a tradução direta do Professor Simon para o campo, os diálogos da turma, o HUD de grandezas físicas e o checklist prático deste bloco.',
+        highlights: [
+          'Fala Sincera e Filosofia de Oficina do Simon',
+          'HUD Digital de Grandezas e Medidas no Instrumento',
+          'Checklist Interativo de Execução Prática',
+        ],
+      },
+      detalhado: {
+        code: 'LENTE 02',
+        title: `2. Especificação 100% Detalhada (${subNos.length} Sub-Botões)`,
+        description:
+          'Abre a prancha técnica com 100% do conteúdo teórico, equações e procedimentos divididos em sub-camadas sem rolagem longa.',
+        highlights: subNos.slice(0, 4).map((s, i) => `${i + 1}. ${s.titulo}`),
+      },
+      desafios: {
+        code: 'LENTE 03',
+        title: '3. Simulador de Bancada, Causos Reais & Filosofia',
+        description:
+          'Carrega os desafios interativos (Quizzes, Calculadoras de Campo, Mito ou Verdade) e os causos reais de oficina desta aula.',
+        highlights: [
+          `${(desafiosAula.length || noAtivo?.desafiosNo?.length || 0)} Desafio(s) Prático(s) de Bancada`,
+          'Causos Reais de Campo e Filosofia de Oficina',
+        ],
+      },
+    }[novaLente];
+
+    if (!metaLente) {
+      setLenteAtiva(novaLente);
+      return;
+    }
+
+    requestAction({
+      isAlreadyActive: lenteAtiva === novaLente,
+      code: metaLente.code,
+      category: `Bloco ${noAtivo?.codigoCad || ''} · Modo de Inspeção`,
+      title: metaLente.title,
+      description: metaLente.description,
+      highlights: metaLente.highlights,
+      confirmLabel: `Ativar ${metaLente.code}`,
+      badgeColor: novaLente === 'desafios' ? 'amber' : 'sky',
+      onConfirm: () => setLenteAtiva(novaLente),
+    });
   };
 
   const togglePasso = (chave) => {
@@ -113,8 +192,14 @@ export default function CadBenchView({
     return (
       <div className="h-full flex items-center justify-center p-8 text-center">
         <div className="max-w-md">
-          <Cpu className="w-10 h-10 mx-auto mb-3 text-sky-400 opacity-70" />
-          <p className="text-sm font-bold text-slate-300">Selecione uma aula ou ferramenta na barra superior.</p>
+          <Cpu className="w-10 h-10 mx-auto mb-3 text-[#0284c7] opacity-70" />
+          <p
+            className={`text-sm font-bold ${
+              isLightMode ? 'text-[#1a3a5c]' : 'text-slate-300'
+            }`}
+          >
+            Selecione uma aula ou ferramenta na barra superior.
+          </p>
         </div>
       </div>
     );
@@ -125,32 +210,40 @@ export default function CadBenchView({
 
   return (
     <div className="h-full flex flex-col overflow-hidden select-none sm:select-text">
+      <SimonActionGate
+        action={pendingAction}
+        onConfirm={confirmAction}
+        onCancel={cancelAction}
+        directMode={directMode}
+        onToggleDirectMode={setDirectMode}
+      />
+
       {/* ── SUB-RIBBON DA AULA: SELETOR DE BLOCOS CAD (BOTÕES DE NÓS DA AULA) ── */}
       <div
         className={`flex-shrink-0 border-b px-3 py-2 flex flex-col gap-2 ${
           isLightMode
-            ? 'bg-slate-100 border-slate-300'
+            ? 'bg-sky-50/80 border-sky-200'
             : 'bg-slate-900/95 border-slate-800'
         }`}
       >
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
             <span
-              className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest border flex-shrink-0"
+              className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-widest border flex-shrink-0"
               style={{
-                backgroundColor: `${corCurso}20`,
-                borderColor: `${corCurso}60`,
+                backgroundColor: `${corCurso}18`,
+                borderColor: `${corCurso}55`,
                 color: isLightMode ? '#0369a1' : '#38bdf8',
               }}
             >
               BLOCOS DA AULA ({noIdx + 1}/{nos.length})
             </span>
             <span
-              className={`text-xs font-bold truncate ${
-                isLightMode ? 'text-slate-700' : 'text-slate-300'
+              className={`text-xs font-extrabold truncate ${
+                isLightMode ? 'text-[#1a3a5c]' : 'text-slate-300'
               }`}
             >
-              Clique em um botão abaixo para abrir o componente técnico na tela:
+              Clique em um botão abaixo para inspecionar e abrir o componente técnico na tela:
             </span>
           </div>
 
@@ -160,7 +253,11 @@ export default function CadBenchView({
               <button
                 type="button"
                 onClick={() => onSelectViewport?.('conversa')}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/30 transition-all cursor-pointer"
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition-all cursor-pointer ${
+                  isLightMode
+                    ? 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-300'
+                    : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border-amber-500/30'
+                }`}
                 title="Abrir diálogo interativo completo do Papo de Balcão"
               >
                 <Coffee className="w-3.5 h-3.5" />
@@ -171,7 +268,11 @@ export default function CadBenchView({
               <button
                 type="button"
                 onClick={() => onOpenInspectorTab?.('tabelas')}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold bg-sky-500/15 hover:bg-sky-500/25 text-sky-400 border border-sky-500/30 transition-all cursor-pointer"
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition-all cursor-pointer ${
+                  isLightMode
+                    ? 'bg-white hover:bg-sky-50 text-[#0369a1] border-sky-300'
+                    : 'bg-sky-500/15 hover:bg-sky-500/25 text-sky-400 border-sky-500/30'
+                }`}
               >
                 <Table2 className="w-3.5 h-3.5" />
                 <span>{tabelas.length} Tabela(s)</span>
@@ -181,7 +282,11 @@ export default function CadBenchView({
               <button
                 type="button"
                 onClick={() => onOpenInspectorTab?.('infobox')}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 transition-all cursor-pointer"
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition-all cursor-pointer ${
+                  isLightMode
+                    ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
+                    : 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border-emerald-500/30'
+                }`}
               >
                 <Info className="w-3.5 h-3.5" />
                 <span>Info Campo</span>
@@ -199,13 +304,13 @@ export default function CadBenchView({
                 key={no.id}
                 type="button"
                 onClick={() => handleSelectNo(idx)}
-                className={`group flex items-center gap-2 px-3 py-1.5 rounded-lg border text-left transition-all flex-shrink-0 cursor-pointer ${
+                className={`group flex items-center gap-2 px-3 py-1.5 rounded-xl border text-left transition-all flex-shrink-0 cursor-pointer ${
                   ativo
                     ? isLightMode
-                      ? 'bg-sky-600 text-white border-sky-700 shadow-sm'
+                      ? 'bg-[#0369a1] text-white border-[#1a3a5c] shadow-sm'
                       : 'bg-sky-500/20 text-sky-200 border-sky-400 shadow-md shadow-sky-950/50'
                     : isLightMode
-                    ? 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300'
+                    ? 'bg-white hover:bg-sky-50 text-[#1a3a5c] border-sky-200/90 hover:border-sky-300'
                     : 'bg-slate-800/70 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-700/70'
                 }`}
               >
@@ -213,16 +318,16 @@ export default function CadBenchView({
                   className={`text-[10px] font-mono font-extrabold px-1.5 py-0.5 rounded ${
                     ativo
                       ? isLightMode
-                        ? 'bg-sky-800 text-sky-100'
+                        ? 'bg-white/20 text-white'
                         : 'bg-sky-400 text-slate-950'
                       : isLightMode
-                      ? 'bg-slate-200 text-slate-700'
+                      ? 'bg-sky-100 text-[#0369a1]'
                       : 'bg-slate-900 text-slate-400'
                   }`}
                 >
                   {no.codigoCad}
                 </span>
-                <span className="text-xs font-bold max-w-[190px] truncate">{no.titulo}</span>
+                <span className="text-xs font-extrabold max-w-[190px] truncate">{no.titulo}</span>
               </button>
             );
           })}
@@ -233,55 +338,67 @@ export default function CadBenchView({
       <div
         className={`flex-shrink-0 border-b px-4 py-2 flex flex-wrap items-center justify-between gap-2 ${
           isLightMode
-            ? 'bg-white border-slate-200'
+            ? 'bg-white border-sky-200'
             : 'bg-slate-950/90 border-slate-800/80'
         }`}
       >
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 flex-wrap">
           <button
             type="button"
-            onClick={() => setLenteAtiva('pratica')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer border ${
+            onClick={() => handleSelectLente('pratica')}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${
               lenteAtiva === 'pratica'
-                ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-sm'
+                ? isLightMode
+                  ? 'bg-[#0369a1] text-white border-[#1a3a5c] shadow-xs'
+                  : 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-sm'
                 : isLightMode
-                ? 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
+                ? 'bg-sky-50/80 text-[#1a3a5c] border-sky-200 hover:bg-sky-100'
                 : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
             }`}
           >
             <Wrench className="w-3.5 h-3.5" />
-            <span>1. Prática & Papo Sincero</span>
+            <span>1. Prática &amp; Papo Sincero</span>
           </button>
 
           <button
             type="button"
-            onClick={() => setLenteAtiva('detalhado')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer border ${
+            onClick={() => handleSelectLente('detalhado')}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${
               lenteAtiva === 'detalhado'
-                ? 'bg-sky-500 text-slate-950 border-sky-400 shadow-sm'
+                ? isLightMode
+                  ? 'bg-[#0369a1] text-white border-[#1a3a5c] shadow-xs'
+                  : 'bg-sky-500 text-slate-950 border-sky-400 shadow-sm'
                 : isLightMode
-                ? 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
+                ? 'bg-sky-50/80 text-[#1a3a5c] border-sky-200 hover:bg-sky-100'
                 : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
             }`}
           >
             <BookOpen className="w-3.5 h-3.5" />
-            <span>2. Especificação 100% Detalhada ({subNos.length} {subNos.length === 1 ? 'Prancha' : 'Sub-Botões'})</span>
+            <span>
+              2. Especificação 100% Detalhada ({subNos.length}{' '}
+              {subNos.length === 1 ? 'Prancha' : 'Sub-Botões'})
+            </span>
           </button>
 
           {(todosDesafios.length > 0 || filosofiasAula.length > 0 || causosAula.length > 0) && (
             <button
               type="button"
-              onClick={() => setLenteAtiva('desafios')}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer border ${
+              onClick={() => handleSelectLente('desafios')}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${
                 lenteAtiva === 'desafios'
-                  ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-sm'
+                  ? isLightMode
+                    ? 'bg-amber-600 text-white border-amber-800 shadow-xs'
+                    : 'bg-amber-400 text-slate-950 border-amber-300 shadow-sm'
                   : isLightMode
-                  ? 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
+                  ? 'bg-sky-50/80 text-[#1a3a5c] border-sky-200 hover:bg-sky-100'
                   : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
               }`}
             >
               <Target className="w-3.5 h-3.5" />
-              <span>3. Simulador, Causos & Filosofia ({todosDesafios.length + filosofiasAula.length + causosAula.length})</span>
+              <span>
+                3. Simulador, Causos &amp; Filosofia (
+                {todosDesafios.length + filosofiasAula.length + causosAula.length})
+              </span>
             </button>
           )}
         </div>
@@ -292,9 +409,9 @@ export default function CadBenchView({
             type="button"
             disabled={noIdx === 0}
             onClick={() => handleSelectNo(Math.max(0, noIdx - 1))}
-            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded border text-xs font-bold transition-all cursor-pointer disabled:opacity-30 ${
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-bold transition-all cursor-pointer disabled:opacity-30 ${
               isLightMode
-                ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200'
+                ? 'bg-white border-sky-200 text-[#1a3a5c] hover:bg-sky-50'
                 : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800'
             }`}
           >
@@ -305,9 +422,9 @@ export default function CadBenchView({
             type="button"
             disabled={noIdx >= nos.length - 1}
             onClick={() => handleSelectNo(Math.min(nos.length - 1, noIdx + 1))}
-            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded border text-xs font-bold transition-all cursor-pointer disabled:opacity-30 ${
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-extrabold transition-all cursor-pointer disabled:opacity-30 ${
               isLightMode
-                ? 'bg-sky-50 border-sky-300 text-sky-800 hover:bg-sky-100'
+                ? 'bg-sky-100 border-sky-300 text-[#0369a1] hover:bg-sky-200'
                 : 'bg-sky-500/15 border-sky-500/40 text-sky-300 hover:bg-sky-500/25'
             }`}
           >
@@ -328,28 +445,44 @@ export default function CadBenchView({
             <div className="lg:col-span-7 space-y-4">
               {/* Card Principal: Tradução Prática & Filosófica do Professor Simon */}
               <div
-                className={`rounded-2xl border p-5 relative overflow-hidden ${
+                className={`rounded-2xl border-2 p-5 relative overflow-hidden ${
                   isLightMode
-                    ? 'bg-gradient-to-br from-sky-50 to-white border-sky-200 shadow-sm'
+                    ? 'bg-gradient-to-br from-sky-50/90 via-white to-sky-50/40 border-sky-200 shadow-sm'
                     : 'bg-gradient-to-br from-slate-900 via-slate-900 to-sky-950/40 border-sky-500/30 shadow-lg'
                 }`}
               >
                 <div className="flex items-start gap-3.5">
-                  <div className="w-11 h-11 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center flex-shrink-0 text-sky-400 font-black text-sm">
+                  <div
+                    className={`w-11 h-11 rounded-xl border-2 flex items-center justify-center flex-shrink-0 font-black text-sm ${
+                      isLightMode
+                        ? 'bg-[#0369a1] border-[#1a3a5c] text-white shadow-xs'
+                        : 'bg-sky-500/20 border-sky-400/40 text-sky-400'
+                    }`}
+                  >
                     SS
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                      <span
+                        className={`text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-md border ${
+                          isLightMode
+                            ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                            : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                        }`}
+                      >
                         {noAtivo.notaSimon?.tag || 'BANCADA PRÁTICA'}
                       </span>
-                      <span className="text-xs font-bold text-sky-400">
-                        Prof. Simon Souza · Tradução Direta pro Campo
+                      <span
+                        className={`text-xs font-extrabold ${
+                          isLightMode ? 'text-[#0369a1]' : 'text-sky-400'
+                        }`}
+                      >
+                        Prof. Simon Souza &bull; Tradução Direta pro Campo
                       </span>
                     </div>
                     <h2
-                      className={`text-base md:text-lg font-extrabold leading-snug mb-2 ${
-                        isLightMode ? 'text-slate-900' : 'text-white'
+                      className={`text-base md:text-lg font-black leading-snug mb-2 ${
+                        isLightMode ? 'text-[#1a3a5c]' : 'text-white'
                       }`}
                     >
                       {noAtivo.codigoCad} — {noAtivo.titulo}
@@ -367,29 +500,41 @@ export default function CadBenchView({
                       <div
                         className={`rounded-xl p-3 border ${
                           isLightMode
-                            ? 'bg-amber-50/80 border-amber-200 text-amber-950'
+                            ? 'bg-amber-50/90 border-amber-200 text-slate-800'
                             : 'bg-amber-500/10 border-amber-500/25 text-amber-200'
                         }`}
                       >
-                        <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-amber-400 mb-1">
+                        <div
+                          className={`flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider mb-1 ${
+                            isLightMode ? 'text-amber-800' : 'text-amber-400'
+                          }`}
+                        >
                           <Sparkles className="w-3.5 h-3.5" />
                           <span>Filosofia de Bancada</span>
                         </div>
-                        <p className="text-xs leading-relaxed">{noAtivo.notaSimon?.filosofia}</p>
+                        <p className="text-xs leading-relaxed font-medium">
+                          {noAtivo.notaSimon?.filosofia}
+                        </p>
                       </div>
 
                       <div
                         className={`rounded-xl p-3 border ${
                           isLightMode
-                            ? 'bg-emerald-50/80 border-emerald-200 text-emerald-950'
+                            ? 'bg-emerald-50/90 border-emerald-200 text-slate-800'
                             : 'bg-emerald-500/10 border-emerald-500/25 text-emerald-200'
                         }`}
                       >
-                        <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-emerald-400 mb-1">
+                        <div
+                          className={`flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider mb-1 ${
+                            isLightMode ? 'text-emerald-800' : 'text-emerald-400'
+                          }`}
+                        >
                           <Wrench className="w-3.5 h-3.5" />
                           <span>Execução na Ferramenta</span>
                         </div>
-                        <p className="text-xs leading-relaxed">{noAtivo.notaSimon?.acaoPratica}</p>
+                        <p className="text-xs leading-relaxed font-medium">
+                          {noAtivo.notaSimon?.acaoPratica}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -399,21 +544,27 @@ export default function CadBenchView({
               {/* Falas da Turma (Simon, Bia, Juninho) ancoradas exatamente neste tópico */}
               {noAtivo.falasTurma && noAtivo.falasTurma.length > 0 && (
                 <div
-                  className={`rounded-2xl border p-4 space-y-3 ${
+                  className={`rounded-2xl border-2 p-4 space-y-3 ${
                     isLightMode
-                      ? 'bg-white border-slate-200'
+                      ? 'bg-white border-sky-200 shadow-2xs'
                       : 'bg-slate-900/80 border-slate-800'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-                      <Coffee className="w-3.5 h-3.5" />
-                      O que a turma fala na bancada sobre "{noAtivo.titulo}"
+                    <span
+                      className={`text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 ${
+                        isLightMode ? 'text-amber-800' : 'text-amber-400'
+                      }`}
+                    >
+                      <Coffee className="w-3.5 h-3.5" />O que a turma fala na bancada sobre "
+                      {noAtivo.titulo}"
                     </span>
                     <button
                       type="button"
                       onClick={() => onSelectViewport?.('conversa')}
-                      className="text-[11px] font-bold text-sky-400 hover:underline cursor-pointer"
+                      className={`text-[11px] font-extrabold hover:underline cursor-pointer ${
+                        isLightMode ? 'text-[#0369a1]' : 'text-sky-400'
+                      }`}
                     >
                       Abrir diálogo interativo →
                     </button>
@@ -427,7 +578,7 @@ export default function CadBenchView({
                           key={beat.id}
                           className={`rounded-xl p-3 border flex items-start gap-3 ${
                             isLightMode
-                              ? 'bg-slate-50 border-slate-200'
+                              ? 'bg-sky-50/50 border-sky-200/80'
                               : 'bg-slate-950/70 border-slate-800/90'
                           }`}
                         >
@@ -443,10 +594,15 @@ export default function CadBenchView({
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-0.5">
-                              <span className="text-xs font-extrabold" style={{ color: personagem.cor }}>
+                              <span
+                                className="text-xs font-extrabold"
+                                style={{ color: personagem.cor }}
+                              >
                                 {personagem.nome}
                               </span>
-                              <span className="text-[10px] text-slate-500">{personagem.papel}</span>
+                              <span className="text-[10px] text-slate-500 font-semibold">
+                                {personagem.papel}
+                              </span>
                             </div>
                             <div
                               className={`text-xs leading-relaxed ${
@@ -468,51 +624,59 @@ export default function CadBenchView({
             <div className="lg:col-span-5 space-y-4">
               {/* HUD Digital de Grandezas Físicas e Medidas do Tópico */}
               <div
-                className={`rounded-2xl border p-4 ${
+                className={`rounded-2xl border-2 p-4 ${
                   isLightMode
-                    ? 'bg-white border-slate-200'
+                    ? 'bg-white border-sky-200 shadow-2xs'
                     : 'bg-slate-900/90 border-slate-800'
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[11px] font-black uppercase tracking-widest text-sky-400 flex items-center gap-1.5">
+                  <span
+                    className={`text-[11px] font-black uppercase tracking-widest flex items-center gap-1.5 ${
+                      isLightMode ? 'text-[#0369a1]' : 'text-sky-400'
+                    }`}
+                  >
                     <Gauge className="w-4 h-4" />
-                    Parâmetros Físicos & Medidas no Instrumento
+                    Parâmetros Físicos &amp; Medidas no Instrumento
                   </span>
-                  <span className="text-[10px] font-mono text-slate-500">HUD TELEMETRIA</span>
+                  <span className="text-[10px] font-mono font-bold text-slate-400">
+                    HUD TELEMETRIA
+                  </span>
                 </div>
 
-                {(noAtivo.grandezas?.length > 0 ? noAtivo.grandezas : grandezasGerais).length > 0 ? (
+                {(noAtivo.grandezas?.length > 0 ? noAtivo.grandezas : grandezasGerais).length >
+                0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {(noAtivo.grandezas?.length > 0 ? noAtivo.grandezas : grandezasGerais.slice(0, 6)).map(
-                      (grandeza, gIdx) => (
-                        <button
-                          key={gIdx}
-                          type="button"
-                          onClick={() => setLenteAtiva('detalhado')}
-                          className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                            isLightMode
-                              ? 'bg-slate-50 hover:bg-sky-50 border-slate-200 hover:border-sky-300'
-                              : 'bg-slate-950 hover:bg-sky-950/40 border-slate-800 hover:border-sky-500/40'
+                    {(noAtivo.grandezas?.length > 0
+                      ? noAtivo.grandezas
+                      : grandezasGerais.slice(0, 6)
+                    ).map((grandeza, gIdx) => (
+                      <button
+                        key={gIdx}
+                        type="button"
+                        onClick={() => handleSelectLente('detalhado')}
+                        className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                          isLightMode
+                            ? 'bg-sky-50/70 hover:bg-sky-100 border-sky-200 hover:border-sky-300'
+                            : 'bg-slate-950 hover:bg-sky-950/40 border-slate-800 hover:border-sky-500/40'
+                        }`}
+                        title="Clique para inspecionar este parâmetro na especificação detalhada"
+                      >
+                        <span className="block text-[9px] font-mono font-bold uppercase text-slate-500">
+                          LEITURA #{String(gIdx + 1).padStart(2, '0')}
+                        </span>
+                        <span
+                          className={`text-sm font-mono font-black ${
+                            isLightMode ? 'text-[#1a3a5c]' : 'text-emerald-400'
                           }`}
-                          title="Clique para inspecionar este parâmetro na especificação detalhada"
                         >
-                          <span className="block text-[9px] font-mono uppercase text-slate-500">
-                            LEITURA #{String(gIdx + 1).padStart(2, '0')}
-                          </span>
-                          <span
-                            className={`text-sm font-mono font-black ${
-                              isLightMode ? 'text-sky-700' : 'text-emerald-400'
-                            }`}
-                          >
-                            {grandeza}
-                          </span>
-                        </button>
-                      )
-                    )}
+                          {grandeza}
+                        </span>
+                      </button>
+                    ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-500 font-medium">
                     Conceito estrutural/operacional. Inspecione os pontos-chave abaixo.
                   </p>
                 )}
@@ -521,14 +685,18 @@ export default function CadBenchView({
               {/* Pontos-Chave Clicáveis de Verificação em Bancada */}
               {noAtivo.destaquesPraticos && noAtivo.destaquesPraticos.length > 0 && (
                 <div
-                  className={`rounded-2xl border p-4 ${
+                  className={`rounded-2xl border-2 p-4 ${
                     isLightMode
-                      ? 'bg-white border-slate-200'
+                      ? 'bg-white border-sky-200 shadow-2xs'
                       : 'bg-slate-900/90 border-slate-800'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2.5">
-                    <span className="text-[11px] font-black uppercase tracking-widest text-emerald-400 flex items-center gap-1.5">
+                    <span
+                      className={`text-[11px] font-black uppercase tracking-widest flex items-center gap-1.5 ${
+                        isLightMode ? 'text-emerald-800' : 'text-emerald-400'
+                      }`}
+                    >
                       <CheckCircle2 className="w-4 h-4" />
                       Checklist de Execução Prática (Clique para validar)
                     </span>
@@ -544,15 +712,21 @@ export default function CadBenchView({
                           onClick={() => togglePasso(chave)}
                           className={`w-full text-left p-2.5 rounded-xl border flex items-start gap-2.5 transition-all cursor-pointer ${
                             marcado
-                              ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                              ? isLightMode
+                                ? 'bg-emerald-50 border-emerald-400 text-emerald-900'
+                                : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
                               : isLightMode
-                              ? 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
+                              ? 'bg-sky-50/50 hover:bg-sky-100/60 border-sky-200 text-slate-700'
                               : 'bg-slate-950/70 hover:bg-slate-950 border-slate-800 text-slate-300'
                           }`}
                         >
                           <CheckCircle2
                             className={`w-4 h-4 flex-shrink-0 mt-0.5 ${
-                              marcado ? 'text-emerald-400' : 'text-slate-500'
+                              marcado
+                                ? isLightMode
+                                  ? 'text-emerald-600'
+                                  : 'text-emerald-400'
+                                : 'text-slate-400'
                             }`}
                           />
                           <span className="text-xs leading-relaxed font-medium">{ponto}</span>
@@ -567,8 +741,8 @@ export default function CadBenchView({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <button
                   type="button"
-                  onClick={() => setLenteAtiva('detalhado')}
-                  className="w-full p-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs flex items-center justify-between shadow-lg shadow-sky-500/15 transition-all cursor-pointer"
+                  onClick={() => handleSelectLente('detalhado')}
+                  className="w-full p-3.5 rounded-xl bg-[#0369a1] hover:bg-[#0284c7] text-white font-extrabold text-xs flex items-center justify-between shadow-md shadow-sky-600/15 transition-all cursor-pointer"
                 >
                   <span className="flex items-center gap-2">
                     <BookOpen className="w-4 h-4" />
@@ -580,8 +754,8 @@ export default function CadBenchView({
                 {todosDesafios.length > 0 && (
                   <button
                     type="button"
-                    onClick={() => setLenteAtiva('desafios')}
-                    className="w-full p-3.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs flex items-center justify-between shadow-lg shadow-amber-500/15 transition-all cursor-pointer"
+                    onClick={() => handleSelectLente('desafios')}
+                    className="w-full p-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs flex items-center justify-between shadow-md shadow-amber-500/15 transition-all cursor-pointer"
                   >
                     <span className="flex items-center gap-2">
                       <Target className="w-4 h-4" />
@@ -603,13 +777,17 @@ export default function CadBenchView({
             {/* Se houver múltiplos sub-nós (<h3>/<h4>), exibe os botões para não precisar rolar */}
             {subNos.length > 1 && (
               <div
-                className={`rounded-xl border p-3 flex flex-wrap items-center gap-1.5 ${
+                className={`rounded-xl border-2 p-3 flex flex-wrap items-center gap-1.5 ${
                   isLightMode
-                    ? 'bg-slate-100 border-slate-200'
+                    ? 'bg-sky-50/80 border-sky-200'
                     : 'bg-slate-900/90 border-slate-800'
                 }`}
               >
-                <span className="text-[10px] font-black uppercase tracking-widest text-sky-400 mr-2">
+                <span
+                  className={`text-[10px] font-black uppercase tracking-widest mr-2 ${
+                    isLightMode ? 'text-[#0369a1]' : 'text-sky-400'
+                  }`}
+                >
                   Sub-Camadas de "{noAtivo.titulo}":
                 </span>
                 {subNos.map((sub, sIdx) => {
@@ -619,11 +797,11 @@ export default function CadBenchView({
                       key={sub.id}
                       type="button"
                       onClick={() => setSubNoIdx(sIdx)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-extrabold border transition-all cursor-pointer ${
                         ativo
-                          ? 'bg-sky-500 text-slate-950 border-sky-400'
+                          ? 'bg-[#0369a1] text-white border-[#1a3a5c]'
                           : isLightMode
-                          ? 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+                          ? 'bg-white text-[#1a3a5c] border-sky-200 hover:bg-sky-50'
                           : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
                       }`}
                     >
@@ -634,11 +812,11 @@ export default function CadBenchView({
                 <button
                   type="button"
                   onClick={() => setSubNoIdx(-1)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-extrabold border transition-all cursor-pointer ${
                     subNoIdx === -1
-                      ? 'bg-emerald-500 text-slate-950 border-emerald-400'
+                      ? 'bg-emerald-700 text-white border-emerald-900'
                       : isLightMode
-                      ? 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'
+                      ? 'bg-white text-slate-600 border-sky-200 hover:bg-sky-50'
                       : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
                   }`}
                 >
@@ -649,33 +827,37 @@ export default function CadBenchView({
 
             {/* Banner compacto da voz do Simon no topo da especificação técnica */}
             <div
-              className={`rounded-xl border px-4 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${
+              className={`rounded-xl border-2 px-4 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${
                 isLightMode
-                  ? 'bg-sky-50 border-sky-200 text-slate-800'
+                  ? 'bg-sky-50/90 border-sky-200 text-slate-800'
                   : 'bg-sky-950/30 border-sky-500/30 text-slate-200'
               }`}
             >
-              <div className="flex items-center gap-2 text-xs">
-                <Flame className="w-4 h-4 text-amber-400 flex-shrink-0" />
+              <div className="flex items-center gap-2 text-xs font-medium">
+                <Flame className="w-4 h-4 text-amber-500 flex-shrink-0" />
                 <span>
-                  <strong className="text-sky-400">Lembrete do Simon:</strong>{' '}
+                  <strong className={isLightMode ? 'text-[#1a3a5c]' : 'text-sky-400'}>
+                    Lembrete do Simon:
+                  </strong>{' '}
                   {noAtivo.notaSimon?.acaoPratica}
                 </span>
               </div>
               <button
                 type="button"
-                onClick={() => setLenteAtiva('pratica')}
-                className="text-[11px] font-bold text-emerald-400 hover:underline flex-shrink-0 cursor-pointer"
+                onClick={() => handleSelectLente('pratica')}
+                className={`text-[11px] font-extrabold hover:underline flex-shrink-0 cursor-pointer ${
+                  isLightMode ? 'text-[#0369a1]' : 'text-emerald-400'
+                }`}
               >
                 ← Voltar ao Resumo Prático
               </button>
             </div>
 
-            {/* Prancha CAD com o HTML Técnico Integral (da sub-camada ativa ou do bloco inteiro) */}
+            {/* Prancha CAD com o HTML Técnico Integral */}
             <div
-              className={`rounded-2xl border p-5 md:p-7 shadow-inner ${
+              className={`rounded-2xl border-2 p-5 md:p-7 shadow-inner ${
                 isLightMode
-                  ? 'bg-[#FFFDFB] border-slate-300 text-slate-900'
+                  ? 'bg-white border-sky-200 text-slate-900'
                   : 'bg-[#FFF8F6] border-sky-500/30 text-slate-900'
               }`}
             >
@@ -692,18 +874,22 @@ export default function CadBenchView({
         ════════════════════════════════════════════════════════════════════ */}
         {lenteAtiva === 'desafios' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
-            {/* Coluna Esquerda: Simulador Interativo (Quizzes, Calculadoras, Inspeções, Mito/Verdade) */}
+            {/* Coluna Esquerda: Simulador Interativo */}
             <div className="lg:col-span-7 space-y-4">
               {todosDesafios.length > 0 && desafioAtual ? (
                 <div
-                  className={`rounded-2xl border p-4 ${
+                  className={`rounded-2xl border-2 p-4 ${
                     isLightMode
-                      ? 'bg-white border-slate-200'
+                      ? 'bg-white border-sky-200 shadow-xs'
                       : 'bg-slate-900/90 border-slate-800'
                   }`}
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                    <span className="text-xs font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                    <span
+                      className={`text-xs font-black uppercase tracking-wider flex items-center gap-1.5 ${
+                        isLightMode ? 'text-amber-800' : 'text-amber-400'
+                      }`}
+                    >
                       <Target className="w-4 h-4" />
                       Desafio Prático de Bancada ({desafioIdx + 1} de {todosDesafios.length})
                     </span>
@@ -713,10 +899,12 @@ export default function CadBenchView({
                           key={d.id || idx}
                           type="button"
                           onClick={() => setDesafioIdx(idx)}
-                          className={`px-2.5 py-1 rounded text-xs font-bold cursor-pointer ${
+                          className={`px-2.5 py-1 rounded-lg text-xs font-extrabold cursor-pointer border ${
                             idx === desafioIdx
-                              ? 'bg-amber-400 text-slate-950'
-                              : 'bg-slate-800 text-slate-400 hover:text-white'
+                              ? 'bg-[#0369a1] text-white border-[#1a3a5c]'
+                              : isLightMode
+                              ? 'bg-sky-50 text-[#1a3a5c] border-sky-200 hover:bg-sky-100'
+                              : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
                           }`}
                         >
                           #{idx + 1}
@@ -762,8 +950,14 @@ export default function CadBenchView({
                   )}
                 </div>
               ) : (
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 text-center">
-                  <p className="text-xs text-slate-400">
+                <div
+                  className={`rounded-2xl border-2 p-6 text-center ${
+                    isLightMode
+                      ? 'bg-sky-50/70 border-sky-200 text-slate-600'
+                      : 'bg-slate-900/60 border-slate-800 text-slate-400'
+                  }`}
+                >
+                  <p className="text-xs font-medium">
                     Para mais interações passo a passo, acione o botão [F2] Papo de Balcão na barra superior.
                   </p>
                 </div>

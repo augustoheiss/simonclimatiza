@@ -20,7 +20,7 @@ export const SERVICOS = [
       'Comissionamento eletrônico via software proprietário do fabricante',
     ],
     resultado:
-      'Economia de até 38% em relação a sistemas convencionais, com redundância de compressores que impede a parada total do edifício.',
+      'Menor consumo de energia que em sistemas convencionais e redundância de compressores, que reduz o risco de parada total do edifício.',
     garantia:
       'Garantia técnica de instalação e laudo de estanqueidade/vácuo documentado.',
   },
@@ -41,7 +41,7 @@ export const SERVICOS = [
       'Monitoramento preciso de Approach, Superaquecimento e Sub-resfriamento',
     ],
     resultado:
-      'Estabilidade absoluta na temperatura de água gelada de processo e eliminação de desarmes por alta pressão no verão.',
+      'Temperatura de água gelada estável no processo e menos desarmes por alta pressão no verão.',
     garantia:
       'Relatório termográfico e hidrônico completo com Anotação de Responsabilidade Técnica (ART).',
   },
@@ -62,7 +62,7 @@ export const SERVICOS = [
       'Sistema de alarme e monitoramento remoto de temperatura para conformidade ANVISA',
     ],
     resultado:
-      'Zero perda de estoque perecível por oscilação térmica e redução drástica na formação de gelo nos evaporadores.',
+      'Menor risco de perda de estoque perecível por oscilação térmica e menos formação de gelo nos evaporadores.',
     garantia:
       'Certificado de calibração térmica e conformidade com normas sanitárias vigentes.',
   },
@@ -83,7 +83,7 @@ export const SERVICOS = [
       'Teste de drenagem hidrostática e nivelamento a laser das unidades evaporadoras',
     ],
     resultado:
-      'Preservação integral da garantia oficial do fabricante e operação ultra-silenciosa sem gotejamentos ou falhas de placa.',
+      'Instalação que respeita as exigências do fabricante, preservando a garantia oficial, com operação silenciosa e sem gotejamentos.',
     garantia:
       'Checklist de comissionamento individual por equipamento entregue ao cliente.',
   },
@@ -104,7 +104,7 @@ export const SERVICOS = [
       'Emissão mensal de relatórios digitais assinados por Engenheiro Responsável + ART anual',
     ],
     resultado:
-      'Blindagem jurídica total perante fiscalizações da ANVISA/Ministério do Trabalho e queda de até 70% em chamados corretivos.',
+      'Documentação em dia para as fiscalizações da ANVISA e do Ministério do Trabalho e menos chamados corretivos.',
     garantia:
       'Assunção formal de Responsabilidade Técnica (ART) perante os órgãos fiscalizadores.',
   },
@@ -134,17 +134,17 @@ export const SERVICOS = [
 export const PILARES = [
   {
     icone: 'Activity',
-    title: 'Disponibilidade Contínua (24/7)',
+    title: 'Atenção à continuidade da operação',
     desc: 'Projetamos e mantemos sistemas térmicos para ambientes onde uma parada significa perda de produção, dados ou clientes.',
   },
   {
     icone: 'BarChart3',
-    title: 'Eficiência Energética Auditável',
-    desc: 'Ajuste fino de superaquecimento, sub-resfriamento e limpeza química que reduzem o consumo elétrico em até 30%.',
+    title: 'Eficiência energética acompanhada',
+    desc: 'Ajuste fino de superaquecimento, sub-resfriamento e limpeza química que ajudam a reduzir o consumo elétrico.',
   },
   {
     icone: 'Award',
     title: 'Gestão de Ativos & Ciclo de Vida',
-    desc: 'Estendemos a vida útil de compressores e placas Inverter em até 2x através de protocolos preventivos rigorosos.',
+    desc: 'Estendemos a vida útil de compressores e placas Inverter com protocolos preventivos rigorosos.',
   },
 ];

@@ -4,6 +4,9 @@ import { Lock, ShieldCheck, AlertCircle, KeyRound, Home } from 'lucide-react';
 import certBg from '../assets/fundo-textura-leve.webp';
 
 const CHAVE_STORAGE = 'simon_academia_auth';
+// ATENÇÃO: isto NÃO é segurança. O código fica no JavaScript público do site e o conteúdo dos cursos vai
+// embutido nos arquivos baixados pelo navegador. Serve só para separar quem é aluno de quem está navegando.
+// Proteger de verdade exige login e entrega do conteúdo por um servidor (ver master-plan).
 const SENHA_MESTRE = 'SIMON-VIP';
 
 export default function ProtecaoAcademia({ children, onVoltar }) {
@@ -25,7 +28,7 @@ export default function ProtecaoAcademia({ children, onVoltar }) {
       setTentativas((t) => t + 1);
       setErro(
         tentativas >= 2
-          ? 'Código inválido. Solicite seu código de convite (SIMON-VIP) ao administrador.'
+          ? 'Código inválido. Peça seu código de acesso à equipe da Simon pelo WhatsApp ou pelo e-mail de contato.'
           : 'Código de acesso incorreto. Tente novamente.'
       );
       setSenha('');

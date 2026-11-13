@@ -355,8 +355,8 @@ const CertificateTemplate = React.forwardRef(function CertificateTemplate(
         <div>
           <p
             style={{
-              fontSize: '10px',
-              color: '#94a3b8',
+              fontSize: '11px',
+              color: '#475569',
               margin: '0 0 3px 0',
               fontWeight: 600,
             }}
@@ -365,8 +365,8 @@ const CertificateTemplate = React.forwardRef(function CertificateTemplate(
           </p>
           <p
             style={{
-              fontSize: '9px',
-              color: '#94a3b8',
+              fontSize: '10px',
+              color: '#475569',
               margin: 0,
               maxWidth: '320px',
               lineHeight: 1.4,

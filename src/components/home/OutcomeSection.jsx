@@ -5,8 +5,8 @@ const ENTREGAS = [
     titulo: 'Consumo de energia sob controle',
     corpo:
       'A calibração preventiva leva o compressor para a faixa em que ele rende melhor. Menos consumo desnecessário reduz o custo mensal do contrato.',
-    medida: 'até 40%',
-    legenda: 'de desperdício de energia pode ser evitado',
+    medida: 'medido',
+    legenda: 'cada ajuste é conferido com instrumento e registrado',
   },
   {
     titulo: 'Documentação pronta para a fiscalização',

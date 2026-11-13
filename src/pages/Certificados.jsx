@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { todosCursos } from '../data/treinamentos';
 import CertificateTemplate from '../components/CertificateTemplate';
@@ -22,15 +22,18 @@ import {
 
 /* ── helpers ── */
 
-/** Generates a deterministic certificate number from inputs */
-function gerarNumeroCertificado(nome, curso) {
-  let hash = 0;
-  const str = `${nome}${curso}${Date.now()}`;
-  for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) - hash + str.charCodeAt(i)) | 0;
-  }
-  const num = Math.abs(hash) % 100000;
-  return `SC-${String(num).padStart(5, '0')}`;
+/**
+ * Número do certificado: "SC-" + 8 caracteres de um alfabeto sem ambiguidade (sem 0/O e 1/I), sorteados
+ * pelo navegador. Antes eram só 5 dígitos (100 mil possibilidades), fáceis de repetir e de adivinhar.
+ * Atenção: isto NÃO prova autenticidade. Sem um registro no servidor, qualquer número serve (ver master-plan).
+ */
+const ALFABETO_CERTIFICADO = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+
+function gerarNumeroCertificado() {
+  const bytes = new Uint8Array(8);
+  crypto.getRandomValues(bytes);
+  const codigo = Array.from(bytes, (b) => ALFABETO_CERTIFICADO[b % ALFABETO_CERTIFICADO.length]).join('');
+  return `SC-${codigo}`;
 }
 
 /** Today in DD/MM/YYYY */
@@ -77,9 +80,12 @@ export default function Certificados() {
   const nomeCursoFinal = isCustomCourse
     ? nomeCursoPersonalizado
     : cursoAtual?.titulo ?? '';
-  const numeroCertificado = nomeAluno
-    ? gerarNumeroCertificado(nomeAluno, nomeCursoFinal)
-    : 'SC-00000';
+  // Estável: só sorteia outro número quando o nome ou o curso mudam, e não a cada letra digitada ou render.
+  const numeroCertificado = useMemo(
+    () => (nomeAluno ? gerarNumeroCertificado() : 'SC-00000'),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [nomeAluno, nomeCursoFinal]
+  );
 
   // Update carga horária when course changes (but allow manual override)
   const handleCursoChange = (newCursoId) => {

@@ -4,7 +4,7 @@ const RISCOS = [
   {
     titulo: 'Conta de energia mais alta',
     corpo:
-      'Máquinas subdimensionadas ou com trocadores obstruídos trabalham em esforço contínuo. O consumo de energia pode chegar a até 40% a mais todos os meses.',
+      'Máquinas subdimensionadas ou com trocadores obstruídos trabalham em esforço contínuo. O consumo de energia sobe todos os meses.',
   },
   {
     titulo: 'Multa por falta de PMOC',

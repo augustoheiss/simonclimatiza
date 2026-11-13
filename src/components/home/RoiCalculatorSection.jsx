@@ -12,8 +12,11 @@ export default function RoiCalculatorSection() {
   const estimatedMonthlyWaste = hvacPortion * 0.28;
   const estimatedAnnualWaste = estimatedMonthlyWaste * 12;
   
-  // Status regulatório de acordo com a Lei 13.589/18 (acima de 5 TR / ~60.000 BTU)
-  const isPmocMandatory = machines >= 5 || monthlyBill >= 3500;
+  // PMOC: a Lei 13.589/2018 e a Portaria 3.523/GM se aplicam quando a capacidade de refrigeração SOMADA do
+  // edifício chega a 60.000 BTU/h (5 TR). O número de aparelhos e o valor da conta não decidem isso, por isso a
+  // calculadora pergunta a capacidade. Sem essa informação, ela não afirma que o PMOC é obrigatório.
+  const [capacidade, setCapacidade] = useState('desconhecida'); // 'desconhecida' | 'abaixo' | 'acima'
+  const isPmocMandatory = capacidade === 'acima';
 
   const handleSendToWhatsApp = () => {
     const formattedWaste = estimatedAnnualWaste.toLocaleString('pt-BR', {
@@ -32,7 +35,9 @@ export default function RoiCalculatorSection() {
       `• Aparelhos instalados: ${machines} unidades\n` +
       `• Conta mensal média: ${formattedBill}\n` +
       `• Desperdício anual calculado: ${formattedWaste}/ano\n` +
-      `• Status PMOC: ${isPmocMandatory ? 'Obrigatório por Lei (13.589)' : 'Recomendado'}\n\n` +
+      `• Capacidade de refrigeração somada: ${capacidade === 'acima' ? 'a partir de 60.000 BTU/h (5 TR)' : capacidade === 'abaixo' ? 'abaixo de 60.000 BTU/h' : 'não informada'}
+
+` +
       `Gostaria de agendar uma auditoria técnica preliminar para a minha empresa.`
     );
 
@@ -105,17 +110,55 @@ export default function RoiCalculatorSection() {
               </div>
             </div>
 
+            <fieldset>
+              <legend className="font-semibold text-tinta">Capacidade de refrigeração somada do edifício</legend>
+              <p className="mt-1 text-sm text-aco-escuro">
+                O PMOC é obrigatório a partir de 60.000 BTU/h (5 TR) somados. A capacidade está na placa dos equipamentos ou no projeto.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {[
+                  ['desconhecida', 'Não sei'],
+                  ['abaixo', 'Abaixo de 60.000 BTU/h'],
+                  ['acima', '60.000 BTU/h ou mais'],
+                ].map(([valor, rotulo]) => (
+                  <label
+                    key={valor}
+                    className={`cursor-pointer rounded-md border px-3 py-1.5 text-sm font-medium has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-refrigerante-escuro ${
+                      capacidade === valor
+                        ? 'bg-tinta text-white border-tinta'
+                        : 'bg-laudo text-tinta border-filete hover:border-aco'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="capacidade-pmoc"
+                      value={valor}
+                      checked={capacidade === valor}
+                      onChange={() => setCapacidade(valor)}
+                      className="sr-only"
+                    />
+                    {rotulo}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
             <div
               role="status"
               className={`border-l-4 pl-4 py-1 ${isPmocMandatory ? 'border-alerta' : 'border-aco'}`}
             >
               <p className={`font-semibold ${isPmocMandatory ? 'text-alerta-escuro' : 'text-tinta'}`}>
-                {isPmocMandatory ? 'PMOC obrigatório pela Lei 13.589/2018' : 'Manutenção preventiva recomendada'}
+                {capacidade === 'acima' && 'PMOC obrigatório pela Lei 13.589/2018'}
+                {capacidade === 'abaixo' && 'Abaixo do limite legal, a manutenção preventiva continua recomendada'}
+                {capacidade === 'desconhecida' && 'Confira se o seu edifício precisa de PMOC'}
               </p>
               <p className="mt-1 text-aco-escuro">
-                {isPmocMandatory
-                  ? 'Sua infraestrutura passa do limite de dispensa. Sem PMOC assinado por engenheiro mecânico, a empresa fica sujeita a multas sanitárias de até R$ 1,5 milhão.'
-                  : 'Em ambientes corporativos menores, uma rotina técnica calibrada dá mais vida útil ao equipamento e economiza energia.'}
+                {capacidade === 'acima' &&
+                  'Sem PMOC assinado por engenheiro habilitado, a empresa fica sujeita a multas sanitárias, que podem chegar a R$ 1,5 milhão.'}
+                {capacidade === 'abaixo' &&
+                  'Em ambientes menores, uma rotina técnica calibrada dá mais vida útil ao equipamento e ajuda a economizar energia.'}
+                {capacidade === 'desconhecida' &&
+                  'A obrigação depende da capacidade de refrigeração somada, e não do número de aparelhos nem do valor da conta. Informe acima ou peça uma avaliação.'}
               </p>
             </div>
           </div>

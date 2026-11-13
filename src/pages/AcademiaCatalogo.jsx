@@ -255,7 +255,7 @@ export default function AcademiaCatalogo() {
             type="button"
             onClick={handleLogoutVip}
             className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white hover:bg-red-50 border border-sky-200 hover:border-red-300 text-slate-600 hover:text-red-700 text-xs font-bold transition-colors cursor-pointer"
-            title="Bloquear novamente o acesso SIMON-VIP e voltar ao início"
+            title="Sair da Academia e voltar ao início"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Sair VIP</span>

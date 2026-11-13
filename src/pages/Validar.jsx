@@ -73,11 +73,12 @@ export default function Validar() {
               Conferir um certificado
             </h1>
             <p className="mt-3 text-aco-escuro leading-relaxed" role="status">
-              O link está incompleto ou foi copiado com erro. Para conferir um certificado, escaneie o QR Code impresso
-              no próprio documento ou abra o link completo.
+              Para conferir um certificado, escaneie o QR Code impresso no próprio documento ou abra o link completo que
+              veio com ele. Esta página mostra os dados que constam nesse link.
             </p>
             <p className="mt-3 text-aco-escuro leading-relaxed">
-              Se você tem um certificado emitido pela Simon Climatização e a conferência não funciona, fale com a equipe.
+              Se o link não abre os dados do certificado, ou se você precisa confirmar um certificado emitido pela Simon
+              Climatização, fale com a equipe.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">

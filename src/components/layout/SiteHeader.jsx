@@ -7,7 +7,7 @@ const LINKS = [
   { nome: 'Início', to: '/', fim: true },
   { nome: 'Serviços', to: '/servicos' },
   { nome: 'Academia', to: '/academia' },
-  { nome: 'Certificados', to: '/certificados' },
+  { nome: 'Validar certificado', to: '/validar' },
   { nome: 'Contato', to: '/contato' },
 ];
 

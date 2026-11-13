@@ -8,7 +8,7 @@
 export const SIMON_PROFILE = {
   handle: '@simonclimatiza',
   instagramUrl: 'https://www.instagram.com/simonclimatiza/',
-  websiteUrl: 'https://www.simonclimatiza.com/',
+  websiteUrl: 'https://simonclimatiza.com.br/',
   whatsappUrl: 'https://wa.me/5511942163150',
   phoneDisplay: '(11) 94216-3150',
   name: 'Simon Climatização e Refrigeração',

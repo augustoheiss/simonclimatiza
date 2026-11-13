@@ -3,9 +3,13 @@ import { FIELD_CATEGORIES, SIMON_FIELD_POSTS, getFieldProofsByServiceId } from '
 
 const POR_PAGINA = 6;
 
-// Itens cuja imagem mostra o nome de um cliente (ex.: tela do controlador com o nome do shopping).
-// Ficam fora da galeria pública até o Simon autorizar. Para liberar, tire o id desta lista.
-const IDS_SEM_AUTORIZACAO = ['post-13'];
+// Itens que ficam fora da galeria pública até o Simon autorizar. Para liberar um, tire o id desta lista.
+//  post-13  : a tela do controlador mostra o nome de um cliente (shopping).
+//  extra-01 : dois homens com o rosto visível (palestra no SENAI).
+//  extra-03 : grupo de alunos com o rosto visível (capacitação no SENAI).
+// Revisão feita olhando miniaturas de 330 px: detalhes pequenos (uma placa de carro distante, por exemplo)
+// podem ter escapado. Vale uma segunda olhada do Simon antes de ampliar o acervo.
+const IDS_SEM_AUTORIZACAO = ['post-13', 'extra-01', 'extra-03'];
 const POSTS = SIMON_FIELD_POSTS.filter((p) => !IDS_SEM_AUTORIZACAO.includes(p.id));
 
 // Cliente nomeado na legenda original só aparece com autorização do Simon (ver plano, G12).

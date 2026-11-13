@@ -8,7 +8,7 @@ import {
   ShieldCheck,
   ArrowRight,
 } from 'lucide-react';
-import certBg from '../../assets/fundo-certificado.png';
+import certBg from '../../assets/fundo-textura-leve.webp';
 
 /**
  * Hook para gerenciar ações na bancada:

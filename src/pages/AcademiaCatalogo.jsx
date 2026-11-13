@@ -28,7 +28,7 @@ import {
   SimonDirectModeToggle,
   useSimonActionGate,
 } from '../components/ui/SimonActionGate';
-import certBg from '../assets/fundo-certificado.png';
+import certBg from '../assets/fundo-textura-leve.webp';
 
 const TODOS_CURSOS = listarTodosCursosNormalizados();
 

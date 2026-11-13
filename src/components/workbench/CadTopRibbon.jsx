@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { listarTodosCursosNormalizados } from '../../utils/courseAdapter';
 import { SimonDirectModeToggle } from '../ui/SimonActionGate';
-import certBg from '../../assets/fundo-certificado.png';
+import certBg from '../../assets/fundo-textura-leve.webp';
 
 const TODOS_CURSOS_LISTA = listarTodosCursosNormalizados();
 

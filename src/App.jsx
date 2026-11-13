@@ -19,12 +19,10 @@ const Termos = lazy(() => import('./pages/Termos'));
 
 function RouteLoader() {
   return (
-    <div className="flex-grow flex items-center justify-center min-h-dvh bg-gradient-to-b from-sky-50 via-white to-sky-50 text-[#1a3a5c]">
-      <div className="flex flex-col items-center gap-3 p-6 rounded-2xl bg-white border-2 border-sky-200 shadow-lg">
-        <div className="w-8 h-8 rounded-full border-2 border-[#0284c7] border-t-transparent animate-spin" />
-        <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#0369a1]">
-          Inicializando CAD Workbench...
-        </span>
+    <div className="flex-grow flex items-center justify-center min-h-[60vh]" role="status" aria-live="polite">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 rounded-full border-2 border-[#176788] border-t-transparent animate-spin" aria-hidden="true" />
+        <span className="text-sm text-[#556873]">Carregando…</span>
       </div>
     </div>
   );
@@ -36,8 +34,6 @@ function AppShell() {
 
   // Rotas que operam em modo Workstation Técnica 100dvh Zero-Scroll (possuem Ribbon e Status Bar próprias)
   const isCadWorkspaceRoute =
-    path === '/' ||
-    path === '/servicos' ||
     path === '/academia' ||
     path.startsWith('/academia/treinamento-') ||
     (path.startsWith('/academia/') && !path.startsWith('/academia/certificado/'));

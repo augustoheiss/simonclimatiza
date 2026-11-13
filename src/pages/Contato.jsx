@@ -77,8 +77,10 @@ export default function Contato() {
   const [servico, setServico] = useState('');
 
   useEffect(() => {
-    if (location.state && location.state.servicoSelecionado) {
-      setServico(location.state.servicoSelecionado);
+    const escolhido = location.state && location.state.servicoSelecionado;
+    // Só aceita valores que existem na lista, para um estado inválido não deixar o campo vazio.
+    if (escolhido && SERVICOS_OPCOES.some((o) => o.value === escolhido)) {
+      setServico(escolhido);
     }
   }, [location.state]);
 

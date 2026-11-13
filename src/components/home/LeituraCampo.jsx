@@ -16,7 +16,7 @@ export default function LeituraCampo() {
           </figcaption>
           <p className="text-sm text-aco-escuro mt-0.5">{leitura.instrumento}</p>
         </div>
-        <span className="shrink-0 text-xs font-semibold text-alerta-escuro border border-alerta-escuro/40 rounded px-2 py-0.5">
+        <span className="shrink-0 text-[0.8125rem] font-semibold text-alerta-escuro border border-alerta-escuro/40 rounded px-2 py-0.5">
           Exemplo de leitura de campo
         </span>
       </div>
@@ -32,14 +32,14 @@ export default function LeituraCampo() {
             <dd className="text-right shrink-0">
               <span className="valor-medido text-2xl font-semibold text-tinta">{linha.valor}</span>
               <span className="text-sm text-aco-escuro ml-1">{linha.unidade}</span>
-              {linha.nota && <span className="block text-xs text-aco-escuro">{linha.nota}</span>}
+              {linha.nota && <span className="block text-[0.8125rem] text-aco-escuro">{linha.nota}</span>}
             </dd>
           </div>
         ))}
       </dl>
 
       <div className="flex items-center justify-between gap-3 px-5 py-3 bg-papel border-t border-filete">
-        <p className="text-xs text-aco-escuro">Registrado em campo pela equipe Simon.</p>
+        <p className="text-[0.8125rem] text-aco-escuro">Registrado em campo pela equipe Simon.</p>
         <div className="flex gap-1.5" role="group" aria-label="Escolher leitura">
           {LEITURAS_CAMPO.map((l, i) => (
             <button

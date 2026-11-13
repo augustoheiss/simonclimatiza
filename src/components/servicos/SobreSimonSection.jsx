@@ -29,7 +29,7 @@ import {
   SimonActionGate,
   useSimonActionGate
 } from '../ui/SimonActionGate';
-import certBg from '../../assets/fundo-certificado.png';
+import certBg from '../../assets/fundo-textura-leve.webp';
 
 /**
  * Modal de Inspeção de Mídia (Vídeo MP4 / Imagem HD + Legenda Original + OCR Técnico)

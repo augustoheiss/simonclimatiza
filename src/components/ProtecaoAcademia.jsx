@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Lock, ShieldCheck, AlertCircle, KeyRound, Home } from 'lucide-react';
-import certBg from '../assets/fundo-certificado.png';
+import certBg from '../assets/fundo-textura-leve.webp';
 
 const CHAVE_STORAGE = 'simon_academia_auth';
 const SENHA_MESTRE = 'SIMON-VIP';

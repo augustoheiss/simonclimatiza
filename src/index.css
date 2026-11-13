@@ -1,5 +1,32 @@
 @import "tailwindcss";
 
+/*
+ * Identidade "Laudo de campo" (plano de 2026-11-13).
+ * Vale para as páginas públicas. Academia, Bancada e Certificado ainda usam as
+ * classes sky/slate e o navy #1a3a5c: não mexer neles aqui.
+ *
+ * Pares de texto validados em contraste (WCAG AA, 4,5:1):
+ *   tinta / refrigerante-escuro / aco-escuro / alerta-escuro  sobre  papel e branco
+ * Os tons sem "-escuro" (refrigerante, aco, alerta) são para fundos, bordas e
+ * ícones grandes. Não usar como cor de texto pequeno sobre papel.
+ */
+@theme {
+  --color-papel: #f2f6f8;
+  --color-laudo: #ffffff;
+  --color-tinta: #12303f;
+  --color-refrigerante: #1f7fa6;
+  --color-refrigerante-escuro: #176788;
+  --color-aco: #6b7c86;
+  --color-aco-escuro: #556873;
+  --color-alerta: #e8590c;
+  --color-alerta-escuro: #b8430a;
+  --color-filete: #d3dde3;
+
+  --font-serif-laudo: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-sans-laudo: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono-laudo: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+}
+
 html {
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   scroll-behavior: smooth;
@@ -43,4 +70,50 @@ html {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Escopo da nova identidade: só o que estiver dentro de .tema-laudo muda de fonte. */
+.tema-laudo {
+  font-family: var(--font-sans-laudo);
+  color: var(--color-tinta);
+  background-color: var(--color-papel);
+  font-size: 1.0625rem; /* 17 px */
+  line-height: 1.6;
+}
+
+.tema-laudo h1,
+.tema-laudo h2,
+.tema-laudo h3 {
+  font-family: var(--font-serif-laudo);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.tema-laudo p {
+  text-wrap: pretty;
+}
+
+/* Valores medidos: único uso de fonte mono no site público. */
+.valor-medido {
+  font-family: var(--font-mono-laudo);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Leitura de campo (hero): cada linha aparece uma vez, em sequência curta. */
+@keyframes leitura-assenta {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.leitura-linha {
+  animation: leitura-assenta 420ms ease-out both;
+  animation-delay: var(--atraso, 0ms);
 }

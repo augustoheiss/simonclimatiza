@@ -1,10 +1,10 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import ProtecaoAcademia from './components/ProtecaoAcademia';
-import Navbar from './components/Navbar';
+import SiteHeader from './components/layout/SiteHeader';
+import SiteFooter from './components/layout/SiteFooter';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
-import { CONTATO } from './data/contato';
 
 const Servicos = lazy(() => import('./pages/Servicos'));
 const Contato = lazy(() => import('./pages/Contato'));
@@ -50,7 +50,7 @@ function AppShell() {
           : 'min-h-screen bg-white flex flex-col font-sans selection:bg-sky-500 selection:text-white'
       }
     >
-      {!isCadWorkspaceRoute && <Navbar />}
+      {!isCadWorkspaceRoute && <SiteHeader />}
 
       <FloatingWhatsApp />
 
@@ -73,53 +73,7 @@ function AppShell() {
         </Suspense>
       </main>
 
-      {!isCadWorkspaceRoute && (
-        <footer className="bg-gradient-to-b from-sky-50/90 via-white to-sky-100/50 text-slate-600 border-t-2 border-sky-200 py-12 px-6">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-sm">
-            <div className="md:col-span-2">
-              <div className="flex items-center gap-2 mb-3">
-                <img
-                  src="/images/logo-simon.jpg"
-                  alt="Logo Simon Climatização"
-                  className="h-10 w-auto bg-white p-1 rounded border border-sky-200 shadow-2xs"
-                />
-                <span className="text-[#1a3a5c] font-extrabold text-lg">Simon Climatização</span>
-              </div>
-              <p className="text-slate-600 max-w-sm text-xs leading-relaxed mb-4">
-                Engenharia térmica de precisão, PMOC digital com ART, manutenção de sistemas VRF/VRV, Chillers e Câmaras Frias para edifícios corporativos e indústrias.
-              </p>
-              <div className="text-xs text-[#0369a1] font-bold">
-                Responsável Técnico Habilitado &bull; CREA / CFT Ativo
-              </div>
-            </div>
-
-            <div>
-              <h4 className="text-[#1a3a5c] font-extrabold mb-3 uppercase tracking-wider text-xs">Navegação</h4>
-              <ul className="space-y-2 text-xs font-medium">
-                <li><Link to="/" className="hover:text-[#0284c7] transition-colors">Início (Command Center)</Link></li>
-                <li><Link to="/servicos" className="hover:text-[#0284c7] transition-colors">Serviços de Engenharia</Link></li>
-                <li><Link to="/academia" className="hover:text-[#0284c7] transition-colors">Academia Simon HVAC</Link></li>
-                <li><Link to="/certificados" className="hover:text-[#0284c7] transition-colors">Emissão de Certificados</Link></li>
-                <li><Link to="/validar" className="hover:text-[#0284c7] transition-colors">Validação de Autenticidade</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-[#1a3a5c] font-extrabold mb-3 uppercase tracking-wider text-xs">Contato &amp; Legal</h4>
-              <ul className="space-y-2 text-xs font-medium">
-                <li><Link to="/contato" className="hover:text-[#0284c7] transition-colors">Solicitar Diagnóstico</Link></li>
-                <li><Link to="/termos" className="hover:text-[#0284c7] transition-colors">Termos de Uso &amp; LGPD</Link></li>
-                <li className="pt-2 text-slate-500">{CONTATO.cidade} &bull; Atendimento B2B</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="max-w-6xl mx-auto pt-6 border-t border-sky-200 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-3 font-medium">
-            <p>&copy; {new Date().getFullYear()} Simon Climatização. Todos os direitos reservados.</p>
-            <p className="text-[#1a3a5c] font-semibold">Engenharia Térmica de Alta Performance.</p>
-          </div>
-        </footer>
-      )}
+      {!isCadWorkspaceRoute && <SiteFooter />}
     </div>
   );
 }

@@ -67,56 +67,29 @@ const DATA_ATUALIZACAO = '20 de outubro de 2026';
 // ─── Section Component ─────────────────────────────────────────────────────────
 function LegalSection({ icon: Icon, number, title, children }) {
   return (
-    <motion.div
+    <motion.section
       variants={staggerItem}
-      className="relative bg-white/70 backdrop-blur-xl border border-sky-100 rounded-2xl p-7 md:p-8 shadow-lg shadow-sky-900/5 hover:shadow-xl hover:shadow-sky-900/8 transition-all duration-300 group"
+      aria-labelledby={`termo-${number}`}
+      className="border-t border-filete pt-6"
     >
-      {/* Decorative number */}
-      <div
-        className="absolute top-5 right-6 text-6xl font-black text-sky-100/60 select-none pointer-events-none"
-        aria-hidden="true"
-      >
-        {number}
+      <div className="flex items-baseline gap-3">
+        <span className="valor-medido text-sm font-semibold text-refrigerante-escuro" aria-hidden="true">
+          {number}
+        </span>
+        <h2 id={`termo-${number}`} className="font-serif-laudo text-xl md:text-2xl font-semibold text-tinta">
+          {title}
+        </h2>
       </div>
-
-      <div className="relative z-10">
-        {/* Section header */}
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 bg-gradient-to-br from-sky-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-md flex-shrink-0">
-            <Icon className="w-5 h-5" aria-hidden="true" />
-          </div>
-          <h2 className="text-lg md:text-xl font-bold text-slate-900">
-            {title}
-          </h2>
-        </div>
-
-        {/* Section content */}
-        <div className="text-slate-600 text-sm leading-relaxed space-y-4 pl-0 md:pl-13">
-          {children}
-        </div>
-      </div>
-    </motion.div>
+      <div className="mt-4 text-tinta text-base leading-relaxed space-y-4 texto-corrido [&_strong]:text-tinta">{children}</div>
+    </motion.section>
   );
 }
 
 // ─── Main Component ─────────────────────────────────────────────────────────────
 export default function Termos() {
   return (
-    <div className="w-full bg-white text-slate-900">
+    <div className="tema-laudo w-full">
 
-      {/* ── Decorative background ── */}
-      <div
-        className="fixed inset-0 pointer-events-none overflow-hidden -z-10"
-        aria-hidden="true"
-      >
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e0f2fe_1px,transparent_1px),linear-gradient(to_bottom,#e0f2fe_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_80%_60%_at_50%_0%,#000_50%,transparent_100%)] opacity-40" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-sky-300/15 rounded-full blur-[160px]" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-blue-200/20 rounded-full blur-[120px]" />
-      </div>
-
-      {/* ════════════════════════════════════════════════════════════════════════
-          HEADER — Page title and back button
-      ════════════════════════════════════════════════════════════════════════ */}
       <section className="relative pt-24 pb-12 px-6 md:px-12">
         <div className="max-w-4xl mx-auto">
 
@@ -143,21 +116,15 @@ export default function Termos() {
             initial="hidden"
             animate="visible"
             custom={0.1}
-            className="text-center"
+            className="text-left"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-50 border border-sky-200 text-sky-600 text-xs font-bold tracking-widest uppercase mb-6">
-              <Scale className="w-3.5 h-3.5" aria-hidden="true" />
-              Conformidade LGPD
-            </div>
 
-            <h1 className="text-3xl md:text-5xl font-extrabold leading-tight tracking-tight mb-4 text-slate-900">
-              Termos de Uso e{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-blue-600">
-                Política de Privacidade
-              </span>
+
+            <h1 className="text-3xl md:text-5xl text-tinta mb-4">
+              Termos de Uso e Política de Privacidade
             </h1>
 
-            <p className="text-slate-500 text-base max-w-2xl mx-auto mb-3">
+            <p className="text-aco-escuro text-base max-w-2xl mb-3">
               Transparência e respeito à sua privacidade são pilares fundamentais da{' '}
               <strong className="text-slate-700">{NOME_PROFISSIONAL}</strong>.
             </p>
@@ -182,12 +149,8 @@ export default function Termos() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="relative overflow-hidden rounded-2xl border border-sky-200 bg-gradient-to-br from-sky-50 via-white to-white p-8 md:p-10 shadow-xl shadow-sky-100/60"
+            className="relative rounded-md border border-filete bg-laudo p-6 md:p-8"
           >
-            <div
-              className="absolute -top-20 -right-20 w-72 h-72 bg-sky-300/15 rounded-full blur-[100px] pointer-events-none"
-              aria-hidden="true"
-            />
             <div className="relative z-10 flex items-start gap-4">
               <div className="w-12 h-12 bg-sky-50 border border-sky-200 rounded-xl flex items-center justify-center flex-shrink-0">
                 <ShieldCheck className="w-6 h-6 text-sky-500" aria-hidden="true" />
@@ -220,12 +183,7 @@ export default function Termos() {
 
             {/* ── PART 1: TERMOS DE USO ── */}
             <motion.div variants={staggerItem}>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-1.5 h-10 bg-gradient-to-b from-sky-400 to-blue-600 rounded-full" aria-hidden="true" />
-                <span className="text-xs font-bold uppercase tracking-widest text-sky-600">
-                  Parte 1 — Termos de Uso
-                </span>
-              </div>
+              <h2 className="font-serif-laudo text-2xl md:text-3xl font-semibold text-tinta mb-6">Parte 1 — Termos de Uso</h2>
             </motion.div>
 
             {/* 1.1 Descrição dos Serviços */}
@@ -307,12 +265,7 @@ export default function Termos() {
 
             {/* ── PART 2: POLÍTICA DE PRIVACIDADE ── */}
             <motion.div variants={staggerItem}>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-1.5 h-10 bg-gradient-to-b from-sky-400 to-blue-600 rounded-full" aria-hidden="true" />
-                <span className="text-xs font-bold uppercase tracking-widest text-sky-600">
-                  Parte 2 — Política de Privacidade (LGPD)
-                </span>
-              </div>
+              <h2 className="font-serif-laudo text-2xl md:text-3xl font-semibold text-tinta mb-6">Parte 2 — Política de Privacidade (LGPD)</h2>
               <p className="text-slate-600 text-sm leading-relaxed mb-6 pl-0 md:pl-5">
                 Em conformidade com a <strong className="text-slate-800">Lei Geral de Proteção de Dados
                 (Lei nº 13.709/2018)</strong> e o <strong className="text-slate-800">Marco Civil da Internet
@@ -435,7 +388,7 @@ export default function Termos() {
                     <ShieldCheck className="w-4 h-4 text-sky-500" aria-hidden="true" />
                   </div>
                   <div>
-                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <span className="block text-[0.8125rem] font-semibold text-aco-escuro">
                       Responsável
                     </span>
                     <span className="text-sm font-semibold text-slate-900">
@@ -449,7 +402,7 @@ export default function Termos() {
                     <Mail className="w-4 h-4 text-sky-500" aria-hidden="true" />
                   </div>
                   <div>
-                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <span className="block text-[0.8125rem] font-semibold text-aco-escuro">
                       E-mail
                     </span>
                     <a
@@ -466,7 +419,7 @@ export default function Termos() {
                     <Phone className="w-4 h-4 text-green-600" aria-hidden="true" />
                   </div>
                   <div>
-                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <span className="block text-[0.8125rem] font-semibold text-aco-escuro">
                       WhatsApp
                     </span>
                     <a

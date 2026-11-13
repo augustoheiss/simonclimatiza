@@ -35,7 +35,7 @@ export default function ScarcityCtaSection() {
         </div>
 
         <ul className="mt-6 space-y-1 text-aco-escuro">
-          <li>Retorno em até 24 horas úteis.</li>
+          <li>Atendimento direto com a equipe de engenharia.</li>
           <li>Visita técnica para mapear os equipamentos e verificar a situação do PMOC.</li>
           <li>Seus dados são usados só para este contato.</li>
         </ul>

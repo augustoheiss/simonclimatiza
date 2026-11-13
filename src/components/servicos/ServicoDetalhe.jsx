@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ProvasDeCampoServico } from './SobreSimonSection';
+import ProvasGaleria from './ProvasGaleria';
 
 // Um serviço completo: o que é, como é feito, o que se espera e o que a Simon garante.
 // `servico` vem de src/data/servicos.js.
@@ -47,7 +47,7 @@ export default function ServicoDetalhe({ servico }) {
             </div>
           </dl>
 
-          <ProvasDeCampoServico servicoRef={servico.id} tituloServico={servico.title} />
+          <ProvasGaleria servicoRef={servico.id} />
         </div>
       </div>
     </article>

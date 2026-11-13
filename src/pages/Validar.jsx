@@ -1,21 +1,12 @@
 import { useSearchParams, Link } from 'react-router-dom';
-import {
-  CheckCircle2,
-  AlertTriangle,
-  ShieldCheck,
-  Award,
-  User,
-  BookOpen,
-  Calendar,
-  Hash,
-} from 'lucide-react';
 
 /**
- * Validar — Stateless certificate validation page.
+ * Validar: página de conferência de certificado.
  *
- * Reads URL search params (cert, nome, curso, data) and displays
- * a branded validation result without any database lookup.
- * Accessed directly or via QR Code scan.
+ * ATENÇÃO: esta página NÃO consulta nenhum registro. Ela só mostra os dados que vieram no link
+ * (cert, nome, curso, data). Quem monta o link na mão vê o mesmo resultado. Por isso o texto abaixo
+ * não afirma "autêntico" nem "válido": diz que são os dados do link e orienta a confirmar com a Simon.
+ * Para uma validação de verdade é preciso um registro dos certificados emitidos (decisão do dono).
  */
 export default function Validar() {
   const [searchParams] = useSearchParams();
@@ -25,185 +16,86 @@ export default function Validar() {
   const curso = searchParams.get('curso');
   const data = searchParams.get('data');
 
-  const isValid = cert && nome && curso;
+  const temDados = cert && nome && curso;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-sky-50/20 to-slate-50 flex items-center justify-center px-4 py-16">
-      <div className="w-full max-w-lg">
-        {/* ── Logo / brand header ── */}
-        <div className="text-center mb-8">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-sky-500 hover:text-sky-600 transition-colors"
-          >
-            <img
-              src="/images/logo-simon.jpg"
-              alt="Logo Simon Climatização"
-              className="h-12 w-auto mix-blend-multiply"
-            />
-          </Link>
-        </div>
+    <div className="tema-laudo secao-laudo secao-laudo--papel" style={{ borderTop: 0, minHeight: '60vh' }}>
+      <div className="miolo max-w-2xl">
+        {temDados ? (
+          <section aria-labelledby="validar-titulo">
+            <h1 id="validar-titulo" className="text-3xl sm:text-4xl text-tinta">
+              Dados do certificado
+            </h1>
+            <p className="mt-3 text-aco-escuro leading-relaxed">
+              Estes são os dados que constam no link do certificado. Para confirmar que ele foi emitido pela Simon
+              Climatização, fale com a equipe pelo contato abaixo.
+            </p>
 
-        {isValid ? (
-          /* ── ✅ Valid certificate card ── */
-          <div className="bg-white rounded-2xl shadow-2xl shadow-emerald-900/10 border border-emerald-100 overflow-hidden">
-            {/* Green header strip */}
-            <div className="bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-5 flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
-                <ShieldCheck size={22} className="text-white" />
+            <dl className="mt-8 divide-y divide-filete border-y border-filete bg-laudo px-5">
+              <div className="py-4">
+                <dt className="text-sm text-aco-escuro">Emitido para</dt>
+                <dd className="mt-0.5 text-lg font-semibold text-tinta">{nome}</dd>
               </div>
-              <div>
-                <h1 className="text-white font-extrabold text-lg leading-tight">
-                  Certificado Autêntico
-                </h1>
-                <p className="text-emerald-100 text-xs mt-0.5">
-                  Verificação concluída com sucesso
-                </p>
+              <div className="py-4">
+                <dt className="text-sm text-aco-escuro">Treinamento</dt>
+                <dd className="mt-0.5 text-lg font-semibold text-tinta">{curso}</dd>
               </div>
-            </div>
-
-            {/* Certificate details */}
-            <div className="p-6 space-y-5">
-              {/* Status badge */}
-              <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold px-4 py-2.5 rounded-xl">
-                <CheckCircle2 size={18} className="flex-shrink-0" />
-                <span>
-                  Este certificado é válido e foi emitido pela Simon
-                  Climatização e Refrigeração.
-                </span>
-              </div>
-
-              {/* Data rows */}
-              <div className="space-y-3">
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
-                  <User
-                    size={16}
-                    className="text-sky-500 flex-shrink-0 mt-0.5"
-                  />
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                      Certificado emitido para
-                    </p>
-                    <p className="text-sm font-bold text-slate-900 mt-0.5">
-                      {nome}
-                    </p>
-                  </div>
+              {data && (
+                <div className="py-4">
+                  <dt className="text-sm text-aco-escuro">Data de conclusão</dt>
+                  <dd className="mt-0.5 text-lg font-semibold text-tinta">{data}</dd>
                 </div>
-
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
-                  <BookOpen
-                    size={16}
-                    className="text-sky-500 flex-shrink-0 mt-0.5"
-                  />
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                      Treinamento Concluído
-                    </p>
-                    <p className="text-sm font-bold text-slate-900 mt-0.5">
-                      {curso}
-                    </p>
-                  </div>
-                </div>
-
-                {data && (
-                  <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
-                    <Calendar
-                      size={16}
-                      className="text-sky-500 flex-shrink-0 mt-0.5"
-                    />
-                    <div>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        Data de Conclusão
-                      </p>
-                      <p className="text-sm font-bold text-slate-900 mt-0.5">
-                        {data}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
-                  <Hash
-                    size={16}
-                    className="text-sky-500 flex-shrink-0 mt-0.5"
-                  />
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                      Número do Certificado
-                    </p>
-                    <p className="text-sm font-bold text-slate-900 mt-0.5 font-mono">
-                      {cert}
-                    </p>
-                  </div>
-                </div>
+              )}
+              <div className="py-4">
+                <dt className="text-sm text-aco-escuro">Número do certificado</dt>
+                <dd className="valor-medido mt-0.5 text-lg font-semibold text-tinta">{cert}</dd>
               </div>
-            </div>
+            </dl>
 
-            {/* Footer */}
-            <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 text-center">
-              <p className="text-[10px] text-slate-400">
-                Simon Climatização e Refrigeração — Engenharia Térmica de Alta
-                Performance
-              </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                to="/contato"
+                className="inline-flex items-center rounded-md bg-refrigerante-escuro hover:bg-tinta text-white font-semibold px-5 py-3 transition-colors"
+              >
+                Confirmar com a Simon
+              </Link>
+              <Link
+                to="/"
+                className="inline-flex items-center rounded-md border border-aco-escuro/50 text-tinta hover:bg-laudo font-semibold px-5 py-3 transition-colors"
+              >
+                Ir para o site
+              </Link>
             </div>
-          </div>
+          </section>
         ) : (
-          /* ── ⚠️ Invalid / incomplete data card ── */
-          <div className="bg-white rounded-2xl shadow-2xl shadow-amber-900/10 border border-amber-100 overflow-hidden">
-            {/* Orange header strip */}
-            <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-5 flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
-                <AlertTriangle size={22} className="text-white" />
-              </div>
-              <div>
-                <h1 className="text-white font-extrabold text-lg leading-tight">
-                  Dados Insuficientes
-                </h1>
-                <p className="text-amber-100 text-xs mt-0.5">
-                  Não foi possível validar o certificado
-                </p>
-              </div>
+          <section aria-labelledby="validar-titulo">
+            <h1 id="validar-titulo" className="text-3xl sm:text-4xl text-tinta">
+              Conferir um certificado
+            </h1>
+            <p className="mt-3 text-aco-escuro leading-relaxed" role="status">
+              O link está incompleto ou foi copiado com erro. Para conferir um certificado, escaneie o QR Code impresso
+              no próprio documento ou abra o link completo.
+            </p>
+            <p className="mt-3 text-aco-escuro leading-relaxed">
+              Se você tem um certificado emitido pela Simon Climatização e a conferência não funciona, fale com a equipe.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                to="/contato"
+                className="inline-flex items-center rounded-md bg-refrigerante-escuro hover:bg-tinta text-white font-semibold px-5 py-3 transition-colors"
+              >
+                Falar com a Simon
+              </Link>
+              <Link
+                to="/"
+                className="inline-flex items-center rounded-md border border-aco-escuro/50 text-tinta hover:bg-laudo font-semibold px-5 py-3 transition-colors"
+              >
+                Ir para o site
+              </Link>
             </div>
-
-            <div className="p-6 space-y-4">
-              <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-sm font-semibold px-4 py-2.5 rounded-xl">
-                <AlertTriangle size={18} className="flex-shrink-0" />
-                <span>
-                  A URL de validação está incompleta ou inválida. Certifique-se
-                  de que o link foi copiado corretamente ou escaneie o QR Code
-                  diretamente no certificado.
-                </span>
-              </div>
-
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Se você possui um certificado emitido pela Simon Climatização,
-                utilize o QR Code impresso no documento ou entre em contato
-                conosco para obter suporte.
-              </p>
-
-              <div className="flex gap-3 mt-4">
-                <Link
-                  to="/"
-                  className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white font-bold px-5 py-3 rounded-xl transition-all duration-200 shadow-lg shadow-sky-500/25 hover:-translate-y-0.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2"
-                >
-                  Ir ao Site
-                </Link>
-                <Link
-                  to="/contato"
-                  className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-5 py-3 rounded-xl transition-all duration-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
-                >
-                  Contato
-                </Link>
-              </div>
-            </div>
-          </div>
+          </section>
         )}
-
-        {/* ── Branding footnote ── */}
-        <p className="text-center text-[10px] text-slate-400 mt-8">
-          © {new Date().getFullYear()} Simon Climatiza — Sistema de
-          Verificação de Autenticidade
-        </p>
       </div>
     </div>
   );

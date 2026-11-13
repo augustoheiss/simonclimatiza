@@ -4,7 +4,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { SERVICOS, PILARES } from '../data/servicos';
 import ServicoDetalhe from '../components/servicos/ServicoDetalhe';
-import SobreSimonSection from '../components/servicos/SobreSimonSection';
+import EspecialistaPerfil from '../components/servicos/EspecialistaPerfil';
+import ProvasGaleria from '../components/servicos/ProvasGaleria';
 import IndiceSecoes from '../components/layout/IndiceSecoes';
 import { linkWhatsApp } from '../data/contato';
 
@@ -60,7 +61,7 @@ export default function Servicos() {
             Quem responde pelo trabalho
           </h2>
           <div className="mt-8">
-            <SobreSimonSection mode="especialista" />
+            <EspecialistaPerfil />
           </div>
         </div>
       </section>
@@ -74,7 +75,7 @@ export default function Servicos() {
             Fotos e vídeos de serviços reais, com as leituras dos instrumentos, publicados no perfil @simonclimatiza.
           </p>
           <div className="mt-8">
-            <SobreSimonSection mode="provas" />
+            <ProvasGaleria />
           </div>
         </div>
       </section>

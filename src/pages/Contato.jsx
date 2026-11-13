@@ -1,39 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import {
-  MessageCircle,
-  Phone,
-  Mail,
-  Clock,
-  Send,
-  MapPin,
-  ShieldCheck,
-  Zap,
-  CheckCircle2,
-} from 'lucide-react';
 import { CONTATO } from '../data/contato';
 
-// ─── Variantes de animação ─────────────────────────────────────────────────────
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (delay = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: 'easeOut', delay },
-  }),
-};
-
-const fadeIn = {
-  hidden: { opacity: 0, scale: 0.98 },
-  visible: (delay = 0) => ({
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.6, ease: 'easeOut', delay },
-  }),
-};
-
 // ─── Opções de serviço ─────────────────────────────────────────────────────────
+// Os valores precisam coincidir com `rotuloContato` em src/data/servicos.js (pré-seleção vinda de /servicos).
 const SERVICOS_OPCOES = [
   { value: '', label: 'Selecione um serviço' },
   { value: 'Sistemas VRF / VRV', label: 'Sistemas VRF / VRV' },
@@ -45,22 +15,17 @@ const SERVICOS_OPCOES = [
   { value: 'Outros', label: 'Outros' },
 ];
 
-
-// ─── Vitrine — dados das imagens ──────────────────────────────────────────────
+// ─── Vitrine — fotos de contexto ──────────────────────────────────────────────
 const VITRINE = [
   {
     src: '/images/camerafria-contatos.webp',
-    label: 'Câmaras Frias & Refrigeração',
-    caption: 'Segurança Alimentar & Precisão Térmica',
-    accent: 'from-sky-900/80',
-    delay: 0.1,
+    alt: 'Técnico de jaleco e touca conferindo produtos dentro de uma câmara fria',
+    legenda: 'Câmaras frias e refrigeração',
   },
   {
     src: '/images/industria-contatos-02.webp',
-    label: 'Infraestrutura Industrial',
-    caption: 'Produtividade Industrial & Engenharia de Elite',
-    accent: 'from-slate-900/80',
-    delay: 0.2,
+    alt: 'Equipe em uma planta industrial com tubulações e painéis de controle',
+    legenda: 'Infraestrutura industrial',
   },
 ];
 
@@ -107,359 +72,197 @@ Aguardo o retorno. Obrigado!`;
     window.open(`https://wa.me/${CONTATO.whatsappNumero}?text=${encoded}`, '_blank');
   }
 
-  // ─── Classes compartilhadas ──────────────────────────────────────────────────
-  const inputBase =
-    'w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 placeholder-slate-400 text-sm transition-all duration-200 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 focus:bg-white';
+  const campo =
+    'mt-1 w-full rounded-md border border-aco/60 bg-laudo px-3 py-2.5 text-tinta placeholder:text-aco-escuro/70 focus:outline-none focus:border-refrigerante-escuro focus:ring-2 focus:ring-refrigerante-escuro/30';
 
   return (
-    <div className="w-full bg-white text-slate-900">
-
-      {/* ── Background decorativo fixo ── */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e0f2fe_1px,transparent_1px),linear-gradient(to_bottom,#e0f2fe_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_80%_60%_at_50%_0%,#000_50%,transparent_100%)] opacity-40" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-sky-300/15 rounded-full blur-[160px]" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-blue-200/20 rounded-full blur-[120px]" />
-      </div>
-
-      {/* ══════════════════════════════════════════════════════════
-          1. CABEÇALHO — Título e subtítulo
-      ══════════════════════════════════════════════════════════ */}
-      <section className="relative pt-24 pb-10 px-6 md:px-12 text-center">
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={0}
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-50 border border-sky-200 text-sky-600 text-xs font-bold tracking-widest uppercase mb-6">
-            <MessageCircle className="w-3.5 h-3.5" />
-            Fale com um Especialista
-          </div>
-
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight mb-4 text-slate-900">
-            Entre em{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-blue-600">
-              Contato
-            </span>
+    <div className="tema-laudo">
+      <section className="secao-laudo secao-laudo--papel" aria-labelledby="contato-titulo" style={{ borderTop: 0 }}>
+        <div className="miolo">
+          <h1 id="contato-titulo" className="text-4xl sm:text-5xl text-tinta max-w-[40rem]">
+            Fale com a equipe de engenharia
           </h1>
-
-          <p className="text-slate-500 text-lg max-w-xl mx-auto">
-            Resposta ágil garantida. Nossa equipe técnica está pronta para
-            atender sua demanda.
+          <p className="texto-corrido mt-4 text-lg text-aco-escuro">
+            Sistema novo, manutenção preventiva ou emergência: conte o que precisa e a equipe técnica responde pelo WhatsApp.
           </p>
-        </motion.div>
-      </section>
 
-      {/* ══════════════════════════════════════════════════════════
-          2. VITRINE DE CONFIANÇA — As duas imagens lado a lado
-      ══════════════════════════════════════════════════════════ */}
-      <section className="relative max-w-6xl mx-auto px-6 md:px-12 pb-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {VITRINE.map(({ src, label, caption, accent, delay }) => (
-            <motion.div
-              key={src}
-              variants={fadeIn}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-40px' }}
-              custom={delay}
-              className="group relative h-64 md:h-72 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-500"
-            >
-              {/* Imagem de fundo */}
-              <div
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                style={{ backgroundImage: `url(${src})` }}
-              />
-
-              {/* Overlay gradiente do rodapé — texto flutua limpo */}
-              <div className={`absolute inset-0 bg-gradient-to-t ${accent} via-transparent to-transparent`} />
-
-              {/* Caption elegante */}
-              <div className="absolute bottom-0 left-0 right-0 p-5">
-                <p className="text-sky-300 text-[10px] font-bold uppercase tracking-[0.2em] mb-1">
-                  {label}
-                </p>
-                <p className="text-white font-bold text-sm md:text-base leading-snug">
-                  {caption}
-                </p>
-              </div>
-
-              {/* Borda de brilho no hover */}
-              <div className="absolute inset-0 rounded-2xl ring-0 group-hover:ring-2 group-hover:ring-sky-400/40 transition-all duration-500" />
-            </motion.div>
-          ))}
+          <ul className="mt-8 grid gap-5 sm:grid-cols-2">
+            {VITRINE.map((v) => (
+              <li key={v.src}>
+                <figure>
+                  <img
+                    src={v.src}
+                    alt={v.alt}
+                    width="800"
+                    height="480"
+                    loading="lazy"
+                    className="aspect-[5/3] w-full rounded-md border border-filete object-cover"
+                  />
+                  <figcaption className="mt-2 text-sm text-aco-escuro">{v.legenda}</figcaption>
+                </figure>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════
-          3. ÁREA FUNCIONAL — Contato direto + Formulário
-      ══════════════════════════════════════════════════════════ */}
-      <section className="relative max-w-6xl mx-auto px-6 md:px-12 pb-28 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+      <section className="secao-laudo secao-laudo--branca" aria-label="Formas de contato e formulário">
+        <div className="miolo grid gap-12 lg:grid-cols-[0.9fr_1.1fr] items-start">
+          <div>
+            <h2 className="text-2xl sm:text-3xl text-tinta">Como falar com a Simon</h2>
 
-        {/* ════════════════════════════════════════
-            COLUNA ESQUERDA — Informações de contato
-        ════════════════════════════════════════ */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          custom={0}
-        >
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-xl shadow-sky-900/5 p-8 flex flex-col gap-7">
+            <ul className="mt-5 space-y-2 text-tinta">
+              <li>Diagnóstico técnico especializado, com ART.</li>
+              <li>Orçamento detalhado e transparente.</li>
+            </ul>
 
-            {/* Chamada principal */}
-            <div>
-              <h2 className="text-2xl md:text-3xl font-extrabold leading-snug mb-3 tracking-tight text-slate-900">
-                Pronto para otimizar sua{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-blue-600">
-                  infraestrutura climática?
-                </span>
-              </h2>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Seja um sistema novo, manutenção preventiva ou uma emergência
-                crítica, nossa equipe responde com{' '}
-                <span className="text-sky-500 font-semibold">agilidade e precisão técnica</span>.
-              </p>
-            </div>
-
-            {/* Diferenciais rápidos */}
-            <div className="flex flex-col gap-2.5">
-              {[
-                { icon: Zap, label: 'Resposta em menos de 2 horas úteis' },
-                { icon: ShieldCheck, label: 'Diagnóstico técnico especializado com ART' },
-                { icon: CheckCircle2, label: 'Orçamento detalhado e transparente' },
-              ].map(({ icon: Icon, label }) => (
-                <div key={label} className="flex items-center gap-3 text-sm text-slate-700">
-                  <div className="w-8 h-8 rounded-lg bg-sky-50 border border-sky-200 flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-4 h-4 text-sky-500" />
-                  </div>
-                  {label}
-                </div>
-              ))}
-            </div>
-
-            <div className="border-t border-slate-100" />
-
-            {/* Cards de contato direto */}
-            <div className="flex flex-col gap-3">
-
-              <a
-                href={`https://wa.me/${CONTATO.whatsappNumero}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all duration-300 shadow-sm"
-              >
-                <div className="w-11 h-11 rounded-xl bg-green-50 border border-green-200 flex items-center justify-center flex-shrink-0 group-hover:border-green-400 transition-colors">
-                  <MessageCircle className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-0.5">
-                    WhatsApp / Telefone
-                  </p>
-                  <p className="text-slate-900 font-semibold group-hover:text-sky-600 transition-colors">
+            <dl className="mt-8 divide-y divide-filete border-y border-filete">
+              <div className="py-4">
+                <dt className="text-sm text-aco-escuro">WhatsApp e telefone</dt>
+                <dd className="mt-0.5">
+                  <a
+                    href={`https://wa.me/${CONTATO.whatsappNumero}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="valor-medido text-lg font-semibold text-refrigerante-escuro hover:text-tinta"
+                  >
                     {CONTATO.whatsappExibicao}
-                  </p>
-                </div>
-                <Phone className="w-4 h-4 text-slate-300 ml-auto group-hover:text-sky-500 transition-colors" />
-              </a>
-
-              <a
-                href={`mailto:${CONTATO.email}`}
-                className="group flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all duration-300 shadow-sm"
-              >
-                <div className="w-11 h-11 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center flex-shrink-0 group-hover:border-sky-400 transition-colors">
-                  <Mail className="w-5 h-5 text-sky-500" />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-0.5">
-                    E-mail Profissional
-                  </p>
-                  <p className="text-slate-900 font-semibold group-hover:text-sky-600 transition-colors">
+                  </a>
+                </dd>
+              </div>
+              <div className="py-4">
+                <dt className="text-sm text-aco-escuro">E-mail</dt>
+                <dd className="mt-0.5">
+                  <a
+                    href={`mailto:${CONTATO.email}`}
+                    className="text-lg font-semibold text-refrigerante-escuro hover:text-tinta"
+                  >
                     {CONTATO.email}
-                  </p>
-                </div>
-                <Mail className="w-4 h-4 text-slate-300 ml-auto group-hover:text-sky-500 transition-colors" />
-              </a>
-
-              <div className="flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200 shadow-sm">
-                <div className="w-11 h-11 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-5 h-5 text-blue-500" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">
-                    Horários de Atendimento
-                  </p>
-                  <div className="text-sm text-slate-700 space-y-0.5">
-                    <p>
-                      <span className="text-slate-900 font-semibold">Corporativo:</span>{' '}
-                      Seg–Sex, 08h às 18h
-                    </p>
-                    <p>
-                      <span className="text-orange-500 font-semibold">Emergência 24h:</span>{' '}
-                      Sáb, Dom e Feriados
-                    </p>
-                  </div>
-                </div>
+                  </a>
+                </dd>
               </div>
-
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200 shadow-sm">
-                <div className="w-11 h-11 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-5 h-5 text-slate-500" />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-0.5">
-                    Área de Atuação
-                  </p>
-                  <p className="text-sm text-slate-700">
-                    {CONTATO.areaAtuacao}
-                  </p>
-                </div>
+              <div className="py-4">
+                <dt className="text-sm text-aco-escuro">Horário de atendimento</dt>
+                <dd className="mt-0.5 text-tinta">
+                  <p>Corporativo: segunda a sexta, das 8h às 18h</p>
+                  <p>Emergência 24h: sábados, domingos e feriados</p>
+                </dd>
               </div>
-            </div>
-
-            {/* Selo de garantia */}
-            <div className="flex items-start gap-4 p-5 rounded-xl bg-sky-50 border border-sky-200">
-              <div className="w-10 h-10 rounded-xl bg-white border border-sky-300 flex items-center justify-center flex-shrink-0">
-                <ShieldCheck className="w-5 h-5 text-sky-500" />
+              <div className="py-4">
+                <dt className="text-sm text-aco-escuro">Área de atuação</dt>
+                <dd className="mt-0.5 text-tinta">{CONTATO.areaAtuacao}</dd>
               </div>
-              <div>
-                <p className="text-sm font-bold text-slate-900 mb-1">
-                  Zero Quebras. Zero Perda de Estoque.
-                </p>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Protocolos de redundância e manutenção preditiva eliminam
-                  falhas catastróficas. Seu inventário está protegido — garantido.
-                </p>
-              </div>
-            </div>
+            </dl>
 
+            <p className="mt-8 border-l-4 border-refrigerante-escuro pl-4 text-tinta leading-relaxed texto-corrido">
+              <strong>Manutenção preventiva reduz o risco de paradas.</strong> Protocolos de redundância e acompanhamento
+              periódico ajudam a evitar falhas graves e protegem o estoque e a operação.
+            </p>
           </div>
-        </motion.div>
 
-        {/* ════════════════════════════════════════
-            COLUNA DIREITA — Formulário inteligente
-        ════════════════════════════════════════ */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          custom={0.15}
-        >
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-xl shadow-sky-900/5 p-8">
+          <div>
+            <h2 className="text-2xl sm:text-3xl text-tinta">Envie sua solicitação</h2>
+            <p className="mt-2 text-aco-escuro">
+              Quanto mais detalhes você informar, mais precisa será a primeira conversa.
+            </p>
 
-            {/* Header do card */}
-            <div className="mb-7">
-              <h3 className="text-xl font-bold text-slate-900 mb-1">
-                Envie sua solicitação
-              </h3>
-              <p className="text-sm text-slate-500">
-                Todos os campos ajudam a agilizar o atendimento.
-              </p>
-            </div>
-
-            <form onSubmit={handleWhatsAppSubmit} className="flex flex-col gap-5">
-
-              {/* Nome Completo */}
+            <form onSubmit={handleWhatsAppSubmit} className="mt-6 space-y-5">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                  Nome Completo
+                <label htmlFor="contato-nome" className="font-semibold text-tinta">
+                  Nome completo
                 </label>
                 <input
+                  id="contato-nome"
                   type="text"
                   name="nome"
+                  autoComplete="name"
                   value={form.nome}
                   onChange={handleChange}
-                  placeholder="Ex: João da Silva"
-                  className={inputBase}
+                  placeholder="Ex.: João da Silva"
+                  className={campo}
                 />
               </div>
 
-              {/* E-mail + Telefone lado a lado */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="grid gap-5 sm:grid-cols-2">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                    E-mail Profissional
+                  <label htmlFor="contato-email" className="font-semibold text-tinta">
+                    E-mail profissional
                   </label>
                   <input
+                    id="contato-email"
                     type="email"
                     name="email"
+                    autoComplete="email"
                     value={form.email}
                     onChange={handleChange}
                     placeholder="voce@empresa.com.br"
-                    className={inputBase}
+                    className={campo}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                    Telefone / WhatsApp
+                  <label htmlFor="contato-telefone" className="font-semibold text-tinta">
+                    Telefone ou WhatsApp
                   </label>
                   <input
+                    id="contato-telefone"
                     type="tel"
                     name="telefone"
+                    autoComplete="tel"
                     value={form.telefone}
                     onChange={handleChange}
                     placeholder="(11) 9 0000-0000"
-                    className={inputBase}
+                    className={campo}
                   />
                 </div>
               </div>
 
-              {/* Serviço de Interesse */}
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                  Serviço de Interesse
+                <label htmlFor="contato-servico" className="font-semibold text-tinta">
+                  Serviço de interesse
                 </label>
                 <select
+                  id="contato-servico"
                   name="servico"
                   value={servico}
                   onChange={(e) => setServico(e.target.value)}
-                  className={`${inputBase} cursor-pointer appearance-none`}
-                  style={{ backgroundImage: 'none' }}
+                  className={`${campo} cursor-pointer`}
                 >
                   {SERVICOS_OPCOES.map(({ value, label }) => (
-                    <option key={value} value={value} className="bg-white text-slate-900">
+                    <option key={value} value={value}>
                       {label}
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* Mensagem */}
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                  Detalhes do Projeto / Mensagem
+                <label htmlFor="contato-mensagem" className="font-semibold text-tinta">
+                  Detalhes do projeto
                 </label>
                 <textarea
+                  id="contato-mensagem"
                   name="mensagem"
                   value={form.mensagem}
                   onChange={handleChange}
                   rows={5}
-                  placeholder="Descreva brevemente o equipamento, problema ou projeto. Mais detalhes = atendimento mais rápido."
-                  className={`${inputBase} resize-none`}
+                  placeholder="Descreva o equipamento, o problema ou o projeto."
+                  className={`${campo} resize-y`}
                 />
               </div>
 
-              {/* Botão de submit */}
               <button
                 type="submit"
-                className="group w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm tracking-wide uppercase transition-all duration-300 shadow-lg shadow-sky-500/25 hover:shadow-sky-600/30 hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full rounded-md bg-refrigerante-escuro hover:bg-tinta text-white font-semibold px-6 py-3.5 transition-colors"
               >
-                <MessageCircle className="w-5 h-5 transition-transform group-hover:rotate-6" />
-                Enviar e Falar no WhatsApp
-                <Send className="w-4 h-4 opacity-60 group-hover:translate-x-1 transition-transform" />
+                Enviar pelo WhatsApp
               </button>
 
-              {/* Disclaimer */}
-              <p className="text-xs text-slate-400 text-center leading-relaxed">
-                Ao enviar, você será redirecionado ao WhatsApp com os dados
-                preenchidos. Nenhum dado é armazenado.
+              <p className="text-sm text-aco-escuro">
+                Ao enviar, o WhatsApp abre com os dados que você preencheu. O site não guarda essas informações.
               </p>
             </form>
           </div>
-        </motion.div>
-
+        </div>
       </section>
     </div>
   );

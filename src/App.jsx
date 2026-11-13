@@ -19,7 +19,7 @@ const Termos = lazy(() => import('./pages/Termos'));
 
 function RouteLoader() {
   return (
-    <div className="flex-grow flex items-center justify-center min-h-[60vh]" role="status" aria-live="polite">
+    <div className="flex-grow flex items-center justify-center min-h-[calc(100vh-4.5rem)]" role="status" aria-live="polite">
       <div className="flex flex-col items-center gap-3">
         <div className="w-8 h-8 rounded-full border-2 border-[#176788] border-t-transparent animate-spin" aria-hidden="true" />
         <span className="text-sm text-[#556873]">Carregando…</span>
@@ -48,9 +48,7 @@ function AppShell() {
     >
       {!isCadWorkspaceRoute && <SiteHeader />}
 
-      <FloatingWhatsApp />
-
-      <main className="flex-grow flex flex-col min-h-0">
+      <main id="conteudo-principal" tabIndex={-1} className="flex-grow flex flex-col min-h-0 focus:outline-none">
         <Suspense fallback={<RouteLoader />}>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -70,6 +68,9 @@ function AppShell() {
       </main>
 
       {!isCadWorkspaceRoute && <SiteFooter />}
+
+      {/* Fica depois do conteúdo e do rodapé para não interromper a leitura por teclado. */}
+      <FloatingWhatsApp />
     </div>
   );
 }

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /academia
+Disallow: /certificados
+Disallow: /validar
+
+Sitemap: https://simonclimatiza.com.br/sitemap.xml

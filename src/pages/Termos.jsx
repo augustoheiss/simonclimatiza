@@ -103,7 +103,7 @@ export default function Termos() {
             <Link
               to="/"
               id="termos-back-btn"
-              className="inline-flex items-center gap-2 text-slate-500 hover:text-sky-600 font-medium text-sm transition-colors duration-200 mb-8 group"
+              className="inline-flex items-center gap-2 text-aco-escuro hover:text-tinta font-medium text-sm transition-colors duration-200 mb-8 group"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" aria-hidden="true" />
               Voltar para o Início
@@ -130,7 +130,7 @@ export default function Termos() {
             </p>
 
             {/* Last updated badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 border border-slate-200 text-slate-500 text-xs font-medium">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-laudo border border-filete text-aco-escuro text-xs font-medium">
               <FileText className="w-3.5 h-3.5" aria-hidden="true" />
               Última atualização: {DATA_ATUALIZACAO}
             </div>
@@ -153,7 +153,7 @@ export default function Termos() {
           >
             <div className="relative z-10 flex items-start gap-4">
               <div className="w-12 h-12 bg-sky-50 border border-sky-200 rounded-xl flex items-center justify-center flex-shrink-0">
-                <ShieldCheck className="w-6 h-6 text-sky-500" aria-hidden="true" />
+                <ShieldCheck className="w-6 h-6 text-refrigerante-escuro" aria-hidden="true" />
               </div>
               <div>
                 <p className="text-slate-700 text-base leading-relaxed">
@@ -385,7 +385,7 @@ export default function Termos() {
               <div className="mt-5 bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-sky-50 border border-sky-200 flex items-center justify-center flex-shrink-0">
-                    <ShieldCheck className="w-4 h-4 text-sky-500" aria-hidden="true" />
+                    <ShieldCheck className="w-4 h-4 text-refrigerante-escuro" aria-hidden="true" />
                   </div>
                   <div>
                     <span className="block text-[0.8125rem] font-semibold text-aco-escuro">
@@ -399,7 +399,7 @@ export default function Termos() {
 
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-sky-50 border border-sky-200 flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-4 h-4 text-sky-500" aria-hidden="true" />
+                    <Mail className="w-4 h-4 text-refrigerante-escuro" aria-hidden="true" />
                   </div>
                   <div>
                     <span className="block text-[0.8125rem] font-semibold text-aco-escuro">
@@ -407,7 +407,7 @@ export default function Termos() {
                     </span>
                     <a
                       href={`mailto:${EMAIL}`}
-                      className="text-sm font-semibold text-sky-600 hover:text-sky-700 transition-colors"
+                      className="text-sm font-semibold text-refrigerante-escuro hover:text-tinta transition-colors"
                     >
                       {EMAIL}
                     </a>
@@ -426,7 +426,7 @@ export default function Termos() {
                       href={`https://wa.me/${WHATSAPP_NUMBER}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm font-semibold text-sky-600 hover:text-sky-700 transition-colors"
+                      className="text-sm font-semibold text-refrigerante-escuro hover:text-tinta transition-colors"
                     >
                       {WHATSAPP_DISPLAY}
                     </a>
@@ -448,7 +448,7 @@ export default function Termos() {
             <Link
               to="/"
               id="termos-bottom-back-btn"
-              className="inline-flex items-center gap-2 border border-sky-300 hover:border-sky-500 text-sky-600 hover:text-sky-700 font-bold px-8 py-4 rounded-xl transition-all duration-200 text-sm bg-sky-50/50 hover:bg-sky-50 shadow-sm hover:shadow-md"
+              className="inline-flex items-center gap-2 border border-aco-escuro/50 hover:border-tinta text-tinta font-bold px-8 py-4 rounded-xl transition-all duration-200 text-sm bg-sky-50/50 hover:bg-sky-50 shadow-sm hover:shadow-md"
             >
               <ArrowLeft className="w-4 h-4" aria-hidden="true" />
               Voltar para o Início

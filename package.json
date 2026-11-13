@@ -16,7 +16,7 @@
     "adm-zip": "^0.5.17",
     "dompurify": "^3.4.8",
     "framer-motion": "^12.35.0",
-    "html2canvas": "^1.4.1",
+    "html2canvas-pro": "^2.6.4",
     "jspdf": "^4.2.1",
     "lucide-react": "^0.577.0",
     "qrcode.react": "^4.2.0",

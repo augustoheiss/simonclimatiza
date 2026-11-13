@@ -24,6 +24,12 @@ export default function SiteHeader() {
 
   return (
     <header className="tema-laudo sticky top-0 z-40 bg-laudo/95 backdrop-blur border-b border-filete">
+      <a
+        href="#conteudo-principal"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-2 focus:z-50 focus:rounded-md focus:bg-tinta focus:px-4 focus:py-2 focus:text-white"
+      >
+        Pular para o conteúdo
+      </a>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         <Link to="/" onClick={fechar} className="flex items-center gap-3 shrink-0">
           <img

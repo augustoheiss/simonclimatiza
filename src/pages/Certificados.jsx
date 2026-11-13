@@ -110,8 +110,9 @@ export default function Certificados() {
     setGerando(true);
     try {
       // Dynamic imports — libraries loaded only on demand
+      // html2canvas-pro: o html2canvas original (1.4) não lê cores oklch(), que o Tailwind 4 gera em todo o site.
       const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
-        import('html2canvas'),
+        import('html2canvas-pro'),
         import('jspdf'),
       ]);
 

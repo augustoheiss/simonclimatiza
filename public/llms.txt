@@ -1,0 +1,15 @@
+# Simon Climatização
+
+> Manutenção, PMOC e instalação de sistemas VRF/VRV, chillers e câmaras frias para edifícios corporativos e indústrias, com sede em São Paulo (SP). O responsável técnico tem 21 anos de experiência em campo e é instrutor de manutenção e instalação.
+
+## Páginas
+
+- [Início](https://simonclimatiza.com.br/): o que a empresa faz, o risco de operar sem PMOC, o método de trabalho e uma calculadora de desperdício de energia.
+- [Serviços](https://simonclimatiza.com.br/servicos): os seis serviços (VRF/VRV, chillers, câmaras frias, split e inverter, manutenção e PMOC, emergência), com protocolo, resultado esperado, garantia e provas de campo.
+- [Contato](https://simonclimatiza.com.br/contato): WhatsApp, e-mail, horário de atendimento e formulário.
+- [Termos de uso e privacidade](https://simonclimatiza.com.br/termos): termos de uso e política de privacidade (LGPD).
+
+## Observações
+
+- A calculadora da página inicial dá uma estimativa por proporção da conta de energia, sem visita técnica. O valor real depende de medição no local.
+- A Academia Simon (cursos técnicos) é uma área restrita para alunos.

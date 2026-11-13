@@ -4,7 +4,7 @@ export const cursoVRF = {
   id: "sistemavrf",
   titulo: "Dominando o Sistema VRF (TVR Ultra)",
   descricao: "Treinamento técnico operacional avançado. Aprenda desde o reconhecimento em campo até a matemática da modularidade de sistemas complexos de climatização.",
-  imagemDestaque: "/images/home-servicos-03.jpg",
+  imagemDestaque: "/images/home-servicos-03.webp",
   aulas: [
     {
       id: 1,
@@ -244,7 +244,7 @@ export const cursoTVRPro = {
   id: "tvrpro",
   titulo: "Instalação e Comissionamento TVR Pro DC Inverter",
   descricao: "Treinamento técnico detalhado sobre recebimento, instalação mecânica, tubulação, elétrica e comissionamento do sistema Trane TVR Pro DC Inverter.",
-  imagemDestaque: "/images/home-servicos.jpg", // Adicione uma imagem bonita para a capa desse curso depois
+  imagemDestaque: "/images/home-servicos.webp", // Adicione uma imagem bonita para a capa desse curso depois
   aulas: [
     {
       id: 1,
@@ -569,7 +569,7 @@ export const cursoInstalacaoCompleto = {
   id: "instalacao-hvac-completo",
   titulo: "Treinamento Completo de Instalação HVAC",
   descricao: "Metodologia de elite Simon Climatização. Aprenda ciclo de refrigeração profissional, vácuo profundo, brasagem com N2 e comissionamento sem achismos.",
-  imagemDestaque: "/images/industria-contatos-02.jpg",
+  imagemDestaque: "/images/industria-contatos-02.webp",
   isNovo: false,
   rotaCustomizada: "/academia/treinamento-hvac",
   totalAulas: 20,
@@ -581,7 +581,7 @@ export const cursoTVRProCO380VCatalogo = {
   id: "tvr-pro-co-380v",
   titulo: "TVR Pro CO 380V — Diagnóstico e Service Manual Avançado",
   descricao: "Treinamento técnico avançado TRANE TVR Pro CO 380V. Domine diagnóstico de 75+ códigos de erro, troubleshooting de IPM/retificador, comunicação RS-485, tubulação VRF e contaminação sistêmica. 6 partes, 16 tópicos — do básico ao avançado.",
-  imagemDestaque: "/images/home-servicos.jpg",
+  imagemDestaque: "/images/home-servicos.webp",
   isNovo: true,
   rotaCustomizada: "/academia/treinamento-tvr-pro-co",
   totalAulas: 16,
@@ -593,7 +593,7 @@ export const cursoManutencaoCompleto = {
   id: "manutencao-hvac-completo",
   titulo: "Treinamento Avançado de Manutenção HVAC",
   descricao: "Metodologia de gestão de ativos da Simon Climatização. Domine manutenção preventiva e preditiva, diagnóstico avançado, contratos PMOC e receita recorrente.",
-  imagemDestaque: "/images/home-manutencao-01.jpeg",
+  imagemDestaque: "/images/home-manutencao-01.webp",
   isNovo: true,
   rotaCustomizada: "/academia/treinamento-manutencao-hvac",
   totalAulas: 25,

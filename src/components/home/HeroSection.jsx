@@ -14,6 +14,7 @@ import {
   Send,
   ChevronDown,
 } from 'lucide-react';
+import { CONTATO } from '../../data/contato';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 35 },
@@ -42,7 +43,7 @@ function HeroLeadForm() {
     const msg = encodeURIComponent(
       `Olá Engenharia Simon! Me chamo ${formData.name}.\nTenho interesse em: ${formData.need || 'Diagnóstico Técnico'}.\nE-mail: ${formData.email}\nWhatsApp: ${formData.whatsapp}`
     );
-    window.open(`https://wa.me/5511942163150?text=${msg}`, '_blank');
+    window.open(`https://wa.me/${CONTATO.whatsappNumero}?text=${msg}`, '_blank');
     setSubmitted(true);
   };
 
@@ -156,7 +157,7 @@ export default function HeroSection({ onScrollToPain }) {
     <section
       className="relative min-h-[90vh] flex items-center py-20 sm:py-28 px-4 sm:px-6 md:px-12 overflow-hidden"
       style={{
-        backgroundImage: 'url(/images/home-servicos.jpg)',
+        backgroundImage: 'url(/images/home-servicos.webp)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'local',

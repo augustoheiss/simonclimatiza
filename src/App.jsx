@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import ProtecaoAcademia from './components/ProtecaoAcademia';
 import Navbar from './components/Navbar';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
+import { CONTATO } from './data/contato';
 
 const Servicos = lazy(() => import('./pages/Servicos'));
 const Contato = lazy(() => import('./pages/Contato'));
@@ -108,7 +109,7 @@ function AppShell() {
               <ul className="space-y-2 text-xs font-medium">
                 <li><Link to="/contato" className="hover:text-[#0284c7] transition-colors">Solicitar Diagnóstico</Link></li>
                 <li><Link to="/termos" className="hover:text-[#0284c7] transition-colors">Termos de Uso &amp; LGPD</Link></li>
-                <li className="pt-2 text-slate-500">Joinville / SC &bull; Atendimento Brasil B2B</li>
+                <li className="pt-2 text-slate-500">{CONTATO.cidade} &bull; Atendimento B2B</li>
               </ul>
             </div>
           </div>

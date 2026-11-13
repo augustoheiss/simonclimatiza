@@ -12,6 +12,7 @@ import {
   Zap,
   CheckCircle2,
 } from 'lucide-react';
+import { CONTATO } from '../data/contato';
 
 // ─── Variantes de animação ─────────────────────────────────────────────────────
 const fadeUp = {
@@ -44,19 +45,18 @@ const SERVICOS_OPCOES = [
   { value: 'Outros', label: 'Outros' },
 ];
 
-const WHATSAPP_NUMBER = '5511942163150';
 
 // ─── Vitrine — dados das imagens ──────────────────────────────────────────────
 const VITRINE = [
   {
-    src: '/images/camerafria-contatos.jpg',
+    src: '/images/camerafria-contatos.webp',
     label: 'Câmaras Frias & Refrigeração',
     caption: 'Segurança Alimentar & Precisão Térmica',
     accent: 'from-sky-900/80',
     delay: 0.1,
   },
   {
-    src: '/images/industria-contatos-02.jpg',
+    src: '/images/industria-contatos-02.webp',
     label: 'Infraestrutura Industrial',
     caption: 'Produtividade Industrial & Engenharia de Elite',
     accent: 'from-slate-900/80',
@@ -102,7 +102,7 @@ ${form.mensagem || '(sem mensagem adicional)'}
 Aguardo o retorno. Obrigado!`;
 
     const encoded = encodeURIComponent(texto);
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`, '_blank');
+    window.open(`https://wa.me/${CONTATO.whatsappNumero}?text=${encoded}`, '_blank');
   }
 
   // ─── Classes compartilhadas ──────────────────────────────────────────────────
@@ -243,7 +243,7 @@ Aguardo o retorno. Obrigado!`;
             <div className="flex flex-col gap-3">
 
               <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}`}
+                href={`https://wa.me/${CONTATO.whatsappNumero}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all duration-300 shadow-sm"
@@ -256,14 +256,14 @@ Aguardo o retorno. Obrigado!`;
                     WhatsApp / Telefone
                   </p>
                   <p className="text-slate-900 font-semibold group-hover:text-sky-600 transition-colors">
-                    +55 11 94216-3150
+                    {CONTATO.whatsappExibicao}
                   </p>
                 </div>
                 <Phone className="w-4 h-4 text-slate-300 ml-auto group-hover:text-sky-500 transition-colors" />
               </a>
 
               <a
-                href="mailto:simonclimatiza@gmail.com"
+                href={`mailto:${CONTATO.email}`}
                 className="group flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all duration-300 shadow-sm"
               >
                 <div className="w-11 h-11 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center flex-shrink-0 group-hover:border-sky-400 transition-colors">
@@ -274,7 +274,7 @@ Aguardo o retorno. Obrigado!`;
                     E-mail Profissional
                   </p>
                   <p className="text-slate-900 font-semibold group-hover:text-sky-600 transition-colors">
-                    simonclimatiza@gmail.com
+                    {CONTATO.email}
                   </p>
                 </div>
                 <Mail className="w-4 h-4 text-slate-300 ml-auto group-hover:text-sky-500 transition-colors" />
@@ -310,7 +310,7 @@ Aguardo o retorno. Obrigado!`;
                     Área de Atuação
                   </p>
                   <p className="text-sm text-slate-700">
-                    São Paulo, Grande São Paulo e interior do estado
+                    {CONTATO.areaAtuacao}
                   </p>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calculator, Zap, AlertTriangle, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { CONTATO } from '../../data/contato';
 
 export default function RoiCalculatorSection() {
   const [machines, setMachines] = useState(12);
@@ -37,7 +38,7 @@ export default function RoiCalculatorSection() {
       `Gostaria de agendar uma auditoria técnica preliminar para a minha empresa.`
     );
 
-    window.open(`https://wa.me/5511942163150?text=${msg}`, '_blank');
+    window.open(`https://wa.me/${CONTATO.whatsappNumero}?text=${msg}`, '_blank');
   };
 
   return (

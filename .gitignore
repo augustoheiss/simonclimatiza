@@ -31,3 +31,6 @@ dist-ssr
 master-plan/
 master-plan
 
+
+# Playwright MCP
+.playwright-mcp/

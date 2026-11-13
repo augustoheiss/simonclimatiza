@@ -1,12 +1,32 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, CheckCircle2 } from 'lucide-react';
+import { CONTATO, linkWhatsApp } from '../data/contato';
 
 export default function FloatingWhatsApp() {
-  const [tooltipVisible, setTooltipVisible] = useState(true);
+  // O balão só aparece depois de 8 s, para não cobrir o conteúdo logo na chegada.
+  const [tooltipVisible, setTooltipVisible] = useState(false);
 
-  const whatsappNumber = '5511942163150';
-  const defaultMessage = encodeURIComponent(
+  // Aparece uma vez e some sozinho, para não ficar cobrindo o conteúdo.
+  useEffect(() => {
+    const abrir = setTimeout(() => setTooltipVisible(true), 8000);
+    const fechar = setTimeout(() => setTooltipVisible(false), 20000);
+    return () => {
+      clearTimeout(abrir);
+      clearTimeout(fechar);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!tooltipVisible) return undefined;
+    const onKey = (e) => {
+      if (e.key === 'Escape') setTooltipVisible(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [tooltipVisible]);
+
+  const href = linkWhatsApp(
     'Olá! Estava navegando no site da Simon Climatiza e gostaria de tirar uma dúvida técnica sobre serviços de engenharia e PMOC.'
   );
 
@@ -34,7 +54,7 @@ export default function FloatingWhatsApp() {
               <div className="w-10 h-10 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-600 font-bold text-sm">
                 SC
               </div>
-              <div className="w-3 h-3 bg-emerald-500 border-2 border-white rounded-full absolute bottom-0 right-0 animate-pulse" />
+              <div className="w-3 h-3 bg-emerald-500 border-2 border-white rounded-full absolute bottom-0 right-0" />
             </div>
 
             <div className="text-left">
@@ -52,21 +72,16 @@ export default function FloatingWhatsApp() {
 
       {/* Floating Action Button */}
       <motion.a
-        href={`https://wa.me/${whatsappNumber}?text=${defaultMessage}`}
+        href={href}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Conversar com a Engenharia Simon Climatiza pelo WhatsApp"
+        aria-label={`Conversar com a ${CONTATO.nome} pelo WhatsApp`}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.95 }}
         className="relative group w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-tr from-emerald-500 to-teal-400 text-white rounded-full flex items-center justify-center shadow-2xl shadow-emerald-500/40 hover:shadow-emerald-500/60 transition-all duration-300"
       >
-        {/* Glow Ping Effect */}
-        <span className="absolute -inset-1 rounded-full bg-emerald-400 opacity-35 group-hover:opacity-75 blur-sm animate-pulse pointer-events-none" />
-
         <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8 relative z-10" aria-hidden="true" />
 
-        {/* Online Indicator */}
-        <span className="absolute top-1 right-1 w-4 h-4 bg-emerald-400 border-2 border-white rounded-full z-20" />
       </motion.a>
     </div>
   );

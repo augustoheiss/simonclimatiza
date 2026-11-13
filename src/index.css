@@ -22,3 +22,25 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* Foco visível para quem navega por teclado */
+:focus-visible {
+  outline: 2px solid #0369a1;
+  outline-offset: 2px;
+}
+
+/* Respeita quem pede menos movimento no sistema */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "validar:conversas": "node scripts/validar-conversas.mjs",
-    "criar:conversa": "node scripts/gerar-esqueleto-conversa.mjs"
+    "criar:conversa": "node scripts/gerar-esqueleto-conversa.mjs",
+    "otimizar:imagens": "node scripts/otimizar-imagens.mjs"
   },
   "dependencies": {
     "adm-zip": "^0.5.17",
@@ -36,6 +37,7 @@
     "gh-pages": "^6.3.0",
     "globals": "^16.5.0",
     "postcss": "^8.5.8",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4.2.1",
     "vite": "^7.3.1"
   }

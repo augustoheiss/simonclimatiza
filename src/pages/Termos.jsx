@@ -17,6 +17,7 @@ import {
   GraduationCap,
   AlertTriangle,
 } from 'lucide-react';
+import { CONTATO } from '../data/contato';
 
 // ─── Animation Variants ────────────────────────────────────────────────────────
 const fadeUp = {
@@ -56,9 +57,9 @@ const staggerItem = {
 
 // ─── Constants ──────────────────────────────────────────────────────────────────
 const NOME_PROFISSIONAL = 'Simon Climatização';
-const EMAIL = 'simonclimatiza@gmail.com';
-const WHATSAPP_DISPLAY = '+55 11 94216-3150';
-const WHATSAPP_NUMBER = '5511942163150';
+const EMAIL = CONTATO.email;
+const WHATSAPP_DISPLAY = CONTATO.whatsappExibicao;
+const WHATSAPP_NUMBER = CONTATO.whatsappNumero;
 const DESCRICAO_SERVICO =
   'engenharia térmica, climatização corporativa e industrial, manutenção preditiva (PMOC) e compliance sanitário';
 const DATA_ATUALIZACAO = '20 de outubro de 2026';

@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import TextoConversa from '../TextoConversa';
 import { obterDesafioPorAula } from '../../../data/desafiosModulo';
-import DesafioModuloModal, { lerStatusDesafioModulo } from '../DesafioModuloModal';
+import { lerStatusDesafioModulo } from '../../../utils/desafioModuloStorage';
+import DesafioModuloModal from '../DesafioModuloModal';
 import {
   Coffee,
   CheckCircle2,
@@ -34,8 +35,11 @@ export default function BeatSaideira({
     desafioModulo ? lerStatusDesafioModulo(cursoId, desafioModulo.moduloId) : null
   );
 
+  const slugRef = [cursoId, aulaId].filter(Boolean).join('/');
   const textoWhatsApp = encodeURIComponent(
-    `Olá equipe Simon! Acabei de fazer o Papo de Balcão da aula ${cursoId}/${aulaId} e queria mandar meu feedback:`
+    slugRef
+      ? `Olá equipe Simon! Acabei de fazer o Papo de Balcão da aula ${slugRef} e queria mandar meu feedback:`
+      : 'Olá equipe Simon! Acabei de estudar o Papo de Balcão e queria mandar meu feedback:'
   );
 
   return (
@@ -47,12 +51,12 @@ export default function BeatSaideira({
         <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center flex-shrink-0">
           <Coffee className="w-5 h-5 text-emerald-400" aria-hidden="true" />
         </div>
-        <div>
-          <span className="text-[11px] font-extrabold uppercase tracking-widest text-emerald-400 block">
-            Saideira do Balcão · Resumo de Bolso
+        <div className="min-w-0">
+          <span className="text-xs font-extrabold text-emerald-300 block">
+            Saideira do Balcão &bull; Resumo de bolso
           </span>
           <h3 className="text-base sm:text-lg font-extrabold text-white">
-            3 Regras de Ouro pra Subir na Obra Hoje
+            3 regras de ouro para subir na obra hoje
           </h3>
         </div>
       </div>
@@ -90,16 +94,16 @@ export default function BeatSaideira({
             <div className="w-9 h-9 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center flex-shrink-0 mt-0.5">
               <Trophy className="w-4 h-4 text-amber-400" aria-hidden="true" />
             </div>
-            <div>
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-400 block">
+            <div className="min-w-0">
+              <span className="text-xs font-extrabold text-amber-300 block">
                 {statusDesafio?.aprovado
-                  ? `Rodada Paga (${statusDesafio.acertos}/${statusDesafio.total} acertos)`
-                  : 'Desafio da Rodada · Certificação do Módulo'}
+                  ? `Rodada paga (${statusDesafio.acertos}/${statusDesafio.total} acertos)`
+                  : 'Desafio da rodada · Certificação do módulo'}
               </span>
-              <p className="text-xs sm:text-sm font-bold text-white">
+              <p className="text-sm font-bold text-white">
                 {desafioModulo.titulo}
               </p>
-              <p className="text-[11px] text-slate-300 mt-0.5">
+              <p className="text-xs text-slate-200 mt-0.5">
                 Encare {desafioModulo.questoes?.length || 5} situações práticas encadeadas cobrindo este módulo.
               </p>
             </div>
@@ -118,8 +122,8 @@ export default function BeatSaideira({
 
       {/* Pontes para a apostila oficial */}
       <div className="pt-4 border-t border-slate-800">
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
-          Aprofunde na Apostila Oficial desta Aula:
+        <p className="text-xs font-semibold text-slate-300 mb-3">
+          Aprofunde na apostila oficial desta aula:
         </p>
         <div className="flex flex-wrap gap-2.5">
           {typeof irParaAba === 'function' && (

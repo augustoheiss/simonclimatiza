@@ -40,9 +40,9 @@ export default function BeatInspecaoVisual({
     >
       {/* Cabeçalho */}
       <div className="flex items-center justify-between gap-2 mb-3">
-        <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-400/30">
+        <span className="inline-flex items-center gap-2 text-xs font-extrabold px-2.5 py-1 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-400/30">
           <Eye className="w-3.5 h-3.5" aria-hidden="true" />
-          {beat.titulo || 'Inspeção Visual de Obra'}
+          {beat.titulo || 'Inspeção visual de obra'}
         </span>
       </div>
 
@@ -67,14 +67,14 @@ export default function BeatInspecaoVisual({
             <button
               type="button"
               onClick={() => setAmpliado((v) => !v)}
-              className="absolute bottom-2 right-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-900/85 hover:bg-slate-900 text-slate-200 border border-slate-700 cursor-pointer"
+              className="absolute bottom-2 right-2 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-900/90 hover:bg-slate-900 text-slate-100 border border-slate-600 cursor-pointer"
             >
               <ZoomIn className="w-3.5 h-3.5" aria-hidden="true" />
-              {ampliado ? 'Reduzir' : 'Ampliar Esquema'}
+              {ampliado ? 'Reduzir' : 'Ampliar esquema'}
             </button>
           </div>
           {beat.legendaImagem && (
-            <div className="px-3 py-1.5 text-[11px] text-slate-400 border-t border-slate-800 bg-slate-900/60">
+            <div className="px-3 py-2 text-xs text-slate-300 border-t border-slate-800 bg-slate-900/70">
               {beat.legendaImagem}
             </div>
           )}
@@ -94,7 +94,7 @@ export default function BeatInspecaoVisual({
             } else if (selecionado && !ponto.correta) {
               classes = 'bg-rose-950/75 border-rose-500/70 text-rose-100';
             } else {
-              classes = 'bg-slate-900/50 border-slate-800 text-slate-400 opacity-65';
+              classes = 'bg-slate-900/50 border-slate-800 text-slate-300 opacity-70';
             }
           }
 
@@ -108,11 +108,11 @@ export default function BeatInspecaoVisual({
                 respondido ? 'cursor-default' : 'cursor-pointer'
               } ${classes}`}
             >
-              <div className="flex items-start gap-2.5">
-                <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-slate-900/90 border border-slate-700 text-[11px] font-mono font-bold text-emerald-300 flex-shrink-0 mt-0.5">
+              <div className="flex items-start gap-2.5 min-w-0 flex-1">
+                <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-slate-900/90 border border-slate-700 text-xs font-bold text-emerald-300 flex-shrink-0 mt-0.5">
                   {idx + 1}
                 </span>
-                <span className="leading-relaxed">
+                <span className="leading-relaxed min-w-0 flex-1 break-words">
                   <TextoConversa texto={ponto.rotulo || ponto.texto} />
                 </span>
               </div>

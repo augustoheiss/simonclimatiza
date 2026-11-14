@@ -32,9 +32,9 @@ export default function BeatQuiz({
       className="my-5 rounded-2xl border border-amber-500/40 bg-slate-900/95 p-5 shadow-lg"
     >
       <div className="flex items-center justify-between gap-2 mb-2">
-        <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-amber-400">
+        <div className="flex items-center gap-2 text-xs font-extrabold text-amber-300">
           <Wrench className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
-          <span>Desafio do Balcão · Diagnóstico de Campo</span>
+          <span>Desafio do balcão &bull; Diagnóstico de campo</span>
         </div>
         {opcaoSelecionada && (
           <span
@@ -81,12 +81,12 @@ export default function BeatQuiz({
               className={`w-full text-left px-4 py-3 rounded-xl border text-xs sm:text-sm font-medium transition-all duration-150 cursor-pointer flex items-start gap-3 focus:outline-none focus:ring-2 focus:ring-amber-400 ${estilo}`}
             >
               <span
-                className="w-6 h-6 rounded-lg bg-slate-900/90 border border-slate-600 flex items-center justify-center text-xs font-extrabold uppercase flex-shrink-0 mt-0.5"
+                className="w-6 h-6 rounded-lg bg-slate-900/90 border border-slate-600 flex items-center justify-center text-xs font-extrabold flex-shrink-0 mt-0.5"
                 aria-hidden="true"
               >
-                {opcao.id}
+                {String(opcao.id).toUpperCase()}
               </span>
-              <span className="flex-1 leading-relaxed">
+              <span className="flex-1 min-w-0 break-words leading-relaxed">
                 <TextoConversa texto={opcao.texto} />
               </span>
               {jaRespondeu && opcao.correta && (

@@ -26,8 +26,8 @@ import useProgress from '../hooks/useProgress';
 import {
   SimonActionGate,
   SimonDirectModeToggle,
-  useSimonActionGate,
 } from '../components/ui/SimonActionGate';
+import { useSimonActionGate } from '../hooks/useSimonActionGate';
 import certBg from '../assets/fundo-textura-leve.webp';
 
 const TODOS_CURSOS = listarTodosCursosNormalizados();
@@ -64,7 +64,7 @@ export default function AcademiaCatalogo() {
   );
 
   const grupoAtual = gruposCurso[grupoIdx] || gruposCurso[0] || null;
-  const aulasDoGrupo = grupoAtual?.aulas || [];
+  const aulasDoGrupo = useMemo(() => grupoAtual?.aulas || [], [grupoAtual]);
 
   const aulaAtiva = useMemo(() => {
     if (aulaSelecionadaId) {
@@ -149,6 +149,13 @@ export default function AcademiaCatalogo() {
         setAulaSelecionadaId(aula.idStr);
         setSlidePreviewIdx(0);
         if (funcaoOpcional) setFuncaoPreview(funcaoOpcional);
+        if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+          requestAnimationFrame(() => {
+            document
+              .getElementById('catalogo-preview-aula')
+              ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+        }
       },
     });
   };
@@ -163,15 +170,15 @@ export default function AcademiaCatalogo() {
       code: `WB-${view.toUpperCase()}`,
       category: 'Estação CAD Workbench em Tela Cheia',
       title: `${aula.titulo}`,
-      subtitle: `Modo de Abertura: ${viewLabels[view] || view}`,
+      subtitle: `Modo de abertura: ${viewLabels[view] || view}`,
       description:
-        'Abre a estação de trabalho completa (SimonCadWorkbench) com as ferramentas F1 a F6, inspetor lateral de grandezas físicas e controle de conclusão da aula.',
+        'Abre a estação de trabalho completa com as ferramentas F1 a F6, inspetor lateral de grandezas físicas e controle de conclusão da aula.',
       highlights: [
-        'Ferramentas CAD F1 (Vídeo/Slides), F2 (Bancada), F3 (Raio-X)',
+        'Ferramentas F1 (Vídeo/Slides), F2 (Bancada), F3 (Raio-X)',
         'Ferramentas F4 (Diagrama), F5 (Quiz) e F6 (Papo de Balcão)',
-        'Registro Automático de Progresso para o Certificado',
+        'Registro automático de progresso para o certificado',
       ],
-      confirmLabel: 'Confirmar e Abrir Workbench',
+      confirmLabel: 'Confirmar e abrir bancada',
       badgeColor: 'emerald',
       onConfirm: () => {
         navigate(`${cursoAtual.rotaUrl}?aula=${encodeURIComponent(aula.id)}&view=${view}`);
@@ -185,7 +192,7 @@ export default function AcademiaCatalogo() {
   }
 
   return (
-    <div className="h-dvh w-screen overflow-hidden flex flex-col bg-gradient-to-b from-sky-50/70 via-white to-sky-50/50 text-slate-900 select-none font-sans">
+    <div className="min-h-dvh lg:h-dvh w-full lg:overflow-hidden flex flex-col bg-gradient-to-b from-sky-50/70 via-white to-sky-50/50 text-slate-900 select-none sm:select-text font-sans">
       {/* Modal Sekundo / AutoCAD Interativo de Inspeção e Confirmação */}
       <SimonActionGate
         action={pendingAction}
@@ -205,24 +212,24 @@ export default function AcademiaCatalogo() {
         <div className="relative z-10 flex items-center gap-3 min-w-0">
           <Link
             to="/"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 border border-sky-200 text-xs font-extrabold text-[#1a3a5c] hover:text-[#0284c7] transition-colors shadow-2xs"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 border border-sky-200 text-xs font-extrabold text-[#1a3a5c] hover:text-[#0284c7] transition-colors shadow-2xs flex-shrink-0"
           >
             <Home className="w-3.5 h-3.5 text-[#0284c7]" />
             <span>Início B2B</span>
           </Link>
 
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-extrabold uppercase bg-sky-100 text-[#0369a1] border border-sky-300">
-                ACADEMIA SIMON &bull; AUTOCAD WORKSPACE
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-sky-100 text-[#0369a1] border border-sky-300">
+                Academia Simon &bull; Catálogo
               </span>
-              <span className="hidden md:inline text-[11px] font-mono font-bold text-slate-600">
+              <span className="hidden md:inline text-xs font-semibold text-slate-600">
                 Progresso em {cursoAtual.nomeCurto}: {progressoCurso.count}/{progressoCurso.total} (
                 {progressoCurso.percentual}%)
               </span>
             </div>
-            <h1 className="text-xs sm:text-sm font-black text-[#1a3a5c] truncate mt-0.5">
-              Central Interativa de Treinamentos, Módulos e Aulas (Zero-Roll-Down)
+            <h1 className="text-sm sm:text-base font-extrabold text-[#1a3a5c] truncate mt-0.5">
+              Central de treinamentos, módulos e aulas
             </h1>
           </div>
         </div>
@@ -235,45 +242,46 @@ export default function AcademiaCatalogo() {
 
           <Link
             to="/certificados"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-800 text-xs font-extrabold transition-all shadow-2xs"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-xs font-extrabold transition-all shadow-2xs"
           >
-            <Award className="w-3.5 h-3.5 text-amber-600" />
+            <Award className="w-3.5 h-3.5 text-amber-700" />
             <span>Certificados</span>
           </Link>
 
           <button
             type="button"
             onClick={() => abrirNoWorkbench(aulaAtiva, 'bancada')}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#0369a1] hover:bg-[#0284c7] text-white text-xs font-black uppercase tracking-wider shadow-md shadow-sky-600/20 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#0369a1] hover:bg-[#0284c7] text-white text-xs font-extrabold shadow-md shadow-sky-600/20 cursor-pointer"
           >
             <Wrench className="w-3.5 h-3.5" />
-            <span>Abrir Aula na Bancada Completa</span>
+            <span>Abrir aula na bancada</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
 
           <button
             type="button"
             onClick={handleLogoutVip}
-            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white hover:bg-red-50 border border-sky-200 hover:border-red-300 text-slate-600 hover:text-red-700 text-xs font-bold transition-colors cursor-pointer"
-            title="Sair da Academia e voltar ao início"
+            aria-label="Bloquear acesso e voltar ao início"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white hover:bg-red-50 border border-sky-200 hover:border-red-300 text-slate-700 hover:text-red-700 text-xs font-bold transition-colors cursor-pointer"
+            title="Bloquear acesso à Academia e voltar ao início"
           >
             <LogOut className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Sair VIP</span>
+            <span className="hidden sm:inline">Bloquear acesso</span>
           </button>
         </div>
       </header>
 
-      {/* ── 2. CORPO AUTOCAD EM 3 PAINÉIS (TEMA CLARO PRANCHETA DO CERTIFICADO) ── */}
-      <div className="flex-1 min-h-0 flex flex-col lg:flex-row overflow-hidden bg-white">
+      {/* ── 2. CORPO EM 3 PAINÉIS (TEMA CLARO PRANCHETA DO CERTIFICADO) ── */}
+      <div className="flex-1 min-h-0 flex flex-col lg:flex-row lg:overflow-hidden bg-white">
         {/* ════════════════════════════════════════════════════════════════════
-            PAINEL 1 (ESQUERDA): PASSO 1 (TREINAMENTOS) + PASSO 2 (MÓDULOS / CAMADAS)
+            PAINEL 1 (ESQUERDA): PASSO 1 (TREINAMENTOS) + PASSO 2 (MÓDULOS)
         ════════════════════════════════════════════════════════════════════ */}
-        <aside className="w-full lg:w-[330px] xl:w-[360px] flex-shrink-0 bg-sky-50/70 border-b lg:border-b-0 lg:border-r-2 border-sky-200 p-3 flex flex-col gap-3 overflow-y-auto">
+        <aside className="w-full lg:w-[330px] xl:w-[360px] flex-shrink-0 bg-sky-50/70 border-b lg:border-b-0 lg:border-r-2 border-sky-200 p-3 flex flex-col gap-3 lg:h-full lg:overflow-y-auto">
           {/* PASSO 1: Seletor dos Treinamentos */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-mono font-black uppercase tracking-widest text-[#0369a1]">
-                PASSO 1 &bull; CLIQUE NO TREINAMENTO ({TODOS_CURSOS.length})
+              <span className="text-xs font-bold text-[#0369a1]">
+                Passo 1 &bull; Escolha o treinamento ({TODOS_CURSOS.length})
               </span>
             </div>
             <div className="grid grid-cols-1 gap-1.5">
@@ -294,14 +302,14 @@ export default function AcademiaCatalogo() {
                     }`}
                   >
                     <div className="min-w-0">
-                      <span className="text-[9px] font-mono font-black text-[#0369a1] block">
-                        [{c.codigoCad}]
+                      <span className="text-xs font-bold text-[#0369a1] block">
+                        {c.codigoCad}
                       </span>
-                      <span className="text-xs font-extrabold truncate block text-[#1a3a5c]">
+                      <span className="text-[13px] font-extrabold truncate block text-[#1a3a5c]">
                         {c.nomeCurto}
                       </span>
                     </div>
-                    <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-sky-50 text-[#0369a1] border border-sky-200 flex-shrink-0">
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-sky-50 text-[#0369a1] border border-sky-200 flex-shrink-0">
                       {c.todasAulas.length} aulas &bull; {prog.percentual}%
                     </span>
                   </button>
@@ -313,8 +321,8 @@ export default function AcademiaCatalogo() {
           {/* PASSO 2: Alternador Trilha Prática do Simon (Física -> Instalação) vs Ordem de Módulos */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-mono font-black uppercase tracking-widest text-emerald-800">
-                PASSO 2 &bull; MODO &amp; MÓDULOS DO CURSO
+              <span className="text-xs font-bold text-emerald-800">
+                Passo 2 &bull; Trilha e módulos do curso
               </span>
             </div>
             <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-white border border-sky-200 mb-2 shadow-2xs">
@@ -324,14 +332,14 @@ export default function AcademiaCatalogo() {
                   setModoTrilha('pratica');
                   setGrupoIdx(0);
                 }}
-                className={`py-1.5 px-2 rounded-lg text-[11px] font-extrabold flex items-center justify-center gap-1 cursor-pointer transition-colors ${
+                className={`py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 cursor-pointer transition-colors ${
                   modoTrilha === 'pratica'
                     ? 'bg-[#0369a1] text-white shadow-2xs'
-                    : 'text-slate-600 hover:text-[#1a3a5c] hover:bg-sky-50'
+                    : 'text-slate-700 hover:text-[#1a3a5c] hover:bg-sky-50'
                 }`}
               >
-                <Flame className="w-3.5 h-3.5" />
-                <span>Física ➔ Prática</span>
+                <Flame className="w-3.5 h-3.5 flex-shrink-0" />
+                <span>Da física à prática</span>
               </button>
               <button
                 type="button"
@@ -339,14 +347,14 @@ export default function AcademiaCatalogo() {
                   setModoTrilha('original');
                   setGrupoIdx(0);
                 }}
-                className={`py-1.5 px-2 rounded-lg text-[11px] font-extrabold flex items-center justify-center gap-1 cursor-pointer transition-colors ${
+                className={`py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 cursor-pointer transition-colors ${
                   modoTrilha === 'original'
                     ? 'bg-[#0369a1] text-white shadow-2xs'
-                    : 'text-slate-600 hover:text-[#1a3a5c] hover:bg-sky-50'
+                    : 'text-slate-700 hover:text-[#1a3a5c] hover:bg-sky-50'
                 }`}
               >
-                <ListOrdered className="w-3.5 h-3.5" />
-                <span>Por Módulo</span>
+                <ListOrdered className="w-3.5 h-3.5 flex-shrink-0" />
+                <span>Por módulo</span>
               </button>
             </div>
 
@@ -365,11 +373,11 @@ export default function AcademiaCatalogo() {
                         : 'bg-white/80 hover:bg-white border-sky-200 text-slate-700 hover:border-sky-300'
                     }`}
                   >
-                    <div className="flex items-center justify-between text-[10px] font-mono">
-                      <span className="font-black text-emerald-700">{g.codigo}</span>
-                      <span className="text-slate-500 font-bold">{g.aulas?.length || 0} aulas</span>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-emerald-800">{g.codigo}</span>
+                      <span className="text-slate-600 font-semibold">{g.aulas?.length || 0} aulas</span>
                     </div>
-                    <p className="text-xs font-extrabold mt-0.5 leading-snug line-clamp-2 text-[#1a3a5c]">
+                    <p className="text-[13px] font-extrabold mt-0.5 leading-snug line-clamp-2 text-[#1a3a5c]">
                       {g.titulo}
                     </p>
                   </button>
@@ -382,14 +390,22 @@ export default function AcademiaCatalogo() {
         {/* ════════════════════════════════════════════════════════════════════
             PAINEL 2 (CENTRO): PASSO 3 (BOTÕES DE AULAS DO MÓDULO ATIVO)
         ════════════════════════════════════════════════════════════════════ */}
-        <div className="w-full lg:w-[310px] xl:w-[340px] flex-shrink-0 bg-sky-50/35 border-b lg:border-b-0 lg:border-r-2 border-sky-200 p-3 flex flex-col gap-2 overflow-y-auto">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono font-black uppercase tracking-widest text-[#1a3a5c]">
-              PASSO 3 &bull; CLIQUE NA AULA ({aulasDoGrupo.length})
+        <div className="w-full lg:w-[310px] xl:w-[340px] flex-shrink-0 bg-sky-50/35 border-b lg:border-b-0 lg:border-r-2 border-sky-200 p-3 flex flex-col gap-2 lg:h-full lg:overflow-y-auto">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs font-bold text-[#1a3a5c]">
+              Passo 3 &bull; Escolha a aula ({aulasDoGrupo.length})
             </span>
-            <span className="text-[10px] font-mono font-bold text-[#0369a1]">
-              {grupoAtual?.codigo}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-[#0369a1]">
+                {grupoAtual?.codigo}
+              </span>
+              <a
+                href="#catalogo-preview-aula"
+                className="lg:hidden text-xs font-bold text-[#0369a1] underline"
+              >
+                Ir para prévia ↓
+              </a>
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -414,24 +430,24 @@ export default function AcademiaCatalogo() {
                     className="w-full text-left cursor-pointer"
                   >
                     <div className="flex items-center justify-between gap-1 mb-1">
-                      <span className="text-[10px] font-mono font-black text-[#0369a1]">
-                        AULA [{String(a.id).toUpperCase()}]
+                      <span className="text-xs font-bold text-[#0369a1]">
+                        Aula {String(a.id).toUpperCase()}
                       </span>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1.5">
                         {concluida && (
                           <CheckCircle2
-                            className="w-3.5 h-3.5 text-emerald-600"
-                            title="Concluída"
+                            aria-label="Aula concluída"
+                            className="w-4 h-4 text-emerald-700"
                           />
                         )}
                         {a.possuiConversa && (
-                          <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300">
-                            ☕ Papo de Balcão
+                          <span className="text-xs font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                            Papo de balcão
                           </span>
                         )}
                       </div>
                     </div>
-                    <h3 className="text-xs font-extrabold text-[#1a3a5c] leading-snug">
+                    <h3 className="text-[13px] font-extrabold text-[#1a3a5c] leading-snug">
                       {a.titulo.replace(/^Aula \d+[\s\-:]+/i, '')}
                     </h3>
                   </button>
@@ -441,18 +457,18 @@ export default function AcademiaCatalogo() {
                     <button
                       type="button"
                       onClick={() => abrirNoWorkbench(a, 'bancada')}
-                      className="flex-1 py-1 px-2 rounded-lg bg-[#0369a1] hover:bg-[#0284c7] text-white font-extrabold text-[10px] flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
+                      className="flex-1 py-1.5 px-2.5 rounded-lg bg-[#0369a1] hover:bg-[#0284c7] text-white font-bold text-xs flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
                     >
-                      <Wrench className="w-3 h-3" />
-                      <span>Abrir Bancada</span>
+                      <Wrench className="w-3.5 h-3.5" />
+                      <span>Abrir bancada</span>
                     </button>
                     {a.possuiConversa && (
                       <button
                         type="button"
                         onClick={() => abrirNoWorkbench(a, 'conversa')}
-                        className="flex-1 py-1 px-2 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-extrabold text-[10px] flex items-center justify-center gap-1 cursor-pointer"
+                        className="flex-1 py-1.5 px-2.5 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold text-xs flex items-center justify-center gap-1 cursor-pointer"
                       >
-                        <Coffee className="w-3 h-3" />
+                        <Coffee className="w-3.5 h-3.5" />
                         <span>Papo</span>
                       </button>
                     )}
@@ -466,17 +482,21 @@ export default function AcademiaCatalogo() {
         {/* ════════════════════════════════════════════════════════════════════
             PAINEL 3 (DIREITA): PASSO 4 (INSPECIONADOR / PREVIEW INTERATIVO DA AULA)
         ════════════════════════════════════════════════════════════════════ */}
-        <main className="flex-1 min-w-0 h-full flex flex-col overflow-hidden bg-gradient-to-b from-sky-50/40 via-white to-sky-50/30">
+        <section
+          id="catalogo-preview-aula"
+          aria-label="Prévia da aula selecionada"
+          className="flex-1 min-w-0 lg:h-full flex flex-col lg:overflow-hidden bg-gradient-to-b from-sky-50/40 via-white to-sky-50/30"
+        >
           {aulaAtiva && (
             <>
               {/* Barra Superior do Preview da Aula */}
               <div className="flex-shrink-0 p-3.5 bg-white border-b border-sky-200 flex flex-wrap items-center justify-between gap-2">
                 <div className="min-w-0">
-                  <span className="text-[10px] font-mono font-black uppercase text-[#0369a1] block">
-                    PASSO 4 &bull; INTERAJA COM A AULA SELECIONADA ({cursoAtual.nomeCurto} &bull; AULA{' '}
+                  <span className="text-xs font-bold text-[#0369a1] block">
+                    Passo 4 &bull; Prévia da aula ({cursoAtual.nomeCurto} &bull; Aula{' '}
                     {String(aulaAtiva.id).toUpperCase()})
                   </span>
-                  <h2 className="text-sm md:text-base font-black text-[#1a3a5c] truncate">
+                  <h2 className="text-sm md:text-base font-extrabold text-[#1a3a5c] truncate">
                     {aulaAtiva.titulo}
                   </h2>
                 </div>
@@ -484,10 +504,10 @@ export default function AcademiaCatalogo() {
                 <button
                   type="button"
                   onClick={() => abrirNoWorkbench(aulaAtiva, 'bancada')}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0369a1] hover:bg-[#0284c7] text-white font-black text-xs uppercase tracking-wider shadow-md shadow-sky-600/20 cursor-pointer flex-shrink-0"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0369a1] hover:bg-[#0284c7] text-white font-extrabold text-xs shadow-md shadow-sky-600/20 cursor-pointer flex-shrink-0"
                 >
                   <Wrench className="w-3.5 h-3.5" />
-                  <span>Abrir em Tela Cheia no CAD Workbench</span>
+                  <span>Abrir na bancada completa</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -619,17 +639,17 @@ export default function AcademiaCatalogo() {
               </div>
 
               {/* Conteúdo da Função Ativa na Tela */}
-              <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
+              <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto p-4 space-y-4">
                 {funcaoPreview === 'resumo' && (
                   <div className="space-y-4">
                     {/* Card Filosofia Prática do Simon para a Aula (Tema Claro Certificado) */}
                     <div className="rounded-2xl border-2 border-sky-200 bg-white p-5 shadow-sm">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-extrabold uppercase bg-sky-100 text-[#0369a1] border border-sky-300">
-                          {dadosCadAula.nos[0]?.notaSimon?.tag || 'FÍSICA & PRÁTICA DE BANCADA'}
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-sky-100 text-[#0369a1] border border-sky-300">
+                          {dadosCadAula.nos[0]?.notaSimon?.tag || 'Física e prática de bancada'}
                         </span>
                         <span className="text-xs font-extrabold text-[#1a3a5c]">
-                          Papo Sincero do Professor Simon
+                          Papo sincero do Professor Simon
                         </span>
                       </div>
                       <p className="text-sm text-slate-700 font-medium leading-relaxed mb-3">
@@ -637,18 +657,18 @@ export default function AcademiaCatalogo() {
                       </p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                         <div className="rounded-xl bg-amber-50/90 border border-amber-200 p-3">
-                          <span className="block text-[10px] font-black uppercase text-amber-800 mb-1">
-                            Filosofia de Oficina
+                          <span className="block text-xs font-bold text-amber-800 mb-1">
+                            Filosofia de oficina
                           </span>
-                          <p className="text-xs text-slate-700 font-medium">
+                          <p className="text-[13px] text-slate-700 font-medium">
                             {dadosCadAula.nos[0]?.notaSimon?.filosofia}
                           </p>
                         </div>
                         <div className="rounded-xl bg-emerald-50/90 border border-emerald-200 p-3">
-                          <span className="block text-[10px] font-black uppercase text-emerald-800 mb-1">
-                            Ação Prática na Ferramenta
+                          <span className="block text-xs font-bold text-emerald-800 mb-1">
+                            Ação prática na ferramenta
                           </span>
-                          <p className="text-xs text-slate-700 font-medium">
+                          <p className="text-[13px] text-slate-700 font-medium">
                             {dadosCadAula.nos[0]?.notaSimon?.acaoPratica}
                           </p>
                         </div>
@@ -658,14 +678,14 @@ export default function AcademiaCatalogo() {
                     {/* Grandezas Físicas da Aula */}
                     {dadosCadAula.grandezasGerais.length > 0 && (
                       <div className="rounded-2xl border-2 border-sky-200 bg-white p-4 shadow-2xs">
-                        <span className="block text-[10px] font-mono font-black uppercase tracking-widest text-[#0369a1] mb-2">
-                          GRANDEZAS E PARÂMETROS FÍSICOS DESTA AULA:
+                        <span className="block text-xs font-bold text-[#0369a1] mb-2">
+                          Grandezas e parâmetros físicos desta aula:
                         </span>
                         <div className="flex flex-wrap gap-2">
                           {dadosCadAula.grandezasGerais.map((g, i) => (
                             <span
                               key={i}
-                              className="px-2.5 py-1 rounded-lg bg-sky-50 border border-sky-200 font-mono text-xs font-extrabold text-[#1a3a5c]"
+                              className="px-2.5 py-1 rounded-lg bg-sky-50 border border-sky-200 cad-valor-medido text-xs font-extrabold text-[#1a3a5c]"
                             >
                               {g}
                             </span>
@@ -676,12 +696,12 @@ export default function AcademiaCatalogo() {
 
                     {/* Matriz dos Botões de Tópicos que compõem a aula */}
                     <div className="rounded-2xl border-2 border-sky-200 bg-white p-4 shadow-2xs">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-[11px] font-mono font-black uppercase text-[#1a3a5c]">
-                          BOTÕES DE BLOCOS TÉCNICOS DESTA AULA ({dadosCadAula.nos.length}):
+                      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span className="text-xs font-extrabold text-[#1a3a5c]">
+                          Blocos técnicos desta aula ({dadosCadAula.nos.length}):
                         </span>
-                        <span className="text-[11px] text-slate-500 font-semibold">
-                          Clique em qualquer bloco para inspecionar e abrir na Workstation
+                        <span className="text-xs text-slate-600 font-semibold">
+                          Clique em qualquer bloco para abrir na bancada
                         </span>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -693,10 +713,10 @@ export default function AcademiaCatalogo() {
                             className="p-3 rounded-xl bg-sky-50/70 hover:bg-sky-100/80 border border-sky-200 hover:border-[#0284c7] text-left transition-all cursor-pointer flex items-center justify-between gap-2 group"
                           >
                             <div className="min-w-0">
-                              <span className="text-[10px] font-mono font-black text-[#0369a1] block">
+                              <span className="text-xs font-bold text-[#0369a1] block">
                                 {no.codigoCad}
                               </span>
-                              <span className="text-xs font-extrabold text-[#1a3a5c] truncate block">
+                              <span className="text-[13px] font-extrabold text-[#1a3a5c] truncate block">
                                 {no.titulo}
                               </span>
                             </div>
@@ -716,18 +736,18 @@ export default function AcademiaCatalogo() {
                         className="rounded-xl border-2 border-sky-200 bg-white p-4 flex flex-col justify-between gap-3 shadow-xs"
                       >
                         <div>
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-[10px] font-mono font-black text-[#0369a1]">
-                              {no.codigoCad} &bull; {no.subNos.length} Sub-camada(s)
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <span className="text-xs font-bold text-[#0369a1]">
+                              {no.codigoCad} &bull; {no.subNos.length} seção(ões)
                             </span>
-                            <span className="text-[10px] font-extrabold text-emerald-700">
+                            <span className="text-xs font-bold text-emerald-700">
                               {no.notaSimon?.tag}
                             </span>
                           </div>
                           <h3 className="text-sm font-extrabold text-[#1a3a5c] mb-1.5">
                             {no.titulo}
                           </h3>
-                          <p className="text-xs text-slate-600 leading-relaxed mb-2">
+                          <p className="text-[13px] text-slate-600 leading-relaxed mb-2">
                             “{no.notaSimon?.falaSimon}”
                           </p>
                         </div>
@@ -735,16 +755,16 @@ export default function AcademiaCatalogo() {
                           <button
                             type="button"
                             onClick={() => abrirNoWorkbench(aulaAtiva, 'bancada')}
-                            className="flex-1 py-1.5 px-3 rounded-lg bg-[#0369a1] hover:bg-[#0284c7] text-white font-black text-xs cursor-pointer"
+                            className="flex-1 py-1.5 px-3 rounded-lg bg-[#0369a1] hover:bg-[#0284c7] text-white font-bold text-xs cursor-pointer"
                           >
-                            Ver na Bancada Prática
+                            Ver na bancada prática
                           </button>
                           <button
                             type="button"
                             onClick={() => abrirNoWorkbench(aulaAtiva, 'raiox')}
                             className="flex-1 py-1.5 px-3 rounded-lg bg-sky-50 hover:bg-sky-100 text-[#1a3a5c] border border-sky-200 font-bold text-xs cursor-pointer"
                           >
-                            Ver 100% Detalhado
+                            Ver detalhado
                           </button>
                         </div>
                       </div>
@@ -777,7 +797,7 @@ export default function AcademiaCatalogo() {
                           key={i}
                           type="button"
                           onClick={() => setSlidePreviewIdx(i)}
-                          className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold cursor-pointer border ${
+                          className={`px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer border ${
                             i === slidePreviewIdx
                               ? 'bg-[#0369a1] text-white border-[#1a3a5c]'
                               : 'bg-white text-slate-600 border-sky-200 hover:bg-sky-50'
@@ -792,7 +812,7 @@ export default function AcademiaCatalogo() {
               </div>
             </>
           )}
-        </main>
+        </section>
       </div>
     </div>
   );

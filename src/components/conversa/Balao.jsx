@@ -75,7 +75,7 @@ export default function Balao({
 
       {/* Corpo do balão */}
       <div
-        className={`flex flex-col max-w-[85%] sm:max-w-[78%] ${
+        className={`flex flex-col flex-1 min-w-0 max-w-[85%] sm:max-w-[78%] ${
           isDireita ? 'items-end' : 'items-start'
         }`}
       >
@@ -86,7 +86,7 @@ export default function Balao({
           }`}
         >
           <span
-            className="text-xs font-extrabold tracking-wide px-2 py-0.5 rounded-md border"
+            className="text-xs font-extrabold px-2 py-0.5 rounded-md border"
             style={{
               backgroundColor: personagem.cores.badgeBg,
               color: personagem.cores.badgeText,
@@ -96,11 +96,11 @@ export default function Balao({
             {personagem.nome}
             <span className="sr-only"> diz:</span>
           </span>
-          <span className="text-[11px] text-slate-400 font-medium">
+          <span className="text-xs text-slate-300 font-medium">
             {personagem.papel}
           </span>
           {labelEmocao && (
-            <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+            <span className="text-xs font-medium px-2 py-0.5 rounded bg-slate-800 text-slate-200 border border-slate-700">
               {labelEmocao}
             </span>
           )}
@@ -108,7 +108,7 @@ export default function Balao({
 
         {/* Balão de mensagem */}
         <div
-          className={`px-4 py-3 rounded-2xl border shadow-sm text-sm sm:text-[15px] leading-relaxed ${
+          className={`px-4 py-3 rounded-2xl border shadow-sm text-sm sm:text-[15px] leading-relaxed break-words max-w-full ${
             isDireita ? 'rounded-tr-sm' : 'rounded-tl-sm'
           }`}
           style={{
@@ -124,7 +124,7 @@ export default function Balao({
             if (!fontePrincipal?.trecho) return null;
             return (
               <div
-                className="mt-2 pt-2 border-t flex items-center gap-1.5 text-[11px] text-slate-400"
+                className="mt-2 pt-2 border-t flex items-center gap-1.5 text-xs text-slate-300"
                 style={{ borderColor: 'rgba(148,163,184,0.18)' }}
                 title={`Dado ancorado na apostila (${fontePrincipal.campo}): "${fontePrincipal.trecho}"`}
               >

@@ -32,20 +32,21 @@ function AppShell() {
   const location = useLocation();
   const path = location.pathname;
 
-  // Rotas que operam em modo Workstation Técnica 100dvh Zero-Scroll (possuem Ribbon e Status Bar próprias)
+  // Rotas da área de treinamento: catálogo permite rolagem em telas menores; bancada opera em 100dvh.
+  const isCatalogoRoute = path === '/academia';
   const isCadWorkspaceRoute =
-    path === '/academia' ||
+    isCatalogoRoute ||
     path.startsWith('/academia/treinamento-') ||
     (path.startsWith('/academia/') && !path.startsWith('/academia/certificado/'));
 
+  const wrapperClass = isCatalogoRoute
+    ? 'min-h-dvh lg:h-dvh w-full lg:overflow-hidden flex flex-col font-sans bg-white selection:bg-sky-500 selection:text-white'
+    : isCadWorkspaceRoute
+    ? 'h-dvh w-screen overflow-hidden flex flex-col font-sans bg-white selection:bg-sky-500 selection:text-white'
+    : 'min-h-screen bg-white flex flex-col font-sans selection:bg-sky-500 selection:text-white';
+
   return (
-    <div
-      className={
-        isCadWorkspaceRoute
-          ? 'h-dvh w-screen overflow-hidden flex flex-col font-sans bg-white selection:bg-sky-500 selection:text-white'
-          : 'min-h-screen bg-white flex flex-col font-sans selection:bg-sky-500 selection:text-white'
-      }
-    >
+    <div className={wrapperClass}>
       {!isCadWorkspaceRoute && <SiteHeader />}
 
       <main id="conteudo-principal" tabIndex={-1} className="flex-grow flex flex-col min-h-0 focus:outline-none">
@@ -69,8 +70,8 @@ function AppShell() {
 
       {!isCadWorkspaceRoute && <SiteFooter />}
 
-      {/* Fica depois do conteúdo e do rodapé para não interromper a leitura por teclado. */}
-      <FloatingWhatsApp />
+      {/* Na vitrine pública e certificados; oculto na Academia/Bancada para não cobrir controles. */}
+      {!isCadWorkspaceRoute && <FloatingWhatsApp />}
     </div>
   );
 }

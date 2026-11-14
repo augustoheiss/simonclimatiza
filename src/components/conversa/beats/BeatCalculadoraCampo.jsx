@@ -64,12 +64,12 @@ export default function BeatCalculadoraCampo({
     >
       {/* Cabeçalho do Simulador */}
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-        <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md bg-sky-500/15 text-sky-300 border border-sky-400/30">
+        <span className="inline-flex items-center gap-2 text-xs font-extrabold px-2.5 py-1 rounded-md bg-sky-500/15 text-sky-300 border border-sky-400/30">
           <Calculator className="w-3.5 h-3.5" aria-hidden="true" />
-          {beat.titulo || 'Cálculo no Guardanapo'}
+          {beat.titulo || 'Cálculo no guardanapo'}
         </span>
         {beat.formula && (
-          <span className="text-xs font-mono px-2.5 py-1 rounded bg-slate-900 text-amber-300 border border-slate-700">
+          <span className="text-xs cad-valor-medido px-2.5 py-1 rounded bg-slate-900 text-amber-300 border border-slate-700">
             {beat.formula}
           </span>
         )}
@@ -88,11 +88,11 @@ export default function BeatCalculadoraCampo({
               key={idx}
               className="rounded-xl px-3.5 py-2.5 bg-slate-900/90 border border-slate-700/80 flex flex-col justify-between"
             >
-              <span className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold flex items-center gap-1.5">
-                <Gauge className="w-3 h-3 text-sky-400" aria-hidden="true" />
+              <span className="text-xs text-slate-300 font-semibold flex items-center gap-1.5">
+                <Gauge className="w-3 h-3 text-sky-400 flex-shrink-0" aria-hidden="true" />
                 {leitura.rotulo}
               </span>
-              <span className="text-base sm:text-lg font-mono font-extrabold text-sky-300 mt-0.5">
+              <span className="text-base sm:text-lg cad-valor-medido font-extrabold text-sky-300 mt-0.5">
                 {leitura.valor}
               </span>
             </div>
@@ -103,7 +103,7 @@ export default function BeatCalculadoraCampo({
       {/* Botões de Resposta Rápida (1 toque no mobile) */}
       {Array.isArray(beat.opcoesRapidas) && beat.opcoesRapidas.length > 0 && (
         <div className="mb-3">
-          <span className="block text-xs text-slate-400 mb-2 font-medium">
+          <span className="block text-xs text-slate-300 mb-2 font-medium">
             Toque no resultado calculado ou digite abaixo:
           </span>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -121,7 +121,7 @@ export default function BeatCalculadoraCampo({
                 } else if (selecionado && !ehCorreta) {
                   estiloBtn = 'bg-rose-950/80 text-rose-200 border-rose-500/70';
                 } else {
-                  estiloBtn = 'bg-slate-900/50 text-slate-500 border-slate-800 opacity-60';
+                  estiloBtn = 'bg-slate-900/50 text-slate-400 border-slate-800 opacity-70';
                 }
               }
 
@@ -131,11 +131,11 @@ export default function BeatCalculadoraCampo({
                   type="button"
                   disabled={respondido}
                   onClick={() => submeterValor(opStr)}
-                  className={`px-3 py-2.5 rounded-xl border text-sm font-mono font-semibold transition-all flex items-center justify-center gap-1.5 ${
+                  className={`px-3 py-2.5 rounded-xl border text-sm cad-valor-medido font-semibold transition-all flex items-center justify-center gap-1.5 ${
                     respondido ? 'cursor-default' : 'cursor-pointer'
                   } ${estiloBtn}`}
                 >
-                  <span className="text-[10px] text-slate-400 mr-0.5">[{idx + 1}]</span>
+                  <span className="text-xs text-slate-300 mr-0.5">{idx + 1}.</span>
                   <span>
                     {opStr} {beat.unidade || ''}
                   </span>
@@ -160,10 +160,10 @@ export default function BeatCalculadoraCampo({
               value={valorInput}
               onChange={(e) => setValorInput(e.target.value)}
               placeholder={`Ex.: ${beat.respostaCorreta}`}
-              className="w-36 px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-600 text-slate-100 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+              className="w-36 px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-600 text-slate-100 cad-valor-medido text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
             />
             {beat.unidade && (
-              <span className="ml-2 text-xs font-mono font-bold text-slate-400">
+              <span className="ml-2 text-xs cad-valor-medido font-bold text-slate-300">
                 {beat.unidade}
               </span>
             )}
@@ -171,9 +171,9 @@ export default function BeatCalculadoraCampo({
           <button
             type="submit"
             disabled={!valorInput.trim()}
-            className="px-4 py-2 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-sky-500 hover:bg-sky-400 disabled:opacity-40 text-slate-950 transition-all cursor-pointer"
+            className="px-4 py-2 rounded-xl text-xs font-extrabold bg-sky-500 hover:bg-sky-400 disabled:opacity-40 text-slate-950 transition-all cursor-pointer"
           >
-            Conferir Cálculo
+            Conferir cálculo
           </button>
         </form>
       )}

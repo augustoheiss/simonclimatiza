@@ -674,3 +674,49 @@
 .prose-manut table tr:hover td {
   color: inherit;
 }
+
+/* ── Modo CAD escuro para apostilas e tabelas técnicas ─────────────────── */
+.cad-dark-prose h2,
+.cad-dark-prose h3,
+.cad-dark-prose h4 {
+  color: #f1f5f9 !important;
+}
+.cad-dark-prose p,
+.cad-dark-prose li,
+.cad-dark-prose td {
+  color: #cbd5e1 !important;
+}
+.cad-dark-prose strong {
+  color: #f8fafc !important;
+}
+.cad-dark-prose th {
+  background-color: rgba(14, 165, 233, 0.16) !important;
+  color: #e0f2fe !important;
+  border-bottom-color: rgba(56, 189, 248, 0.45) !important;
+}
+.cad-dark-prose table,
+.cad-dark-prose td {
+  border-color: rgba(148, 163, 184, 0.25) !important;
+}
+.cad-dark-prose a {
+  color: #38bdf8 !important;
+}
+
+/* ── Faixas roláveis da Bancada com barra discreta ──────────────────────── */
+.cad-scroll-strip {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(3, 105, 161, 0.35) transparent;
+}
+.cad-scroll-strip::-webkit-scrollbar {
+  height: 4px;
+}
+.cad-scroll-strip::-webkit-scrollbar-thumb {
+  background-color: rgba(3, 105, 161, 0.35);
+  border-radius: 9999px;
+}
+
+/* ── Grandezas medidas dentro da Bancada ────────────────────────────────── */
+.cad-valor-medido {
+  font-family: ui-monospace, 'IBM Plex Mono', 'Cascadia Mono', Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}

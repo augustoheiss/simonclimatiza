@@ -40,7 +40,8 @@ export default function LeituraCampo() {
 
       <div className="flex items-center justify-between gap-3 px-5 py-3 bg-papel border-t border-filete">
         <p className="text-[0.8125rem] text-aco-escuro">Registrado em campo pela equipe Simon.</p>
-        <div className="flex gap-1.5" role="group" aria-label="Escolher leitura">
+        <div className="flex" role="group" aria-label="Escolher leitura">
+          {/* O botão tem 44 × 44 px (alvo de toque); a bolinha desenhada dentro mantém o tamanho de antes. */}
           {LEITURAS_CAMPO.map((l, i) => (
             <button
               key={l.id}
@@ -48,10 +49,15 @@ export default function LeituraCampo() {
               onClick={() => setIndice(i)}
               aria-pressed={i === indice}
               aria-label={l.titulo}
-              className={`h-2.5 w-6 rounded-full transition-colors ${
-                i === indice ? 'bg-refrigerante-escuro' : 'bg-filete hover:bg-aco'
-              }`}
-            />
+              className="group inline-flex h-11 w-11 items-center justify-center rounded-md"
+            >
+              <span
+                aria-hidden="true"
+                className={`block h-2.5 w-6 rounded-full transition-colors ${
+                  i === indice ? 'bg-refrigerante-escuro' : 'bg-filete group-hover:bg-aco'
+                }`}
+              />
+            </button>
           ))}
         </div>
       </div>

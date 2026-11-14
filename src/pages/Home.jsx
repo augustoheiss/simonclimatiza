@@ -7,6 +7,7 @@ import PainSection from '../components/home/PainSection';
 import OutcomeSection from '../components/home/OutcomeSection';
 import BridgeProcessSection from '../components/home/BridgeProcessSection';
 import RoiCalculatorSection from '../components/home/RoiCalculatorSection';
+import ChecklistPmoc from '../components/home/ChecklistPmoc';
 import ComparisonTableSection from '../components/home/ComparisonTableSection';
 import AcademiaAuthoritySection from '../components/home/AcademiaAuthoritySection';
 import FaqSection from '../components/home/FaqSection';
@@ -19,6 +20,7 @@ const SECOES = [
   { id: 'entrega', nome: 'O que entregamos' },
   { id: 'metodo', nome: 'Método' },
   { id: 'calculadora', nome: 'Calculadora' },
+  { id: 'checklist', nome: 'Checklist' },
   { id: 'comparativo', nome: 'Comparativo' },
   { id: 'especialista', nome: 'Especialista' },
   { id: 'faq', nome: 'Perguntas' },
@@ -42,6 +44,7 @@ export default function Home() {
       <OutcomeSection />
       <BridgeProcessSection />
       <RoiCalculatorSection />
+      <ChecklistPmoc />
       <ComparisonTableSection />
       <AcademiaAuthoritySection />
       <FaqSection />

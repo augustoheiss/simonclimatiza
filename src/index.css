@@ -159,3 +159,949 @@ html {
     scroll-margin-top: 7.5rem;
   }
 }
+
+/* ------------------------------------------------------------------------------------------------
+ * Laudo de exemplo (Home). Tudo dentro de .tema-laudo e com prefixo "laudo-".
+ * O <dialog> recebe m-auto e p-0 no JSX porque o preflight do Tailwind 4 zera margin e padding.
+ * ---------------------------------------------------------------------------------------------- */
+.tema-laudo.laudo-dialogo {
+  width: min(1000px, calc(100vw - 24px));
+  max-height: calc(100dvh - 24px);
+  overflow: hidden;
+  box-shadow: 0 30px 90px rgba(18, 48, 63, 0.4);
+}
+
+.tema-laudo.laudo-dialogo::backdrop {
+  background: rgba(18, 48, 63, 0.6);
+}
+
+.tema-laudo.laudo-dialogo[open] {
+  animation: laudo-abre 220ms ease-out;
+}
+
+@keyframes laudo-abre {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.laudo-folha {
+  position: relative;
+  max-height: calc(100dvh - 24px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 28px clamp(18px, 4vw, 40px) 32px;
+  background-color: var(--color-laudo);
+}
+
+.laudo-fechar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  color: var(--color-aco-escuro);
+}
+
+.laudo-fechar:hover {
+  background-color: var(--color-papel);
+  color: var(--color-tinta);
+}
+
+.laudo-cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding-right: 52px;
+  padding-bottom: 18px;
+  border-bottom: 2px solid var(--color-tinta);
+}
+
+.laudo-cabecalho > div {
+  min-width: 0;
+  flex: 1 1 14rem;
+}
+
+.laudo-logo {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+.laudo-tipo {
+  font-size: 0.875rem;
+  color: var(--color-aco-escuro);
+}
+
+.laudo-cabecalho h2 {
+  font-size: clamp(1.25rem, 3vw, 1.625rem);
+}
+
+.laudo-selo {
+  flex: none;
+  margin-left: auto;
+  padding: 2px 10px;
+  border: 1px solid rgb(184 67 10 / 0.45);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-alerta-escuro);
+}
+
+.laudo-aviso {
+  margin-top: 16px;
+  padding: 10px 14px;
+  border-left: 3px solid var(--color-aco);
+  background-color: var(--color-papel);
+  font-size: 0.9rem;
+  color: var(--color-aco-escuro);
+}
+
+.laudo-ident {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0 28px;
+  margin-top: 16px;
+}
+
+.laudo-ident > div {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--color-filete);
+}
+
+.laudo-ident dt {
+  font-size: 0.85rem;
+  color: var(--color-aco-escuro);
+}
+
+.laudo-ident dd {
+  font-weight: 500;
+}
+
+.laudo-ident .laudo-vazio {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--color-aco-escuro);
+}
+
+.laudo-medicoes {
+  margin-top: 26px;
+}
+
+.laudo-medicoes h3 {
+  font-size: 1.375rem;
+}
+
+.laudo-ajuda {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: var(--color-aco-escuro);
+}
+
+.laudo-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 24px;
+  align-items: start;
+  margin-top: 14px;
+}
+
+.laudo-tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.laudo-tabela th,
+.laudo-tabela td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--color-filete);
+  text-align: left;
+  vertical-align: top;
+}
+
+.laudo-tabela thead th {
+  padding-top: 0;
+  border-bottom: 2px solid var(--color-tinta);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-aco-escuro);
+}
+
+.laudo-tabela tbody tr {
+  transition: background-color 150ms;
+}
+
+.laudo-tabela tbody tr:hover {
+  background-color: var(--color-papel);
+}
+
+.laudo-tabela tbody tr.laudo-ativa {
+  background-color: #eaf3f7;
+  box-shadow: inset 3px 0 0 var(--color-refrigerante-escuro);
+}
+
+.laudo-tabela .laudo-num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.laudo-tabela td.valor-medido {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.laudo-tabela td.valor-medido small {
+  margin-left: 3px;
+  font-family: var(--font-sans-laudo);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-aco-escuro);
+}
+
+.laudo-tabela th[scope='row'] button {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  font-weight: 600;
+  text-align: left;
+  color: var(--color-tinta);
+}
+
+.laudo-resultado {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.laudo-resultado svg {
+  flex: none;
+  margin-top: 3px;
+  color: var(--color-refrigerante-escuro);
+}
+
+.laudo-regua {
+  display: block;
+  max-width: 190px;
+  margin-top: 10px;
+}
+
+.laudo-regua-trilho {
+  position: relative;
+  display: block;
+  height: 8px;
+  border-radius: 999px;
+  background-color: #d6e6ee;
+}
+
+.laudo-regua-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 999px;
+  background-color: var(--color-refrigerante-escuro);
+}
+
+.laudo-regua-limite {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  border-radius: 1px;
+  background-color: var(--color-tinta);
+}
+
+.laudo-regua-rotulos {
+  position: relative;
+  display: block;
+  height: 18px;
+  margin-top: 5px;
+  font-size: 0.8125rem;
+  color: var(--color-aco-escuro);
+}
+
+.laudo-regua-rotulos span {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+
+.laudo-regua-rotulos span + span {
+  transform: translateX(-50%);
+}
+
+.laudo-prova {
+  margin: 0;
+}
+
+/* overflow:hidden corta a sombra gigante do destaque na borda da foto: é o que escurece "o resto". */
+.laudo-foto {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-filete);
+  border-radius: 6px;
+  background-color: #e9eef1;
+}
+
+.laudo-foto img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.laudo-destaque {
+  position: absolute;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  box-shadow: 0 0 0 100vmax rgb(18 48 63 / 0.55);
+  pointer-events: none;
+  transition: left 250ms ease, top 250ms ease, width 250ms ease, height 250ms ease;
+}
+
+.laudo-prova figcaption {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: var(--color-aco-escuro);
+}
+
+.laudo-prova figcaption strong {
+  color: var(--color-tinta);
+}
+
+.laudo-rodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px 32px;
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-filete);
+}
+
+.laudo-assinatura {
+  flex: 1 1 260px;
+}
+
+.laudo-linha {
+  display: block;
+  max-width: 320px;
+  height: 1px;
+  margin-bottom: 6px;
+  background-color: var(--color-tinta);
+}
+
+.laudo-assinatura p {
+  font-size: 0.85rem;
+  color: var(--color-aco-escuro);
+}
+
+.laudo-botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 11px 20px;
+  border-radius: 6px;
+  background-color: var(--color-refrigerante-escuro);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #fff;
+  text-align: center;
+  transition: background-color 150ms;
+}
+
+.laudo-botao:hover {
+  background-color: var(--color-tinta);
+}
+
+/* Celular: o resultado desce para baixo do valor, o nome da medição ocupa a linha inteira e a foto vem logo
+ * depois da tabela (plano de 2026-11-14, seção 3.3). */
+@media (max-width: 820px) {
+  .laudo-grade {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .laudo-tabela thead {
+    display: none;
+  }
+
+  .laudo-tabela,
+  .laudo-tabela tbody,
+  .laudo-tabela tr,
+  .laudo-tabela th,
+  .laudo-tabela td {
+    display: block;
+    width: 100%;
+  }
+
+  .laudo-tabela tbody tr {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--color-filete);
+  }
+
+  .laudo-tabela th,
+  .laudo-tabela td {
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  .laudo-tabela td.laudo-num {
+    margin-top: 4px;
+    text-align: left;
+  }
+
+  .laudo-tabela td:last-child {
+    margin-top: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tema-laudo.laudo-dialogo[open] {
+    animation: none;
+  }
+
+  .laudo-destaque,
+  .laudo-tabela tbody tr {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------------------------------------------
+ * Método com foto (Home). Prefixo "metodo-". Os três textos ficam sempre visíveis; só a foto troca.
+ * No celular a foto vem antes da lista (plano de 2026-11-14, M2).
+ * ---------------------------------------------------------------------------------------------- */
+.metodo-corpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.metodo-etapas {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.metodo-etapa {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 14px 16px 14px 18px;
+  border: 1px solid transparent;
+  border-left: 3px solid var(--color-filete);
+  border-radius: 6px;
+  text-align: left;
+  transition: background-color 200ms, border-color 200ms;
+}
+
+button.metodo-etapa:hover {
+  background-color: rgb(255 255 255 / 0.7);
+}
+
+.metodo-etapa[aria-pressed='true'] {
+  border-color: var(--color-filete);
+  border-left-color: var(--color-refrigerante-escuro);
+  background-color: var(--color-laudo);
+}
+
+.metodo-etapa-camera {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  color: var(--color-refrigerante-escuro);
+  opacity: 0.45;
+  transition: opacity 200ms;
+}
+
+.metodo-etapa[aria-pressed='true'] .metodo-etapa-camera {
+  opacity: 1;
+}
+
+.metodo-palco {
+  margin: 0;
+}
+
+.metodo-foto {
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--color-filete);
+  border-radius: 6px;
+  background-color: #e9eef1;
+}
+
+.metodo-foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.metodo-palco figcaption {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: var(--color-aco-escuro);
+}
+
+@media (max-width: 760px) {
+  .metodo-corpo {
+    grid-template-columns: 1fr;
+  }
+
+  .metodo-palco {
+    order: -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metodo-etapa,
+  .metodo-etapa-camera {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------------------------------------------
+ * Somador de capacidade (calculadora da Home). Prefixo "somador". Botões de 40 px ou mais.
+ * ---------------------------------------------------------------------------------------------- */
+.somador {
+  padding: 16px;
+  border: 1px solid var(--color-filete);
+  border-radius: 8px;
+  background-color: var(--color-laudo);
+}
+
+.somador[hidden] {
+  display: none;
+}
+
+.somador-titulo {
+  font-weight: 600;
+}
+
+.somador-nota {
+  margin-top: 2px;
+  font-size: 0.9rem;
+  color: var(--color-aco-escuro);
+}
+
+.somador-linhas {
+  display: grid;
+  margin-top: 8px;
+}
+
+.somador-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--color-filete);
+}
+
+.somador-linha > .valor-medido {
+  white-space: nowrap;
+}
+
+.somador-linha input[type='text'] {
+  width: 96px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-aco);
+  border-radius: 6px;
+  background-color: var(--color-laudo);
+  font: inherit;
+  text-align: right;
+  color: var(--color-tinta);
+}
+
+.somador-linha input[aria-invalid='true'] {
+  border-color: var(--color-alerta-escuro);
+  box-shadow: 0 0 0 1px var(--color-alerta-escuro);
+}
+
+.somador-aviso {
+  padding-top: 4px;
+  font-size: 0.9rem;
+  color: var(--color-alerta-escuro);
+}
+
+.somador-passo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.somador-passo button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-filete);
+  border-radius: 6px;
+  background-color: var(--color-laudo);
+  font-size: 1.25rem;
+  line-height: 1;
+  text-align: center;
+}
+
+.somador-passo button:hover:not(:disabled) {
+  border-color: var(--color-aco);
+  background-color: var(--color-papel);
+}
+
+.somador-passo button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.somador-passo output {
+  min-width: 26px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.somador-medidor {
+  margin-top: 18px;
+}
+
+.somador-trilho {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  background-color: #d6e6ee;
+}
+
+.somador-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 999px;
+  background-color: var(--color-refrigerante-escuro);
+  transition: width 250ms ease, background-color 200ms;
+}
+
+.somador-medidor-acima .somador-fill {
+  background-color: var(--color-alerta-escuro);
+}
+
+.somador-limite {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background-color: var(--color-tinta);
+}
+
+.somador-limite-rotulo {
+  margin-top: 8px;
+  font-size: 0.8125rem;
+  text-align: center;
+  color: var(--color-aco-escuro);
+}
+
+.somador-total {
+  margin-top: 6px;
+}
+
+.somador-total strong {
+  font-size: 1.25rem;
+}
+
+.somador-total span {
+  font-size: 0.9rem;
+  color: var(--color-aco-escuro);
+}
+
+.somador-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 18px;
+  margin-top: 14px;
+}
+
+.somador-usar {
+  min-height: 2.75rem;
+  padding: 11px 20px;
+  border-radius: 6px;
+  background-color: var(--color-refrigerante-escuro);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #fff;
+  transition: background-color 150ms;
+}
+
+.somador-usar:hover:not(:disabled) {
+  background-color: var(--color-tinta);
+}
+
+.somador-usar:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.somador-limpar {
+  min-height: 2.75rem;
+  padding: 0 4px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  color: var(--color-refrigerante-escuro);
+}
+
+.somador-limpar:hover {
+  color: var(--color-tinta);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .somador-fill,
+  .somador-usar {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------------------------------------------
+ * Checklist de PMOC (Home). Prefixo "checklist-". Fundo da seção: branca, com os cartões dos itens em papel,
+ * para alternar com a calculadora (papel). Os itens são o protocolo da Simon, não um mínimo legal.
+ * ---------------------------------------------------------------------------------------------- */
+.checklist-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 28px;
+  align-items: start;
+  margin-top: 28px;
+}
+
+.checklist-itens {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.checklist-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-filete);
+  border-radius: 6px;
+  background-color: var(--color-papel);
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms;
+}
+
+.checklist-item:hover {
+  border-color: var(--color-aco);
+}
+
+.checklist-item:has(input:checked) {
+  border-color: var(--color-refrigerante-escuro);
+  background-color: #eaf3f7;
+}
+
+.checklist-item:has(input:focus-visible) {
+  outline: 2px solid #0369a1;
+  outline-offset: 2px;
+}
+
+.checklist-item input {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  opacity: 0;
+}
+
+.checklist-caixa {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border: 2px solid var(--color-aco-escuro);
+  border-radius: 4px;
+  background-color: var(--color-laudo);
+  transition: background-color 150ms, border-color 150ms;
+}
+
+.checklist-caixa svg {
+  color: #fff;
+  opacity: 0;
+}
+
+.checklist-item:has(input:checked) .checklist-caixa {
+  border-color: var(--color-refrigerante-escuro);
+  background-color: var(--color-refrigerante-escuro);
+}
+
+.checklist-item:has(input:checked) .checklist-caixa svg {
+  opacity: 1;
+}
+
+.checklist-painel {
+  padding: 20px;
+  border: 1px solid var(--color-filete);
+  border-radius: 8px;
+  background-color: var(--color-laudo);
+}
+
+.checklist-contagem {
+  font-size: 1.25rem;
+}
+
+.checklist-barra {
+  display: flex;
+  gap: 4px;
+  margin: 12px 0;
+}
+
+.checklist-seg {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background-color: #c9d5db;
+}
+
+.checklist-seg-on {
+  background-color: var(--color-refrigerante-escuro);
+}
+
+.checklist-nao-marcados ul {
+  margin: 6px 0 0;
+  padding-left: 20px;
+  list-style: disc;
+  font-size: 0.95rem;
+  color: var(--color-aco-escuro);
+}
+
+.checklist-nao-marcados li + li {
+  margin-top: 4px;
+}
+
+.checklist-apoio {
+  margin: 12px 0 16px;
+  color: var(--color-aco-escuro);
+}
+
+.checklist-botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 11px 20px;
+  border-radius: 6px;
+  background-color: var(--color-refrigerante-escuro);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #fff;
+  text-align: center;
+  transition: background-color 150ms;
+}
+
+.checklist-botao:hover {
+  background-color: var(--color-tinta);
+}
+
+.checklist-detalhes {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: var(--color-aco-escuro);
+}
+
+.checklist-detalhes summary {
+  display: list-item;
+  list-style: disclosure-closed inside;
+  min-height: 2.75rem;
+  padding-top: 0.6rem;
+  cursor: pointer;
+  color: var(--color-refrigerante-escuro);
+  font-weight: 500;
+}
+
+.checklist-detalhes[open] summary {
+  list-style-type: disclosure-open;
+}
+
+.checklist-detalhes summary:hover {
+  color: var(--color-tinta);
+}
+
+.checklist-detalhes p {
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-left: 3px solid var(--color-aco);
+  background-color: var(--color-papel);
+  color: var(--color-tinta);
+}
+
+@media (max-width: 820px) {
+  .checklist-grade {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checklist-item,
+  .checklist-caixa,
+  .checklist-botao {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------------------------------------------
+ * Índice de seções que acompanha a rolagem (Home e /servicos). Prefixo "indice-".
+ * ---------------------------------------------------------------------------------------------- */
+.indice-link {
+  display: inline-block;
+  padding: 2px 0;
+  border-bottom: 2px solid transparent;
+  transition: color 150ms, border-color 150ms;
+}
+
+.indice-link-ativo {
+  border-bottom-color: var(--color-refrigerante-escuro);
+  color: var(--color-tinta);
+}
+
+.indice-progresso {
+  height: 2px;
+  background-color: var(--color-filete);
+}
+
+.indice-progresso-barra {
+  height: 100%;
+  background-color: var(--color-refrigerante-escuro);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .indice-link {
+    transition: none;
+  }
+}

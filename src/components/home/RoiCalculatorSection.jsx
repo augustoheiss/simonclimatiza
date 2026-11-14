@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CONTATO } from '../../data/contato';
+import { mediaPorAparelho } from '../../utils/porAparelho';
+import SomadorCapacidade from './SomadorCapacidade';
 
 export default function RoiCalculatorSection() {
   const [machines, setMachines] = useState(12);
@@ -17,6 +19,34 @@ export default function RoiCalculatorSection() {
   // calculadora pergunta a capacidade. Sem essa informação, ela não afirma que o PMOC é obrigatório.
   const [capacidade, setCapacidade] = useState('desconhecida'); // 'desconhecida' | 'abaixo' | 'acima'
   const isPmocMandatory = capacidade === 'acima';
+
+  // Somador de capacidade (para quem responde "Não sei"). Fica montado mesmo fechado, para não perder o que foi digitado.
+  const [somadorAberto, setSomadorAberto] = useState(false);
+  const vereditoRef = useRef(null);
+  const aoUsarSoma = (resultado) => {
+    setCapacidade(resultado);
+    setSomadorAberto(false);
+    // O foco vai para o veredito (não pode cair no <body> quando o painel fecha).
+    requestAnimationFrame(() => vereditoRef.current?.focus());
+  };
+
+  // Resumo falado pelo leitor de tela, só depois de 500 ms sem mexer nos controles (antes, o <aside> inteiro
+  // era uma região aria-live e cada passo do controle era anunciado).
+  const [resumoFalado, setResumoFalado] = useState('');
+  const montadoRef = useRef(false);
+  useEffect(() => {
+    if (!montadoRef.current) {
+      montadoRef.current = true;
+      return undefined;
+    }
+    const t = setTimeout(() => {
+      const anual = estimatedAnnualWaste.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+      const mensal = estimatedMonthlyWaste.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+      const media = mediaPorAparelho(estimatedMonthlyWaste, machines).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+      setResumoFalado(`Desperdício estimado de ${anual} por ano, ${mensal} por mês, média de ${media} por aparelho.`);
+    }, 500);
+    return () => clearTimeout(t);
+  }, [estimatedAnnualWaste, estimatedMonthlyWaste, machines]);
 
   const handleSendToWhatsApp = () => {
     const formattedWaste = estimatedAnnualWaste.toLocaleString('pt-BR', {
@@ -123,7 +153,7 @@ export default function RoiCalculatorSection() {
                 ].map(([valor, rotulo]) => (
                   <label
                     key={valor}
-                    className={`cursor-pointer rounded-md border px-3 py-1.5 text-sm font-medium has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-refrigerante-escuro ${
+                    className={`cursor-pointer inline-flex min-h-[2.5rem] items-center rounded-md border px-3 py-2 text-sm font-medium has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-refrigerante-escuro ${
                       capacidade === valor
                         ? 'bg-tinta text-white border-tinta'
                         : 'bg-laudo text-tinta border-filete hover:border-aco'
@@ -141,11 +171,30 @@ export default function RoiCalculatorSection() {
                   </label>
                 ))}
               </div>
+
+              <button
+                type="button"
+                onClick={() => setSomadorAberto((v) => !v)}
+                aria-expanded={somadorAberto}
+                aria-controls="somador-capacidade"
+                className="mt-3 inline-flex min-h-[2.75rem] items-center text-refrigerante-escuro hover:text-tinta underline underline-offset-4 font-medium"
+              >
+                {somadorAberto ? 'Fechar a soma dos aparelhos' : 'Não sei: somar os aparelhos do edifício'}
+              </button>
             </fieldset>
 
+            <SomadorCapacidade
+              id="somador-capacidade"
+              oculto={!somadorAberto}
+              aoUsar={aoUsarSoma}
+              aoFechar={() => setSomadorAberto(false)}
+            />
+
             <div
+              ref={vereditoRef}
+              tabIndex={-1}
               role="status"
-              className={`border-l-4 pl-4 py-1 ${isPmocMandatory ? 'border-alerta' : 'border-aco'}`}
+              className={`border-l-4 pl-4 py-1 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-refrigerante-escuro ${isPmocMandatory ? 'border-alerta' : 'border-aco'}`}
             >
               <p className={`font-semibold ${isPmocMandatory ? 'text-alerta-escuro' : 'text-tinta'}`}>
                 {capacidade === 'acima' && 'PMOC obrigatório pela Lei 13.589/2018'}
@@ -163,7 +212,7 @@ export default function RoiCalculatorSection() {
             </div>
           </div>
 
-          <aside className="bg-tinta text-white rounded-md p-6 sm:p-7" aria-live="polite">
+          <aside className="bg-tinta text-white rounded-md p-6 sm:p-7">
             <p className="text-sm text-white/80">Desperdício estimado, por ano</p>
             <p className="valor-medido mt-1 text-4xl font-semibold">
               {reais(estimatedAnnualWaste)}
@@ -173,6 +222,13 @@ export default function RoiCalculatorSection() {
             </p>
             <p className="mt-4 pt-4 border-t border-white/20 text-sm text-white/90">
               Por mês: <strong className="valor-medido">{reais(estimatedMonthlyWaste)}</strong>
+            </p>
+            <p className="mt-2 text-sm text-white/90">
+              Média por aparelho, por mês:{' '}
+              <strong className="valor-medido">{reais(mediaPorAparelho(estimatedMonthlyWaste, machines))}</strong>
+            </p>
+            <p role="status" className="sr-only">
+              {resumoFalado}
             </p>
             <button
               onClick={handleSendToWhatsApp}

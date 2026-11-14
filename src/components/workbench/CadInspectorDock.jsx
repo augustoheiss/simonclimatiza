@@ -2,7 +2,7 @@
 // Painel Inspetor Direito (Estilo AutoCAD Properties / Engineering Prancheta)
 // Tema: Cristal Glacial & Prancheta do Certificado (claro por padrão, com suporte a modo escuro).
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import DOMPurify from 'dompurify';
 import {
   Table2,
@@ -16,7 +16,7 @@ import {
   Flame,
   Wrench,
 } from 'lucide-react';
-import { useSimonActionGate } from '../ui/SimonActionGate.jsx';
+import { useSimonActionGate } from '../../hooks/useSimonActionGate';
 
 function SafeTableHTML({ html }) {
   if (!html) return null;
@@ -47,11 +47,13 @@ export default function CadInspectorDock({
   const [indiceTabela, setIndiceTabela] = useState(0);
   const [indiceInfobox, setIndiceInfobox] = useState(0);
   const [expandido, setExpandido] = useState(false);
+  const [prevAulaId, setPrevAulaId] = useState(aula?.id);
 
-  useEffect(() => {
+  if (aula?.id !== prevAulaId) {
+    setPrevAulaId(aula?.id);
     setIndiceTabela(0);
     setIndiceInfobox(0);
-  }, [aula?.id]);
+  }
 
   // Ajusta aba se a atual estiver vazia
   const abaEfetiva =
@@ -88,18 +90,18 @@ export default function CadInspectorDock({
           isLightMode ? 'bg-white border-sky-200' : 'bg-slate-950 border-slate-800'
         }`}
       >
-        <div className="flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-1">
           <button
             type="button"
             onClick={() => onChangeAba?.('tabelas')}
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               abaEfetiva === 'tabelas'
                 ? isLightMode
                   ? 'bg-[#0369a1] text-white shadow-2xs'
                   : 'bg-sky-500 text-slate-950 shadow-sm'
                 : isLightMode
                 ? 'text-[#1a3a5c] hover:bg-sky-50'
-                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
             <Table2 className="w-3.5 h-3.5" />
@@ -109,31 +111,31 @@ export default function CadInspectorDock({
           <button
             type="button"
             onClick={() => onChangeAba?.('infobox')}
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               abaEfetiva === 'infobox'
                 ? isLightMode
                   ? 'bg-[#0369a1] text-white shadow-2xs'
                   : 'bg-emerald-500 text-slate-950 shadow-sm'
                 : isLightMode
                 ? 'text-[#1a3a5c] hover:bg-sky-50'
-                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
             <Info className="w-3.5 h-3.5" />
-            <span>Info Campo ({infoboxes.length})</span>
+            <span>Info campo ({infoboxes.length})</span>
           </button>
 
           <button
             type="button"
             onClick={() => onChangeAba?.('telemetria')}
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               abaEfetiva === 'telemetria'
                 ? isLightMode
                   ? 'bg-[#0369a1] text-white shadow-2xs'
                   : 'bg-amber-400 text-slate-950 shadow-sm'
                 : isLightMode
                 ? 'text-[#1a3a5c] hover:bg-sky-50'
-                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
             <Gauge className="w-3.5 h-3.5" />
@@ -148,36 +150,42 @@ export default function CadInspectorDock({
               onClick={() =>
                 requestAction({
                   id: `dock-resize-${expandido ? 'compact' : 'expand'}`,
-                  code: 'CAD-DOCK-W',
-                  title: expandido ? 'Reduzir Largura do Dock Inspetor' : 'Expandir Largura do Dock Inspetor',
-                  category: 'CONTROLE DE JANELA CAD (ÍCONE SEM RÓTULO)',
+                  code: 'Largura',
+                  title: expandido ? 'Reduzir largura do inspetor' : 'Expandir largura do inspetor',
+                  category: 'Painel lateral',
                   summary: expandido
                     ? 'Retorna o painel inspetor lateral para a largura padrão (420px), liberando mais área na bancada central.'
                     : 'Amplia a largura do painel inspetor lateral (620px) para leitura confortável de tabelas largas de engenharia.',
                   bullets: [
-                    expandido ? 'Largura alvo: 420px (Padrão)' : 'Largura alvo: 620px (Expandido)',
+                    expandido ? 'Largura alvo: 420px (padrão)' : 'Largura alvo: 620px (expandido)',
                     'Mantém a bancada central ativa simultaneamente',
                   ],
-                  confirmLabel: expandido ? 'Confirmar Redução' : 'Confirmar Expansão',
+                  confirmLabel: expandido ? 'Confirmar redução' : 'Confirmar expansão',
                   iconOnly: true,
                   onConfirm: () => setExpandido((v) => !v),
                 })
               }
-              className={`p-1 rounded cursor-pointer hidden md:inline-flex ${
+              aria-label={expandido ? 'Reduzir largura do inspetor' : 'Expandir largura do inspetor'}
+              className={`p-1.5 rounded-lg cursor-pointer hidden md:inline-flex ${
                 isLightMode
-                  ? 'hover:bg-sky-50 text-slate-500 hover:text-[#1a3a5c]'
-                  : 'hover:bg-slate-800 text-slate-400 hover:text-white'
+                  ? 'hover:bg-sky-50 text-slate-600 hover:text-[#1a3a5c]'
+                  : 'hover:bg-slate-800 text-slate-300 hover:text-white'
               }`}
               title={expandido ? 'Reduzir largura do Dock' : 'Expandir largura do Dock'}
             >
-              {expandido ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+              {expandido ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
             </button>
             {onCloseDock && (
               <button
                 type="button"
                 onClick={onCloseDock}
-                className="p-1 rounded hover:bg-red-500/20 text-slate-400 hover:text-red-500 cursor-pointer"
-                title="Fechar Dock Inspetor"
+                aria-label="Fechar painel inspetor"
+                className={`p-1.5 rounded-lg cursor-pointer ${
+                  isLightMode
+                    ? 'hover:bg-red-50 text-slate-600 hover:text-red-700'
+                    : 'hover:bg-red-500/20 text-slate-300 hover:text-red-300'
+                }`}
+                title="Fechar painel inspetor"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -201,12 +209,12 @@ export default function CadInspectorDock({
                         key={t.id}
                         type="button"
                         onClick={() => setIndiceTabela(idx)}
-                        className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition-all cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
                           idx === indiceTabela
                             ? 'bg-[#0369a1] text-white border-[#1a3a5c]'
                             : isLightMode
                             ? 'bg-white text-[#1a3a5c] border-sky-200 hover:bg-sky-50'
-                            : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                            : 'bg-slate-950 text-slate-200 border-slate-800 hover:border-slate-700'
                         }`}
                       >
                         {t.codigo}: {t.titulo.slice(0, 28)}
@@ -217,8 +225,8 @@ export default function CadInspectorDock({
 
                 <div className="rounded-xl border-2 border-sky-200 bg-white p-4 shadow-xs">
                   <div className="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-sky-200">
-                    <span className="text-[10px] font-mono font-black uppercase tracking-wider text-[#0369a1] bg-sky-100 border border-sky-300 px-2 py-0.5 rounded">
-                      {tabelaAtual.codigo} &bull; PRANCHA DE ENGENHARIA
+                    <span className="text-xs font-bold text-[#0369a1] bg-sky-100 border border-sky-300 px-2 py-0.5 rounded">
+                      {tabelaAtual.codigo} &bull; Prancha técnica
                     </span>
                     {tabelas.length > 1 && (
                       <div className="flex items-center gap-1">
@@ -226,18 +234,20 @@ export default function CadInspectorDock({
                           type="button"
                           disabled={indiceTabela === 0}
                           onClick={() => setIndiceTabela((i) => Math.max(0, i - 1))}
-                          className="p-1 rounded bg-sky-50 border border-sky-200 text-[#1a3a5c] disabled:opacity-30 cursor-pointer"
+                          aria-label="Tabela anterior"
+                          className="p-1.5 rounded bg-sky-50 border border-sky-200 text-[#1a3a5c] disabled:opacity-35 cursor-pointer"
                         >
                           <ChevronLeft className="w-3.5 h-3.5" />
                         </button>
-                        <span className="text-[11px] font-bold text-slate-600">
+                        <span className="text-xs font-bold text-slate-600">
                           {indiceTabela + 1}/{tabelas.length}
                         </span>
                         <button
                           type="button"
                           disabled={indiceTabela >= tabelas.length - 1}
                           onClick={() => setIndiceTabela((i) => Math.min(tabelas.length - 1, i + 1))}
-                          className="p-1 rounded bg-sky-50 border border-sky-200 text-[#1a3a5c] disabled:opacity-30 cursor-pointer"
+                          aria-label="Próxima tabela"
+                          className="p-1.5 rounded bg-sky-50 border border-sky-200 text-[#1a3a5c] disabled:opacity-35 cursor-pointer"
                         >
                           <ChevronRight className="w-3.5 h-3.5" />
                         </button>
@@ -256,7 +266,7 @@ export default function CadInspectorDock({
                 }`}
               >
                 <Table2 className="w-8 h-8 mx-auto mb-2 text-[#0284c7]" />
-                <p className="text-xs font-bold">
+                <p className="text-[13px] font-bold">
                   Os parâmetros numéricos desta aula estão integrados diretamente nos botões da Bancada Prática e na aba Medidas.
                 </p>
               </div>
@@ -276,12 +286,12 @@ export default function CadInspectorDock({
                         key={inf.id}
                         type="button"
                         onClick={() => setIndiceInfobox(idx)}
-                        className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition-all cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
                           idx === indiceInfobox
                             ? 'bg-emerald-700 text-white border-emerald-900'
                             : isLightMode
                             ? 'bg-white text-[#1a3a5c] border-sky-200 hover:bg-sky-50'
-                            : 'bg-slate-950 text-slate-300 border-slate-800'
+                            : 'bg-slate-950 text-slate-200 border-slate-800'
                         }`}
                       >
                         {inf.codigo}: {inf.titulo.slice(0, 26)}
@@ -292,8 +302,8 @@ export default function CadInspectorDock({
 
                 <div className="rounded-xl border-2 border-emerald-200 bg-white p-4 shadow-xs">
                   <div className="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-emerald-200">
-                    <span className="text-[10px] font-mono font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded">
-                      {infoboxAtual.codigo} &bull; DIRETRIZ TÁTICA DE CAMPO
+                    <span className="text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded">
+                      {infoboxAtual.codigo} &bull; Diretriz de campo
                     </span>
                   </div>
                   <SafeTableHTML html={infoboxAtual.html} />
@@ -308,7 +318,7 @@ export default function CadInspectorDock({
                 }`}
               >
                 <Info className="w-8 h-8 mx-auto mb-2 text-[#0284c7]" />
-                <p className="text-xs font-bold">
+                <p className="text-[13px] font-bold">
                   Consulte as notas diretas de bancada do Professor Simon no painel central.
                 </p>
               </div>
@@ -327,16 +337,16 @@ export default function CadInspectorDock({
               <div className="flex items-center gap-2 mb-2">
                 <Flame className="w-4 h-4 text-amber-500" />
                 <span
-                  className={`text-xs font-extrabold uppercase tracking-wider ${
-                    isLightMode ? 'text-[#1a3a5c]' : 'text-amber-400'
+                  className={`text-xs font-extrabold ${
+                    isLightMode ? 'text-[#1a3a5c]' : 'text-amber-300'
                   }`}
                 >
-                  Grandezas Críticas desta Aula
+                  Grandezas críticas desta aula
                 </span>
               </div>
               <p
-                className={`text-xs mb-3 font-medium ${
-                  isLightMode ? 'text-slate-600' : 'text-slate-400'
+                className={`text-[13px] mb-3 font-medium ${
+                  isLightMode ? 'text-slate-600' : 'text-slate-300'
                 }`}
               >
                 Valores nominais, limites de pressão, temperatura, torque e elétrica extraídos diretamente da especificação da aula:
@@ -352,12 +362,16 @@ export default function CadInspectorDock({
                           : 'bg-slate-900 border-slate-800'
                       }`}
                     >
-                      <span className="block text-[9px] font-mono font-bold text-slate-500">
-                        PARAM #{String(i + 1).padStart(2, '0')}
+                      <span
+                        className={`block text-xs font-semibold ${
+                          isLightMode ? 'text-slate-600' : 'text-slate-300'
+                        }`}
+                      >
+                        Parâmetro #{String(i + 1).padStart(2, '0')}
                       </span>
                       <span
-                        className={`text-xs font-mono font-black ${
-                          isLightMode ? 'text-[#0369a1]' : 'text-emerald-400'
+                        className={`text-xs cad-valor-medido font-black ${
+                          isLightMode ? 'text-[#0369a1]' : 'text-emerald-300'
                         }`}
                       >
                         {g}
@@ -366,7 +380,13 @@ export default function CadInspectorDock({
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-slate-500">Nenhuma grandeza numérica isolada nesta aula.</p>
+                <p
+                  className={`text-[13px] ${
+                    isLightMode ? 'text-slate-600' : 'text-slate-300'
+                  }`}
+                >
+                  Nenhuma grandeza numérica isolada nesta aula.
+                </p>
               )}
             </div>
 
@@ -381,15 +401,15 @@ export default function CadInspectorDock({
                 />
                 <span
                   className={`text-xs font-extrabold ${
-                    isLightMode ? 'text-[#1a3a5c]' : 'text-sky-400'
+                    isLightMode ? 'text-[#1a3a5c]' : 'text-sky-300'
                   }`}
                 >
-                  Regra de Bancada do Simon
+                  Regra de bancada do Simon
                 </span>
               </div>
               <p
-                className={`text-xs leading-relaxed font-medium ${
-                  isLightMode ? 'text-slate-700' : 'text-slate-300'
+                className={`text-[13px] leading-relaxed font-medium ${
+                  isLightMode ? 'text-slate-700' : 'text-slate-200'
                 }`}
               >
                 Nunca decore um número solto sem entender qual fenômeno físico o governa. Se a pressão mudou, pergunte primeiro o que aconteceu com a temperatura e com o fluxo de massa!

@@ -30,9 +30,9 @@ export default function BeatEscolha({
       aria-labelledby={`pergunta-${beat.id}`}
       className="my-5 rounded-2xl border border-sky-500/35 bg-slate-900/90 p-5 shadow-lg"
     >
-      <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-sky-400 mb-2">
+      <div className="flex items-center gap-2 text-xs font-extrabold text-sky-400 mb-2">
         <HelpCircle className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
-        <span>Sua Aposta no Balcão</span>
+        <span>Sua aposta no balcão</span>
       </div>
 
       <p
@@ -68,22 +68,22 @@ export default function BeatEscolha({
               className={`w-full text-left px-4 py-3 rounded-xl border text-xs sm:text-sm font-medium transition-all duration-150 cursor-pointer flex items-start gap-3 focus:outline-none focus:ring-2 focus:ring-sky-400 ${estiloBotao}`}
             >
               <span
-                className="w-6 h-6 rounded-lg bg-slate-900/80 border border-slate-600 flex items-center justify-center text-xs font-extrabold uppercase flex-shrink-0 mt-0.5"
+                className="w-6 h-6 rounded-lg bg-slate-900/80 border border-slate-600 flex items-center justify-center text-xs font-extrabold flex-shrink-0 mt-0.5"
                 aria-hidden="true"
               >
-                {opcao.id}
+                {String(opcao.id).toUpperCase()}
               </span>
-              <span className="flex-1 leading-relaxed">
+              <span className="flex-1 min-w-0 break-words leading-relaxed">
                 <TextoConversa texto={opcao.texto} />
               </span>
               {destacarIdeal && (
-                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 flex-shrink-0 mt-0.5">
+                <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-300 flex-shrink-0 mt-0.5">
                   <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Visão de Elite</span>
+                  <span className="hidden sm:inline">Visão de elite</span>
                 </span>
               )}
               {selecionada && !opcao.ideal && (
-                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-300 flex-shrink-0 mt-0.5">
+                <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-300 flex-shrink-0 mt-0.5">
                   <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
                   <span className="hidden sm:inline">Sua escolha</span>
                 </span>

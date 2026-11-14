@@ -87,20 +87,21 @@ export default function CadModuleTree({
       >
         <div className="flex items-center justify-between gap-2">
           <span
-            className={`text-[10px] font-mono font-black uppercase tracking-widest ${
-              isLightMode ? 'text-[#0369a1]' : 'text-sky-400'
+            className={`text-xs font-bold ${
+              isLightMode ? 'text-[#0369a1]' : 'text-sky-300'
             }`}
           >
-            LAYERS &bull; MÓDULOS ({curso?.todasAulas?.length || 0} AULAS)
+            Módulos do curso ({curso?.todasAulas?.length || 0} aulas)
           </span>
           {onCloseMobileDrawer && (
             <button
               type="button"
               onClick={onCloseMobileDrawer}
-              className={`md:hidden p-1 rounded ${
+              aria-label="Fechar lista de módulos"
+              className={`md:hidden p-1.5 rounded-lg cursor-pointer ${
                 isLightMode
-                  ? 'hover:bg-sky-50 text-slate-500 hover:text-slate-900'
-                  : 'hover:bg-slate-800 text-slate-400 hover:text-white'
+                  ? 'hover:bg-sky-50 text-slate-600 hover:text-slate-900'
+                  : 'hover:bg-slate-800 text-slate-300 hover:text-white'
               }`}
             >
               <X className="w-4 h-4" />
@@ -119,59 +120,67 @@ export default function CadModuleTree({
           <button
             type="button"
             onClick={() => setModoTrilha('pratica')}
-            className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${
+            className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               modoTrilha === 'pratica'
                 ? isLightMode
                   ? 'bg-[#0369a1] text-white shadow-2xs'
                   : 'bg-emerald-500 text-slate-950 shadow-sm'
                 : isLightMode
-                ? 'text-slate-600 hover:text-[#1a3a5c]'
-                : 'text-slate-400 hover:text-white'
+                ? 'text-slate-700 hover:text-[#1a3a5c]'
+                : 'text-slate-300 hover:text-white'
             }`}
             title="Ordem preferida do Professor Simon: Fundamentos da Física direto para a Prática de Instalação/Bancada"
           >
-            <Flame className="w-3.5 h-3.5" />
-            <span>Física ➔ Prática</span>
+            <Flame className="w-3.5 h-3.5 flex-shrink-0" />
+            <span>Da física à prática</span>
           </button>
 
           <button
             type="button"
             onClick={() => setModoTrilha('original')}
-            className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${
+            className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               modoTrilha === 'original'
                 ? isLightMode
                   ? 'bg-[#0369a1] text-white shadow-2xs'
                   : 'bg-sky-500 text-slate-950 shadow-sm'
                 : isLightMode
-                ? 'text-slate-600 hover:text-[#1a3a5c]'
-                : 'text-slate-400 hover:text-white'
+                ? 'text-slate-700 hover:text-[#1a3a5c]'
+                : 'text-slate-300 hover:text-white'
             }`}
             title="Ordem sequencial numérica dos módulos da apostila"
           >
-            <ListOrdered className="w-3.5 h-3.5" />
-            <span>Ordem Apostila</span>
+            <ListOrdered className="w-3.5 h-3.5 flex-shrink-0" />
+            <span>Ordem apostila</span>
           </button>
         </div>
 
         {/* Busca Instantânea de Aulas */}
         <div className="relative">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search
+            className={`w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none ${
+              isLightMode ? 'text-slate-500' : 'text-slate-400'
+            }`}
+          />
           <input
             type="text"
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
+            aria-label="Filtrar aulas por título ou código"
             placeholder="Filtrar aula, código ou tema..."
-            className={`w-full pl-8 pr-7 py-1.5 rounded-lg text-xs border focus:outline-none focus:ring-1 focus:ring-sky-400 ${
+            className={`w-full pl-8 pr-8 py-1.5 rounded-lg text-xs border focus:outline-none focus:ring-2 focus:ring-sky-400 ${
               isLightMode
-                ? 'bg-white border-sky-200 text-[#1a3a5c] placeholder-slate-400'
-                : 'bg-slate-950 border-slate-800 text-slate-200 placeholder-slate-500'
+                ? 'bg-white border-sky-200 text-[#1a3a5c] placeholder-slate-500'
+                : 'bg-slate-950 border-slate-800 text-slate-100 placeholder-slate-400'
             }`}
           />
           {busca && (
             <button
               type="button"
               onClick={() => setBusca('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 cursor-pointer"
+              aria-label="Limpar busca"
+              className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer ${
+                isLightMode ? 'text-slate-500 hover:text-slate-800' : 'text-slate-300 hover:text-white'
+              }`}
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -221,7 +230,7 @@ export default function CadModuleTree({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-1">
                     <span
-                      className="text-[10px] font-mono font-black uppercase tracking-wider px-1.5 py-0.5 rounded"
+                      className="text-xs font-bold px-1.5 py-0.5 rounded"
                       style={{
                         backgroundColor: `${corGrupo}18`,
                         color: isLightMode ? '#0369a1' : corGrupo,
@@ -229,13 +238,17 @@ export default function CadModuleTree({
                     >
                       {grupo.codigo}
                     </span>
-                    <span className="text-[10px] font-mono font-bold text-slate-500">
+                    <span
+                      className={`text-xs font-semibold ${
+                        isLightMode ? 'text-slate-600' : 'text-slate-300'
+                      }`}
+                    >
                       {grupo.aulas?.length || 0} aulas
                     </span>
                   </div>
                   <h3
-                    className={`text-xs font-extrabold mt-1 leading-snug ${
-                      isLightMode ? 'text-[#1a3a5c]' : 'text-slate-200'
+                    className={`text-[13px] font-extrabold mt-1 leading-snug ${
+                      isLightMode ? 'text-[#1a3a5c]' : 'text-slate-100'
                     }`}
                   >
                     {grupo.titulo}
@@ -278,17 +291,21 @@ export default function CadModuleTree({
                         >
                           {concluida ? (
                             <CheckCircle2
-                              className={`w-3.5 h-3.5 flex-shrink-0 mt-0.5 ${
-                                isLightMode ? 'text-emerald-600' : 'text-emerald-400'
+                              aria-label="Aula concluída"
+                              className={`w-4 h-4 flex-shrink-0 mt-0.5 ${
+                                isLightMode ? 'text-emerald-700' : 'text-emerald-400'
                               }`}
                             />
                           ) : (
                             <Circle
-                              className={`w-3.5 h-3.5 flex-shrink-0 mt-0.5 ${
+                              aria-hidden="true"
+                              className={`w-4 h-4 flex-shrink-0 mt-0.5 ${
                                 ativa
                                   ? isLightMode
                                     ? 'text-[#0284c7]'
                                     : 'text-sky-400'
+                                  : isLightMode
+                                  ? 'text-slate-500'
                                   : 'text-slate-400'
                               }`}
                             />
@@ -296,19 +313,21 @@ export default function CadModuleTree({
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-1.5 flex-wrap">
                               <span
-                                className={`text-[10px] font-mono font-extrabold ${
+                                className={`text-xs font-extrabold ${
                                   ativa
                                     ? isLightMode
                                       ? 'text-[#0369a1]'
-                                      : 'text-sky-400'
-                                    : 'text-slate-500'
+                                      : 'text-sky-300'
+                                    : isLightMode
+                                    ? 'text-slate-600'
+                                    : 'text-slate-300'
                                 }`}
                               >
-                                [{String(aula.id).toUpperCase()}]
+                                {String(aula.id).toUpperCase()}
                               </span>
                               {aula.possuiConversa && (
                                 <span
-                                  className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded border ${
+                                  className={`text-xs font-bold px-1.5 py-0.5 rounded border ${
                                     papoFeito
                                       ? isLightMode
                                         ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
@@ -318,19 +337,19 @@ export default function CadModuleTree({
                                       : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
                                   }`}
                                 >
-                                  ☕ Balcão
+                                  Balcão
                                 </span>
                               )}
                             </div>
                             <p
-                              className={`text-xs leading-snug mt-0.5 line-clamp-2 ${
+                              className={`text-[13px] leading-snug mt-0.5 line-clamp-2 ${
                                 ativa
                                   ? isLightMode
                                     ? 'font-extrabold text-[#1a3a5c]'
                                     : 'font-extrabold text-white'
                                   : isLightMode
                                   ? 'font-semibold text-slate-700'
-                                  : 'font-medium text-slate-300'
+                                  : 'font-medium text-slate-200'
                               }`}
                             >
                               {aula.titulo.replace(/^Aula \d+[\s\-:]+/i, '')}
@@ -351,7 +370,7 @@ export default function CadModuleTree({
                                 onSelectAula?.(aula, 'bancada');
                                 onCloseMobileDrawer?.();
                               }}
-                              className={`flex-1 py-1 px-1.5 rounded-lg text-[10px] font-extrabold flex items-center justify-center gap-1 cursor-pointer ${
+                              className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 cursor-pointer ${
                                 isLightMode
                                   ? 'bg-[#0369a1] hover:bg-[#0284c7] text-white'
                                   : 'bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300'
@@ -368,7 +387,7 @@ export default function CadModuleTree({
                                   onSelectAula?.(aula, 'conversa');
                                   onCloseMobileDrawer?.();
                                 }}
-                                className={`flex-1 py-1 px-1.5 rounded-lg text-[10px] font-extrabold flex items-center justify-center gap-1 cursor-pointer border ${
+                                className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 cursor-pointer border ${
                                   isLightMode
                                     ? 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300'
                                     : 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/30'
@@ -386,7 +405,7 @@ export default function CadModuleTree({
                                   onSelectAula?.(aula, 'midia');
                                   onCloseMobileDrawer?.();
                                 }}
-                                className={`flex-1 py-1 px-1.5 rounded-lg text-[10px] font-extrabold flex items-center justify-center gap-1 cursor-pointer border ${
+                                className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 cursor-pointer border ${
                                   isLightMode
                                     ? 'bg-white hover:bg-sky-100 text-[#0369a1] border-sky-200'
                                     : 'bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border-sky-500/30'

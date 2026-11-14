@@ -32,10 +32,10 @@ export default function BeatMitoVerdade({
       aria-labelledby={`mito-${beat.id}`}
       className="my-5 rounded-2xl border border-violet-500/40 bg-slate-900/90 p-5 shadow-lg"
     >
-      <div className="flex items-center justify-between gap-2 mb-2">
-        <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-violet-400">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+        <div className="flex items-center gap-2 text-xs font-extrabold text-violet-300">
           <Flame className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
-          <span>Mito ou Verdade de Obra?</span>
+          <span>Mito ou verdade de obra?</span>
         </div>
         {respondeu && (
           <span
@@ -65,7 +65,7 @@ export default function BeatMitoVerdade({
           type="button"
           onClick={() => onResponder(beat.id, 'mito')}
           aria-pressed={respostaSalva === 'mito'}
-          className={`px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-extrabold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-violet-400 ${
+          className={`px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-extrabold transition-all cursor-pointer flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-violet-400 ${
             respostaSalva === 'mito'
               ? !beat.verdade
                 ? 'border-emerald-500 bg-emerald-950/60 text-emerald-200'
@@ -74,14 +74,14 @@ export default function BeatMitoVerdade({
           }`}
         >
           <X className="w-4 h-4" aria-hidden="true" />
-          <span>É Mito</span>
+          <span>É mito</span>
         </button>
 
         <button
           type="button"
           onClick={() => onResponder(beat.id, 'verdade')}
           aria-pressed={respostaSalva === 'verdade'}
-          className={`px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-extrabold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-violet-400 ${
+          className={`px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-extrabold transition-all cursor-pointer flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-violet-400 ${
             respostaSalva === 'verdade'
               ? beat.verdade
                 ? 'border-emerald-500 bg-emerald-950/60 text-emerald-200'
@@ -90,7 +90,7 @@ export default function BeatMitoVerdade({
           }`}
         >
           <Check className="w-4 h-4" aria-hidden="true" />
-          <span>É Verdade</span>
+          <span>É verdade</span>
         </button>
       </div>
 

@@ -40,9 +40,9 @@ export default function ProtecaoAcademia({ children, onVoltar }) {
     return children;
   }
 
-  // ── Não autenticado → tela de bloqueio VIP 100dvh Zero-Scroll (Tema Cristal Glacial do Certificado) ──
+  // ── Não autenticado → tela de bloqueio VIP (Tema Cristal Glacial) ──
   return (
-    <div className="h-dvh w-screen bg-gradient-to-b from-sky-50 via-white to-sky-100/60 flex items-center justify-center px-6 py-8 relative overflow-y-auto select-none text-slate-900">
+    <div className="min-h-dvh w-full bg-gradient-to-b from-sky-50 via-white to-sky-100/60 flex items-center justify-center px-6 py-8 relative overflow-y-auto select-none text-slate-900">
       {/* Textura sutil do Certificado */}
       <div
         className="absolute inset-0 opacity-[0.16] pointer-events-none bg-cover bg-center"
@@ -65,13 +65,13 @@ export default function ProtecaoAcademia({ children, onVoltar }) {
 
           {/* Title */}
           <div className="text-center mb-6">
-            <span className="inline-block px-3 py-0.5 rounded-full text-[10px] font-mono font-extrabold uppercase tracking-widest bg-sky-100 text-[#0369a1] border border-sky-300 mb-2">
-              CAD WORKSPACE &bull; ACESSO VIP
+            <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-[#0369a1] border border-sky-300 mb-2">
+              Área VIP de treinamento
             </span>
             <h1 className="text-2xl md:text-3xl font-black text-[#1a3a5c] tracking-tight leading-tight">
               Academia Simon
             </h1>
-            <p className="mt-1.5 text-slate-600 text-xs sm:text-sm leading-relaxed max-w-xs mx-auto font-medium">
+            <p className="mt-1.5 text-slate-700 text-sm leading-relaxed max-w-xs mx-auto font-medium">
               Digite sua credencial de acesso para abrir a bancada interativa de treinamentos, módulos e aulas.
             </p>
           </div>
@@ -80,10 +80,10 @@ export default function ProtecaoAcademia({ children, onVoltar }) {
           <form onSubmit={handleSubmit}>
             <label
               htmlFor="codigo-academia"
-              className="block text-xs font-extrabold text-[#1a3a5c] uppercase tracking-widest mb-2"
+              className="block text-[13px] font-bold text-[#1a3a5c] mb-2"
             >
-              <KeyRound size={12} className="inline mr-1.5 -mt-0.5 text-[#0284c7]" />
-              Credencial de Acesso VIP
+              <KeyRound size={14} className="inline mr-1.5 -mt-0.5 text-[#0284c7]" aria-hidden="true" />
+              Credencial de acesso VIP
             </label>
 
             <input
@@ -98,8 +98,8 @@ export default function ProtecaoAcademia({ children, onVoltar }) {
               autoComplete="off"
               autoFocus
               className={`
-                w-full bg-white border-2 rounded-xl px-4 py-3.5 text-[#1a3a5c] placeholder-slate-400
-                text-sm font-mono font-bold tracking-wider
+                w-full bg-white border-2 rounded-xl px-4 py-3.5 text-[#1a3a5c] placeholder-slate-500
+                text-sm font-bold
                 focus:outline-none focus:ring-2 focus:ring-offset-0 transition-all duration-200
                 ${
                   erro
@@ -116,9 +116,9 @@ export default function ProtecaoAcademia({ children, onVoltar }) {
               <div
                 id="erro-senha"
                 role="alert"
-                className="flex items-start gap-2 mt-3 text-red-600 font-semibold text-xs leading-relaxed"
+                className="flex items-start gap-2 mt-3 text-red-700 font-semibold text-[13px] leading-relaxed"
               >
-                <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
+                <AlertCircle size={15} className="flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <span>{erro}</span>
               </div>
             )}
@@ -127,7 +127,7 @@ export default function ProtecaoAcademia({ children, onVoltar }) {
               type="submit"
               className="
                 w-full mt-5 bg-[#0369a1] hover:bg-[#0284c7] active:bg-[#1a3a5c]
-                text-white font-black text-xs uppercase tracking-wider
+                text-white font-extrabold text-sm
                 px-6 py-3.5 rounded-xl
                 transition-all duration-200
                 shadow-lg shadow-sky-600/20
@@ -136,30 +136,30 @@ export default function ProtecaoAcademia({ children, onVoltar }) {
               "
               disabled={!senha.trim()}
             >
-              Liberar Bancada de Treinamentos
+              Liberar bancada de treinamentos
             </button>
 
             {typeof onVoltar === 'function' ? (
               <button
                 type="button"
                 onClick={onVoltar}
-                className="w-full mt-3 py-2.5 rounded-xl border border-sky-200 bg-white text-[#1a3a5c] hover:bg-sky-50 text-xs font-extrabold transition-colors cursor-pointer"
+                className="w-full mt-3 py-2.5 rounded-xl border border-sky-200 bg-white text-[#1a3a5c] hover:bg-sky-50 text-[13px] font-bold transition-colors cursor-pointer"
               >
                 Voltar
               </button>
             ) : (
               <Link
                 to="/"
-                className="w-full mt-3 py-2.5 rounded-xl border border-sky-200 bg-white text-[#1a3a5c] hover:bg-sky-50 text-xs font-extrabold transition-colors flex items-center justify-center gap-1.5"
+                className="w-full mt-3 py-2.5 rounded-xl border border-sky-200 bg-white text-[#1a3a5c] hover:bg-sky-50 text-[13px] font-bold transition-colors flex items-center justify-center gap-1.5"
               >
-                <Home size={13} className="text-[#0284c7]" />
-                <span>Voltar para a Página Inicial</span>
+                <Home size={14} className="text-[#0284c7]" aria-hidden="true" />
+                <span>Voltar para a página inicial</span>
               </Link>
             )}
           </form>
 
           {/* Footer hint */}
-          <p className="text-center text-slate-500 text-[11px] font-medium mt-4">
+          <p className="text-center text-slate-600 text-xs font-medium mt-4">
             Área exclusiva para alunos e membros convidados da Academia Simon.
           </p>
         </div>

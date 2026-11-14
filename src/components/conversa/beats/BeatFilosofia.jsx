@@ -25,12 +25,12 @@ export default function BeatFilosofia({ beat }) {
         <div className="w-8 h-8 rounded-lg bg-violet-500/15 border border-violet-400/40 flex items-center justify-center flex-shrink-0">
           <Compass className="w-4 h-4 text-violet-300" aria-hidden="true" />
         </div>
-        <div>
-          <span className="block text-[10px] font-extrabold uppercase tracking-widest text-violet-300">
-            Filosofia de Balcão · Sabedoria de Ofício
+        <div className="min-w-0">
+          <span className="block text-xs font-extrabold text-violet-300">
+            Filosofia de balcão &bull; Sabedoria de ofício
           </span>
           <h4 className="text-sm sm:text-base font-extrabold text-white">
-            {beat.titulo || 'A Ética do que Ninguém Vê no Forro'}
+            {beat.titulo || 'A ética do que ninguém vê no forro'}
           </h4>
         </div>
       </div>

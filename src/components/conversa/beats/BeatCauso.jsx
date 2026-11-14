@@ -17,9 +17,9 @@ export default function BeatCauso({ beat }) {
         <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/40 flex items-center justify-center flex-shrink-0">
           <AlertOctagon className="w-4 h-4 text-amber-400" aria-hidden="true" />
         </div>
-        <div>
-          <span className="block text-[10px] font-extrabold uppercase tracking-widest text-amber-400">
-            Causo de Obra · O Preço do Atalho
+        <div className="min-w-0">
+          <span className="block text-xs font-extrabold text-amber-300">
+            Causo de obra &bull; O preço do atalho
           </span>
           <h4 className="text-sm sm:text-base font-extrabold text-white">
             {beat.titulo}

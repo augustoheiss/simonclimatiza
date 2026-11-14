@@ -1,35 +1,30 @@
 // src/components/conversa/DesafioModuloModal.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Trophy, CheckCircle2, XCircle, ArrowRight, RotateCcw, X, Award } from 'lucide-react';
 import Balao from './Balao';
 import TextoConversa from './TextoConversa';
-
-function chaveStorage(cursoId, moduloId) {
-  return `simon_modulo_boss_v1_${cursoId}_${moduloId}`;
-}
-
-export function lerStatusDesafioModulo(cursoId, moduloId) {
-  if (typeof window === 'undefined' || !cursoId || !moduloId) return null;
-  try {
-    const raw = window.localStorage.getItem(chaveStorage(cursoId, moduloId));
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
+import { useModalFocusTrap } from '../../hooks/useModalFocusTrap';
+import { salvarStatusDesafioModulo } from '../../utils/desafioModuloStorage';
 
 export default function DesafioModuloModal({ desafio, aberto, onFechar, onConcluir }) {
   const [indiceAtual, setIndiceAtual] = useState(0);
   const [respostas, setRespostas] = useState({});
   const [finalizado, setFinalizado] = useState(false);
+  const modalRef = useRef(null);
+  const fecharBtnRef = useRef(null);
 
-  useEffect(() => {
-    if (aberto && desafio) {
+  useModalFocusTrap(Boolean(aberto && desafio), modalRef, onFechar, fecharBtnRef);
+
+  const [prevModalKey, setPrevModalKey] = useState(null);
+  const modalKey = aberto && desafio ? `${desafio.moduloId || 'mod'}` : null;
+  if (modalKey !== prevModalKey) {
+    setPrevModalKey(modalKey);
+    if (modalKey) {
       setIndiceAtual(0);
       setRespostas({});
       setFinalizado(false);
     }
-  }, [aberto, desafio]);
+  }
 
   if (!aberto || !desafio) return null;
 
@@ -67,7 +62,7 @@ export default function DesafioModuloModal({ desafio, aberto, onFechar, onConclu
           aprovado: acertosTotais >= Math.ceil(totalQuestoes * 0.6),
           data: new Date().toISOString(),
         };
-        window.localStorage.setItem(chaveStorage(desafio.cursoId, desafio.moduloId), JSON.stringify(payload));
+        salvarStatusDesafioModulo(desafio.cursoId, desafio.moduloId, payload);
         onConcluir?.(payload);
       } catch {
         // Ignora erro de quota
@@ -87,31 +82,39 @@ export default function DesafioModuloModal({ desafio, aberto, onFechar, onConclu
       role="dialog"
       aria-modal="true"
       aria-label={`Desafio da Rodada: ${desafio.titulo}`}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onFechar?.();
+      }}
     >
-      <div className="relative w-full max-w-2xl rounded-2xl border-2 border-amber-500/50 bg-slate-900 shadow-2xl overflow-hidden my-8">
+      <div
+        ref={modalRef}
+        tabIndex={-1}
+        className="relative w-full max-w-2xl rounded-2xl border-2 border-amber-500/50 bg-slate-900 shadow-2xl overflow-hidden my-8 focus:outline-none"
+      >
         {/* Cabeçalho */}
         <header className="px-5 py-4 border-b border-slate-800 bg-gradient-to-r from-slate-900 via-amber-950/30 to-slate-900 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center flex-shrink-0">
               <Trophy className="w-5 h-5 text-amber-400" aria-hidden="true" />
             </div>
-            <div>
-              <span className="block text-[10px] font-extrabold uppercase tracking-widest text-amber-400">
-                Desafio da Rodada · Certificação do Módulo
+            <div className="min-w-0">
+              <span className="block text-xs font-bold text-amber-300">
+                Desafio da rodada · Certificação do módulo
               </span>
-              <h3 className="text-sm sm:text-base font-extrabold text-white">
+              <h3 className="text-sm sm:text-base font-extrabold text-white break-words">
                 {desafio.titulo}
               </h3>
             </div>
           </div>
 
           <button
+            ref={fecharBtnRef}
             type="button"
             onClick={onFechar}
-            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+            className="w-9 h-9 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer flex items-center justify-center flex-shrink-0"
             aria-label="Fechar Desafio da Rodada"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </header>
 
@@ -120,16 +123,16 @@ export default function DesafioModuloModal({ desafio, aberto, onFechar, onConclu
           {!finalizado && questaoAtual ? (
             <div>
               {desafio.contextoInicial && indiceAtual === 0 && (
-                <div className="mb-4 px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                <div className="mb-4 px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-800 text-[13px] sm:text-sm text-slate-200 leading-relaxed">
                   <TextoConversa texto={desafio.contextoInicial} />
                 </div>
               )}
 
-              <div className="flex items-center justify-between text-xs font-bold text-slate-400 mb-3">
+              <div className="flex items-center justify-between text-[13px] font-bold text-slate-300 mb-3">
                 <span>
                   Questão {indiceAtual + 1} de {totalQuestoes}
                 </span>
-                <span className="text-amber-400">
+                <span className="text-amber-300">
                   Acertos parciais: {acertosTotais}
                 </span>
               </div>
@@ -150,7 +153,7 @@ export default function DesafioModuloModal({ desafio, aberto, onFechar, onConclu
                     } else if (selecionada && !op.correta) {
                       estilo = 'bg-rose-950/80 border-rose-500/70 text-rose-100';
                     } else {
-                      estilo = 'bg-slate-900/50 border-slate-800 text-slate-500 opacity-60';
+                      estilo = 'bg-slate-900/50 border-slate-800 text-slate-400 opacity-70';
                     }
                   }
 
@@ -160,15 +163,15 @@ export default function DesafioModuloModal({ desafio, aberto, onFechar, onConclu
                       type="button"
                       disabled={Boolean(respostaAtual)}
                       onClick={() => handleSelecionar(op)}
-                      className={`w-full text-left px-4 py-3 rounded-xl border text-xs sm:text-sm transition-all flex items-start justify-between gap-3 ${
+                      className={`w-full text-left px-4 py-3 rounded-xl border text-[13px] sm:text-sm transition-all flex items-start justify-between gap-3 ${
                         respostaAtual ? 'cursor-default' : 'cursor-pointer'
                       } ${estilo}`}
                     >
-                      <div className="flex items-start gap-2.5">
-                        <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-slate-950 border border-slate-700 text-[11px] font-mono font-bold text-amber-300 flex-shrink-0 mt-0.5">
+                      <div className="flex items-start gap-2.5 min-w-0">
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-slate-950 border border-slate-700 text-xs font-bold text-amber-300 flex-shrink-0 mt-0.5">
                           {String.fromCharCode(65 + idx)}
                         </span>
-                        <span className="leading-relaxed">
+                        <span className="leading-relaxed min-w-0 break-words">
                           <TextoConversa texto={op.texto} />
                         </span>
                       </div>
@@ -253,18 +256,18 @@ export default function DesafioModuloModal({ desafio, aberto, onFechar, onConclu
                 <button
                   type="button"
                   onClick={handleReiniciar}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-bold border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-100 transition-colors cursor-pointer"
                 >
-                  <RotateCcw className="w-4 h-4" />
-                  Refazer Desafio
+                  <RotateCcw className="w-4 h-4" aria-hidden="true" />
+                  Refazer desafio
                 </button>
                 <button
                   type="button"
                   onClick={onFechar}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-extrabold bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-extrabold bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-colors cursor-pointer"
                 >
-                  <CheckCircle2 className="w-4 h-4" />
-                  Concluir e Voltar à Aula
+                  <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
+                  Concluir e voltar à aula
                 </button>
               </div>
             </div>

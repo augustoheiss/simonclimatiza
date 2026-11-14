@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "test": "node --test",
     "validar:conversas": "node scripts/validar-conversas.mjs",
     "criar:conversa": "node scripts/gerar-esqueleto-conversa.mjs",
     "otimizar:imagens": "node scripts/otimizar-imagens.mjs"
